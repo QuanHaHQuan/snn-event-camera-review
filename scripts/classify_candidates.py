@@ -12,21 +12,16 @@ EVENT_KEYWORDS = [
     "event camera",
     "event cameras",
     "event-camera",
-    "event-based camera",
-    "event-based cameras",
     "dynamic vision sensor",
     "dynamic vision sensors",
     "DVS",
-    "visual event sensor",
-    "visual event sensors",
     "event stream",
     "event streams",
     "visual event stream",
     "visual event streams",
-    "event data",
     "event-based vision",
-    "event vision",
-    "neuromorphic vision",
+    "event-camera dataset",
+    "event-camera datasets",
 ]
 
 SNN_KEYWORDS = [
@@ -34,55 +29,31 @@ SNN_KEYWORDS = [
     "spiking neural networks",
     "SNN",
     "SNNs",
-    "spiking neural model",
-    "spiking neural models",
-    "spiking neuron",
-    "spiking neurons",
     "spike train",
     "spike trains",
     "LIF",
+    "IF neuron",
+    "IF neurons",
     "leaky integrate-and-fire",
     "integrate-and-fire",
     "surrogate gradient",
     "surrogate gradients",
     "ANN-to-SNN",
-    "ANN2SNN",
     "spiking transformer",
     "spiking transformers",
-    "spike-based neural network",
-    "spike-based neural networks",
-    "neuromorphic computing",
+    "SNN training",
+    "SNN inference",
 ]
 
-SECONDARY_TERMS = [
-    "asynchronous",
-    "event-driven",
-    "low latency",
+ADJACENT_KEYWORDS = [
+    "asynchronous processing",
     "temporal sparsity",
-    "sparse temporal",
-    "high-speed vision",
-    "event representation",
-    "event frame",
-    "event volume",
-    "voxel grid",
-    "temporal coding",
-    "rate coding",
-]
-
-TASK_LABELS = [
-    "object detection",
-    "tracking",
-    "recognition",
-    "reconstruction",
-    "optical flow",
-    "depth estimation",
-    "semantic segmentation",
-    "video interpolation",
-    "stereo",
-    "pose estimation",
-    "3D detection",
-    "SLAM",
-    "Gaussian Splatting",
+    "event-driven computation",
+    "low-latency vision",
+    "neuromorphic sensor",
+    "neuromorphic sensors",
+    "spike camera",
+    "spike cameras",
 ]
 
 CANDIDATE_COLUMNS = [
@@ -151,9 +122,8 @@ def classify(row: dict[str, str]) -> tuple[str, list[str], str, str]:
     text = searchable_text(row)
     event_matches = matched_keywords(text, EVENT_KEYWORDS)
     snn_matches = matched_keywords(text, SNN_KEYWORDS)
-    secondary_matches = matched_keywords(text, SECONDARY_TERMS)
-    task_matches = matched_keywords(text, TASK_LABELS)
-    matched = event_matches + snn_matches + secondary_matches + task_matches
+    adjacent_matches = matched_keywords(text, ADJACENT_KEYWORDS)
+    matched = event_matches + snn_matches + adjacent_matches
 
     lower_text = text.lower()
     has_spike_camera = "spike camera" in lower_text or "spike cameras" in lower_text
@@ -172,7 +142,9 @@ def classify(row: dict[str, str]) -> tuple[str, list[str], str, str]:
         return "B", matched, "event_camera", "Event-camera/DVS-side paper; no clear SNN evidence found"
     if snn_matches:
         return "C", matched, "snn", "SNN/spiking-side paper; no clear event-camera/DVS evidence found"
-    return "E", matched, "none", "No core event-camera/DVS or SNN/spiking evidence found"
+    if adjacent_matches:
+        return "D", matched, "adjacent", "Adjacent/background keyword match without clear event-camera/DVS or SNN evidence"
+    return "E", matched, "none", "Keyword match is unrelated or no workflow keyword match was found"
 
 
 def read_rows(path: Path) -> list[dict[str, str]]:

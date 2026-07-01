@@ -125,6 +125,43 @@ def write_level_indexes(index_dir: Path, rows: list[dict[str, str]]) -> None:
         (index_dir / filename).write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def write_conferences(index_dir: Path, repo_root: Path) -> None:
+    conference_root = repo_root / "01-papers-by-conference"
+    lines = [
+        "# Conferences",
+        "",
+        "Track venue/year searches here after processing.",
+        "",
+        "| Venue | Year | Official Source | Folder | Status | Notes |",
+        "| --- | --- | --- | --- | --- | --- |",
+    ]
+    for csv_path in sorted(conference_root.glob("*/mother-list.csv")):
+        folder = csv_path.parent
+        rows = read_csv(csv_path)
+        first = rows[0] if rows else {}
+        venue = first.get("conference", folder.name)
+        year = first.get("year", "")
+        source = first.get("source_url", "")
+        status = "processed" if (folder / "abc-reviewed.csv").exists() else "mother-list only"
+        notes = f"{len(rows)} papers" if rows else "No rows"
+        rel_folder = folder.relative_to(repo_root).as_posix()
+        lines.append(f"| {venue} | {year} | {source} | {rel_folder} | {status} | {notes} |")
+    (index_dir / "conferences.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def ensure_datasets(index_dir: Path) -> None:
+    path = index_dir / "datasets.md"
+    if path.exists() and path.read_text(encoding="utf-8").strip():
+        return
+    path.write_text(
+        "# Datasets\n\n"
+        "Track event-camera, neuromorphic vision, and SNN-relevant datasets mentioned by reviewed papers.\n\n"
+        "| Dataset | Modality | Tasks | Papers | Notes |\n"
+        "| --- | --- | --- | --- | --- |\n",
+        encoding="utf-8",
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Refresh 00-index from conference review outputs.")
     parser.add_argument("--repo-root", type=Path, default=Path.cwd(), help="Repository root")
@@ -135,6 +172,8 @@ def main() -> int:
     rows = collect_reviewed_rows(repo_root)
     write_all_papers(index_dir, rows)
     write_level_indexes(index_dir, rows)
+    write_conferences(index_dir, repo_root)
+    ensure_datasets(index_dir)
     print(f"Updated global indexes with {len(rows)} A/B/C papers.")
     return 0
 

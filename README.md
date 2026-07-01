@@ -97,9 +97,8 @@ The working principle is simple: **official proceedings are the primary source o
 3. Run `scripts/classify_candidates.py` to produce `candidates.csv` and `abc-reviewed.csv`.
 4. Manually review classifications, especially A/B/C boundaries.
 5. Run `scripts/generate_card.py` to create paper cards.
-6. Run `scripts/generate_report.py` to create the venue search report.
-7. Run `scripts/update_index.py` to refresh `00-index/`.
-8. Commit changes with `scripts/github_sync.py` or normal Git commands.
+6. Run `scripts/update_index.py` to refresh `00-index/`.
+7. Commit changes with `scripts/github_sync.py` or normal Git commands.
 
 ## GitHub Sync
 

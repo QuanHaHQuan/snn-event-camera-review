@@ -32,16 +32,10 @@ card_rules:
       - Survey-Usable Points
   B:
     template: "paper-card-BC.md"
-    max_english_words: 180
-    expected_sections:
-      - Core Problem
-      - Core Method
+    expected_sections: []
   C:
     template: "paper-card-BC.md"
-    max_english_words: 180
-    expected_sections:
-      - Core Problem
-      - Core Method
+    expected_sections: []
 
 summary_policy:
   generated_cards_must_use_paper_specific_content: true
