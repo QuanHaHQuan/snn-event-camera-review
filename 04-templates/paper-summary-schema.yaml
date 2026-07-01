@@ -49,3 +49,8 @@ summary_policy:
   generated_cards_must_use_paper_specific_content: true
   automated_notes_require_human_verification: true
   official_proceedings_are_primary_source: true
+  candidate_retrieval:
+    title_first: true
+    core_keyword_pass: "High-confidence title retrieval."
+    auxiliary_keyword_pass: "Recall expansion; auxiliary terms trigger inspection but are not classification evidence by themselves."
+    auxiliary_requires_confirmation_for_abc: true

@@ -90,7 +90,7 @@ def collect_reviewed_rows(repo_root: Path) -> list[dict[str, str]]:
 
 def write_all_papers(index_dir: Path, rows: list[dict[str, str]]) -> None:
     with (index_dir / "all-papers.csv").open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=GLOBAL_COLUMNS)
+        writer = csv.DictWriter(handle, fieldnames=GLOBAL_COLUMNS, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 

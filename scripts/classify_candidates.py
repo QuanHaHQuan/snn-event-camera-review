@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
-"""Retrieve and classify narrow event-camera/SNN candidates from a mother list."""
+"""Retrieve and classify event-camera/SNN candidates from a mother list.
+
+The workflow uses two title passes:
+1. core keyword retrieval for high-confidence candidates;
+2. auxiliary keyword retrieval for recall expansion.
+
+Auxiliary keywords can trigger inspection, but they are not classification
+evidence by themselves. A/B/C classification still requires explicit
+event-camera/DVS/visual-event-stream or SNN/spiking evidence in the title,
+abstract, notes, or inspected official-page text.
+"""
 
 from __future__ import annotations
 
@@ -8,52 +18,81 @@ import csv
 import re
 from pathlib import Path
 
-EVENT_KEYWORDS = [
+CORE_EVENT_KEYWORDS = [
     "event camera",
     "event cameras",
     "event-camera",
+    "event-based camera",
+    "event-based cameras",
     "dynamic vision sensor",
     "dynamic vision sensors",
     "DVS",
+    "visual event sensor",
+    "visual event sensors",
+    "event sensor",
+    "event sensors",
     "event stream",
     "event streams",
-    "visual event stream",
-    "visual event streams",
-    "event-based vision",
-    "event-camera dataset",
-    "event-camera datasets",
 ]
 
-SNN_KEYWORDS = [
+CORE_SNN_KEYWORDS = [
     "spiking neural network",
     "spiking neural networks",
     "SNN",
     "SNNs",
+    "spiking neuron",
+    "spiking neurons",
+    "spiking neural model",
+    "spiking neural models",
     "spike train",
     "spike trains",
     "LIF",
-    "IF neuron",
-    "IF neurons",
     "leaky integrate-and-fire",
     "integrate-and-fire",
     "surrogate gradient",
     "surrogate gradients",
     "ANN-to-SNN",
+    "ANN2SNN",
     "spiking transformer",
     "spiking transformers",
-    "SNN training",
-    "SNN inference",
+    "spike-based neural network",
+    "spike-based neural networks",
 ]
 
-ADJACENT_KEYWORDS = [
-    "asynchronous processing",
+EVENT_EVIDENCE_KEYWORDS = CORE_EVENT_KEYWORDS + [
+    "visual event stream",
+    "visual event streams",
+    "event-camera dataset",
+    "event-camera datasets",
+    "event-based vision",
+]
+
+SNN_EVIDENCE_KEYWORDS = CORE_SNN_KEYWORDS + [
+    "SNN training",
+    "SNN inference",
+    "IF neuron",
+    "IF neurons",
+]
+
+AUXILIARY_KEYWORDS = [
+    "event-based vision",
+    "event vision",
+    "event data",
+    "event representation",
+    "event frame",
+    "event volume",
+    "voxel grid",
+    "neuromorphic vision",
+    "neuromorphic computing",
+    "event-driven",
+    "asynchronous",
+    "low latency",
     "temporal sparsity",
-    "event-driven computation",
-    "low-latency vision",
-    "neuromorphic sensor",
-    "neuromorphic sensors",
+    "sparse temporal",
+    "high-speed vision",
+    "temporal coding",
+    "rate coding",
     "spike camera",
-    "spike cameras",
 ]
 
 CANDIDATE_COLUMNS = [
@@ -66,8 +105,6 @@ CANDIDATE_COLUMNS = [
     "pdf_link",
     "matched_keywords",
     "matched_axis",
-    "level",
-    "category",
     "classification_reason",
 ]
 
@@ -118,17 +155,42 @@ def searchable_text(row: dict[str, str]) -> str:
     return "\n".join(fields)
 
 
+def has_inspection_context(row: dict[str, str]) -> bool:
+    return any(
+        row.get(field, "").strip()
+        for field in ("abstract", "notes", "official_page_text")
+    )
+
+
+def title_retrieval(row: dict[str, str]) -> tuple[list[str], str, str]:
+    title = row.get("title", "")
+    core_event = matched_keywords(title, CORE_EVENT_KEYWORDS)
+    core_snn = matched_keywords(title, CORE_SNN_KEYWORDS)
+    auxiliary = matched_keywords(title, AUXILIARY_KEYWORDS)
+    matched = core_event + core_snn + auxiliary
+
+    if core_event and core_snn:
+        return matched, "Both axes", "Core title keyword match on both event-camera and SNN axes"
+    if core_event:
+        return matched, "Event Camera axis", "Core title keyword match on the event-camera/DVS axis"
+    if core_snn:
+        return matched, "SNN axis", "Core title keyword match on the SNN/spiking axis"
+    if auxiliary:
+        return matched, "Ambiguous", "Auxiliary title keyword match; requires abstract or official-page inspection before A/B/C classification"
+    return [], "", ""
+
+
 def classify(row: dict[str, str]) -> tuple[str, list[str], str, str]:
     text = searchable_text(row)
-    event_matches = matched_keywords(text, EVENT_KEYWORDS)
-    snn_matches = matched_keywords(text, SNN_KEYWORDS)
-    adjacent_matches = matched_keywords(text, ADJACENT_KEYWORDS)
-    matched = event_matches + snn_matches + adjacent_matches
+    event_matches = matched_keywords(text, EVENT_EVIDENCE_KEYWORDS)
+    snn_matches = matched_keywords(text, SNN_EVIDENCE_KEYWORDS)
+    auxiliary_matches = matched_keywords(text, AUXILIARY_KEYWORDS)
+    matched = event_matches + snn_matches + auxiliary_matches
 
     lower_text = text.lower()
     has_spike_camera = "spike camera" in lower_text or "spike cameras" in lower_text
     if has_spike_camera and not event_matches and not snn_matches:
-        return "D", ["spike camera"], "adjacent", "Spike camera mention without explicit event-camera/DVS or SNN evidence"
+        return "D", ["spike camera"], "Ambiguous", "Spike camera mention without explicit event-camera/DVS or SNN evidence"
 
     axes: list[str] = []
     if event_matches:
@@ -137,13 +199,13 @@ def classify(row: dict[str, str]) -> tuple[str, list[str], str, str]:
         axes.append("snn")
 
     if event_matches and snn_matches:
-        return "A", matched, ";".join(axes), "Explicit event-camera/DVS and SNN/spiking evidence found"
+        return "A", matched, "Both axes", "Explicit event-camera/DVS and SNN/spiking evidence found"
     if event_matches:
-        return "B", matched, "event_camera", "Event-camera/DVS-side paper; no clear SNN evidence found"
+        return "B", matched, "Event Camera axis", "Event-camera/DVS-side paper; no clear SNN evidence found"
     if snn_matches:
-        return "C", matched, "snn", "SNN/spiking-side paper; no clear event-camera/DVS evidence found"
-    if adjacent_matches:
-        return "D", matched, "adjacent", "Adjacent/background keyword match without clear event-camera/DVS or SNN evidence"
+        return "C", matched, "SNN axis", "SNN/spiking-side paper; no clear event-camera/DVS evidence found"
+    if auxiliary_matches:
+        return "D", matched, "Ambiguous", "Auxiliary keyword match without clear event-camera/DVS or SNN evidence"
     return "E", matched, "none", "Keyword match is unrelated or no workflow keyword match was found"
 
 
@@ -155,12 +217,12 @@ def read_rows(path: Path) -> list[dict[str, str]]:
 def write_rows(path: Path, rows: list[dict[str, str]], columns: list[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=columns, extrasaction="ignore")
+        writer = csv.DictWriter(handle, fieldnames=columns, extrasaction="ignore", lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 
 
-def build_candidate_row(row: dict[str, str], level: str, keywords: list[str], axis: str, reason: str) -> dict[str, str]:
+def build_candidate_row(row: dict[str, str], keywords: list[str], axis: str, reason: str) -> dict[str, str]:
     return {
         "id": row.get("id", ""),
         "title": row.get("title", ""),
@@ -171,8 +233,6 @@ def build_candidate_row(row: dict[str, str], level: str, keywords: list[str], ax
         "pdf_link": row.get("pdf_link", ""),
         "matched_keywords": "; ".join(dict.fromkeys(keywords)),
         "matched_axis": axis,
-        "level": level,
-        "category": CATEGORY_BY_LEVEL[level],
         "classification_reason": reason,
     }
 
@@ -203,23 +263,29 @@ def main() -> int:
     args = parser.parse_args()
 
     output_dir = args.output_dir or args.input.parent
-    candidates: list[dict[str, str]] = []
+    candidate_rows: list[dict[str, str]] = []
     abc_rows: list[dict[str, str]] = []
     counts = {level: 0 for level in "ABCDE"}
 
     for row in read_rows(args.input):
+        retrieval_keywords, retrieval_axis, retrieval_reason = title_retrieval(row)
+        if not retrieval_keywords:
+            continue
+        candidate_rows.append(build_candidate_row(row, retrieval_keywords, retrieval_axis, retrieval_reason))
+        if retrieval_axis == "Ambiguous" and not has_inspection_context(row):
+            counts["D"] += 1
+            continue
         level, keywords, axis, reason = classify(row)
         counts[level] += 1
-        if level == "E":
-            continue
-        candidate = build_candidate_row(row, level, keywords, axis, reason)
-        candidates.append(candidate)
         if level in {"A", "B", "C"}:
+            candidate = build_candidate_row(row, keywords, axis, reason)
+            candidate["level"] = level
+            candidate["category"] = CATEGORY_BY_LEVEL[level]
             abc_rows.append(build_abc_row(row, candidate))
 
-    write_rows(output_dir / "candidates.csv", candidates, CANDIDATE_COLUMNS)
+    write_rows(output_dir / "candidates.csv", candidate_rows, CANDIDATE_COLUMNS)
     write_rows(output_dir / "abc-reviewed.csv", abc_rows, ABC_COLUMNS)
-    print(f"Wrote {len(candidates)} raw candidates and {len(abc_rows)} A/B/C rows to {output_dir}")
+    print(f"Wrote {len(candidate_rows)} raw candidates and {len(abc_rows)} A/B/C rows to {output_dir}")
     print("Counts: " + ", ".join(f"{level}={counts[level]}" for level in "ABCDE"))
     return 0
 

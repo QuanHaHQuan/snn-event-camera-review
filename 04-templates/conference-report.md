@@ -8,6 +8,13 @@
 
 ## Candidate Retrieval Keywords
 
+Describe both title retrieval passes:
+
+- Core keyword pass
+- Auxiliary recall pass
+
+State explicitly that auxiliary keywords are retrieval triggers, not classification evidence.
+
 ## External Cross-check
 
 ## A/B/C/D/E Counts

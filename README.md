@@ -4,6 +4,8 @@ This repository stores a systematic, venue-specific literature review workflow f
 
 The purpose is to keep literature search results reproducible and auditable: each conference search should preserve the official paper list, candidate retrieval logic, classification decisions, generated paper cards, human review notes, and global indexes used for future survey drafting.
 
+For the full shareable initialization and conference-processing prompt, see `docs/workflow-instructions.md`.
+
 ## Repository Structure
 
 ```text
@@ -56,6 +58,13 @@ Each venue/year should receive its own directory under `01-papers-by-conference/
 ```
 
 The mother list should come from the official proceedings whenever possible. External sources such as OpenAlex, Semantic Scholar, arXiv, project pages, or search engines may be used for cross-checking, but they are not the primary source of truth.
+
+Candidate retrieval uses two title-based passes:
+
+1. **Core keyword pass**: titles matching core event-camera/DVS or SNN/spiking keywords enter the candidate table as high-confidence title candidates.
+2. **Auxiliary recall pass**: titles matching auxiliary terms enter the candidate table as ambiguous recall-expansion candidates.
+
+Auxiliary keywords are retrieval triggers, not classification evidence. A paper found only through auxiliary keywords can be classified as A/B/C only after its abstract or official page explicitly confirms event-camera/DVS/visual-event-stream data or SNN/spiking neural computation. Otherwise it should be marked D or E, or listed as an unpromoted auxiliary finding in the report.
 
 ## Paper Cards
 
