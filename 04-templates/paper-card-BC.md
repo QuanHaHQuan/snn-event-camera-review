@@ -11,3 +11,11 @@ tags: []
 abstract: ""
 status: "auto-generated; brief scan note"
 -----------------------------------------
+
+## Core Problem
+
+## Core Method
+
+## Key Metrics and Findings
+
+## Personal Notes

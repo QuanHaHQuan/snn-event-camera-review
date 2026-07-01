@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Generate filled Markdown paper cards from abc-reviewed.csv."""
+"""Generate filled Markdown paper cards from abc-reviewed.csv.
+
+B/C cards intentionally keep the same four visible sections as A cards in this
+workflow: Core Problem, Core Method, Key Metrics and Findings, and Personal
+Notes.
+"""
 
 from __future__ import annotations
 

@@ -32,10 +32,18 @@ card_rules:
       - Survey-Usable Points
   B:
     template: "paper-card-BC.md"
-    expected_sections: []
+    expected_sections:
+      - Core Problem
+      - Core Method
+      - Key Metrics and Findings
+      - Personal Notes
   C:
     template: "paper-card-BC.md"
-    expected_sections: []
+    expected_sections:
+      - Core Problem
+      - Core Method
+      - Key Metrics and Findings
+      - Personal Notes
 
 summary_policy:
   generated_cards_must_use_paper_specific_content: true

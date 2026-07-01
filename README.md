@@ -61,7 +61,9 @@ The mother list should come from the official proceedings whenever possible. Ext
 
 Paper cards are generated from `abc-reviewed.csv` after candidate classification.
 
-A-level cards use `04-templates/paper-card-A.md` and should contain detailed notes suitable for survey writing. B/C cards use `04-templates/paper-card-BC.md` and should stay short unless a deeper read is requested.
+A-level cards use `04-templates/paper-card-A.md` and should contain detailed notes suitable for survey writing. B/C cards use `04-templates/paper-card-BC.md` and keep the same four visible sections: Core Problem, Core Method, Key Metrics and Findings, and Personal Notes.
+
+B/C cards are intentionally shorter than A cards, but they are not placeholder-only notes. They should still contain paper-specific text in each section and remain ready for later review or expansion.
 
 Generated cards must contain actual paper-specific summaries. Template headings alone are not acceptable final card content. Automated summaries are draft notes and require human verification before being cited in survey prose.
 
