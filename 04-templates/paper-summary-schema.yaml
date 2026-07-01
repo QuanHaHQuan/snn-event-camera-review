@@ -1,0 +1,49 @@
+required_fields:
+  - id
+  - title
+  - authors
+  - conference
+  - year
+  - level
+  - category
+  - pdf_link
+  - official_page
+  - abstract
+  - status
+
+levels:
+  A: "Intersection / core paper combining SNN or spiking neural computation with event-camera data or event-based vision."
+  B: "Event-camera-side paper without clear SNN or spiking neural network use."
+  C: "SNN-side paper without clear event-camera or DVS data use."
+  D: "Adjacent/background paper related to asynchronous or neuromorphic ideas but not clearly A/B/C."
+  E: "False positive."
+
+card_rules:
+  A:
+    template: "paper-card-A.md"
+    expected_sections:
+      - Core Problem
+      - Core Method
+      - Key Metrics and Findings
+      - Personal Notes
+      - Method Details
+      - Experimental Analysis
+      - Related Work Connections
+      - Survey-Usable Points
+  B:
+    template: "paper-card-BC.md"
+    max_english_words: 180
+    expected_sections:
+      - Core Problem
+      - Core Method
+  C:
+    template: "paper-card-BC.md"
+    max_english_words: 180
+    expected_sections:
+      - Core Problem
+      - Core Method
+
+summary_policy:
+  generated_cards_must_use_paper_specific_content: true
+  automated_notes_require_human_verification: true
+  official_proceedings_are_primary_source: true
