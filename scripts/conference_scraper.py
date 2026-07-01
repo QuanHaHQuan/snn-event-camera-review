@@ -26,8 +26,11 @@ MOTHER_COLUMNS = [
     "conference",
     "year",
     "pdf_link",
+    "supplementary_link",
     "official_page",
     "abstract",
+    "session_type",
+    "presentation_status",
     "source_url",
     "notes",
 ]
@@ -112,8 +115,11 @@ def parse_generic_html(source_text: str, source_url: str, venue: str, year: str)
                 "conference": venue,
                 "year": year,
                 "pdf_link": "",
+                "supplementary_link": "",
                 "official_page": official_page,
                 "abstract": "",
+                "session_type": "",
+                "presentation_status": "",
                 "source_url": source_url,
                 "notes": "generic HTML parse; verify against official proceedings",
             }

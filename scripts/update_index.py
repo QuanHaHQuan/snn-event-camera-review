@@ -72,7 +72,7 @@ def normalize_row(repo_root: Path, conference_dir: Path, row: dict[str, str]) ->
         "pdf_link": row.get("pdf_link", ""),
         "official_page": row.get("official_page", ""),
         "card_path": find_card_path(repo_root, row, conference_dir),
-        "notes": row.get("classification_notes", row.get("notes", "")),
+        "notes": row.get("classification_reason", row.get("classification_notes", row.get("notes", ""))),
     }
 
 
