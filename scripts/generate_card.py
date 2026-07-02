@@ -86,7 +86,9 @@ def frontmatter(row: dict[str, str], status: str) -> str:
 def evidence_summary(row: dict[str, str]) -> str:
     keywords = row.get("matched_keywords", "") or "Unknown"
     reason = row.get("classification_reason", "") or "Needs human review"
-    return f"检索命中关键词：{keywords}。自动分类理由：{reason}。"
+    notes = row.get("notes", "").strip()
+    note_text = f" 备注：{notes}。" if notes else ""
+    return f"检索命中关键词：{keywords}。自动分类理由：{reason}。{note_text}"
 
 
 def abstract_sentence(row: dict[str, str], index: int, fallback: str) -> str:

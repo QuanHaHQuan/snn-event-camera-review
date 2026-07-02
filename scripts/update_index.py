@@ -61,6 +61,9 @@ def find_card_path(repo_root: Path, row: dict[str, str], conference_dir: Path) -
 
 
 def normalize_row(repo_root: Path, conference_dir: Path, row: dict[str, str]) -> dict[str, str]:
+    notes = row.get("notes", "").strip()
+    reason = row.get("classification_reason", row.get("classification_notes", "")).strip()
+    combined_notes = "; ".join(part for part in (notes, reason) if part)
     return {
         "id": row.get("id", ""),
         "title": row.get("title", ""),
@@ -72,7 +75,7 @@ def normalize_row(repo_root: Path, conference_dir: Path, row: dict[str, str]) ->
         "pdf_link": row.get("pdf_link", ""),
         "official_page": row.get("official_page", ""),
         "card_path": find_card_path(repo_root, row, conference_dir),
-        "notes": row.get("classification_reason", row.get("classification_notes", row.get("notes", ""))),
+        "notes": combined_notes,
     }
 
 
