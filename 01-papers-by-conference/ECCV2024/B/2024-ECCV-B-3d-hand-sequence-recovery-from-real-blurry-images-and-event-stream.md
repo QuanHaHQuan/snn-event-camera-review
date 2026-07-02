@@ -28,5 +28,5 @@ trajectories.
 
 ## Personal Notes
 
-检索命中关键词：event stream。自动分类理由：Official abstract confirms blurry images plus event stream for
-3D hand recovery; no clear SNN evidence.。
+检索命中关键词：event stream; event data。自动分类理由：Official abstract/page confirms event-
+camera/DVS/event-stream evidence; no clear SNN evidence.。

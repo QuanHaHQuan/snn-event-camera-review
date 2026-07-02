@@ -26,5 +26,5 @@ We formulate the problem as a regularized non-linear least squares optimization.
 
 ## Personal Notes
 
-检索命中关键词：event-based official cross-check。自动分类理由：Official abstract confirms purely rotating
-event camera and event-based mosaicing bundle adjustment; no clear SNN evidence.。
+检索命中关键词：event camera; event-based camera。自动分类理由：Official abstract/page confirms event-
+camera/DVS/event-stream evidence; no clear SNN evidence.。

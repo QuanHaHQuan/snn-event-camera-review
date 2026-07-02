@@ -12,10 +12,10 @@ required_fields:
   - status
 
 levels:
-  A: "Intersection / core paper combining SNN or spiking neural computation with event-camera data or event-based vision."
+  A: "Intersection / core paper combining SNN or spiking neural computation with event cameras, DVS, visual event streams, or event-camera datasets/data."
   B: "Event-camera-side paper without clear SNN or spiking neural network use."
   C: "SNN-side paper without clear event-camera or DVS data use."
-  D: "Adjacent/background paper related to asynchronous or neuromorphic ideas but not clearly A/B/C."
+  D: "Adjacent/background paper related to broad event-based vision, asynchronous processing, neuromorphic ideas, or spike cameras, but not clearly A/B/C."
   E: "False positive."
 
 card_rules:
@@ -51,6 +51,7 @@ summary_policy:
   official_proceedings_are_primary_source: true
   candidate_retrieval:
     title_first: true
-    core_keyword_pass: "High-confidence title retrieval."
-    auxiliary_keyword_pass: "Recall expansion; auxiliary terms trigger inspection but are not classification evidence by themselves."
-    auxiliary_requires_confirmation_for_abc: true
+    high_recall_title_keyword_pool: "Unified title retrieval pool containing precise event-camera/DVS/SNN terms and broad recall terms such as event, event-based, spike, and spiking."
+    title_keywords_are_not_classification_evidence: true
+    umbrella_terms_not_sufficient_for_abc: "event-based vision, neuromorphic vision/computing, asynchronous, event-driven, low latency, spike, spiking, and spike camera require explicit event-camera/DVS/visual-event-stream or SNN evidence."
+    all_title_hits_require_official_abstract_or_page_inspection: true

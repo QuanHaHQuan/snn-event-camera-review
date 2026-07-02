@@ -28,8 +28,9 @@ promising direction for energy-efficient and fast-reacting vision systems.
 
 ## Personal Notes
 
-检索命中关键词：spiking neural networks; event data。自动分类理由：Official abstract confirms DVS/event-
-based sensors combined with SNNs for adversarial attacks.。 该卡片用于优先阅读队列，引用前必须核对官方论文。
+检索命中关键词：DVS; event data; spiking neural network。自动分类理由：Official abstract/page confirms both
+event-camera/DVS/event-stream evidence and SNN/spiking neural computation.。
+该卡片用于优先阅读队列，引用前必须核对官方论文。
 
 ## Method Details
 

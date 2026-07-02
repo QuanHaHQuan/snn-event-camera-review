@@ -29,5 +29,5 @@ recently.
 
 ## Personal Notes
 
-检索命中关键词：spiking neural networks。自动分类理由：Official abstract confirms SNN training with
-surrogate gradients/knowledge distillation; no clear event-camera/DVS evidence.。
+检索命中关键词：spiking neural network; surrogate gradient。自动分类理由：Official abstract/page confirms
+SNN/spiking neural computation; no clear event-camera/DVS evidence.。

@@ -176,7 +176,7 @@ def read_rows(path: Path) -> list[dict[str, str]]:
 def write_rows(path: Path, rows: list[dict[str, str]]) -> None:
     columns = list(dict.fromkeys(list(rows[0].keys()) + ABC_COLUMNS)) if rows else ABC_COLUMNS
     with path.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=columns, extrasaction="ignore")
+        writer = csv.DictWriter(handle, fieldnames=columns, extrasaction="ignore", lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 

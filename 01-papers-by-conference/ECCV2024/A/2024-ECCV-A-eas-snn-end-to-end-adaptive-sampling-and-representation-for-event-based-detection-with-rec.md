@@ -29,8 +29,9 @@ adaptive event sampling remains largely unaddressed.
 
 ## Personal Notes
 
-检索命中关键词：spiking neural networks; SNN。自动分类理由：Official abstract confirms event cameras and
-recurrent spiking neural networks for event-based detection.。 该卡片用于优先阅读队列，引用前必须核对官方论文。
+检索命中关键词：event camera; event-based detection; spiking neural network; spiking
+neuron。自动分类理由：Official abstract/page confirms both event-camera/DVS/event-stream evidence
+and SNN/spiking neural computation.。 该卡片用于优先阅读队列，引用前必须核对官方论文。
 
 ## Method Details
 

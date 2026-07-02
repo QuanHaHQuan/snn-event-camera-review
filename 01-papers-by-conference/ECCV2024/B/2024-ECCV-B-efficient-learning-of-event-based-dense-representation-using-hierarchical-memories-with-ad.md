@@ -27,5 +27,5 @@ challenging for event-based processing frameworks.
 
 ## Personal Notes
 
-检索命中关键词：event-based official cross-check。自动分类理由：Official abstract confirms event-based
-camera/event streams and dense event representation; no clear SNN evidence.。
+检索命中关键词：event stream; event-based camera。自动分类理由：Official abstract/page confirms event-
+camera/DVS/event-stream evidence; no clear SNN evidence.。

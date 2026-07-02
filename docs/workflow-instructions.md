@@ -4,7 +4,7 @@ This document is the shareable, formal instruction set for initializing and usin
 
 **Spiking Neural Networks for Event Cameras**
 
-The workflow is designed for venue-specific, auditable literature screening. It prioritizes official proceedings, preserves full venue mother lists before filtering, and uses a two-stage title-first retrieval strategy.
+The workflow is designed for venue-specific, auditable literature screening. It prioritizes official proceedings, preserves full venue mother lists before filtering, and uses high-recall title screening followed by strict official abstract/page confirmation.
 
 ## Part 1: Repository Initialization Instruction
 
@@ -87,7 +87,7 @@ Create a clear README explaining:
 * research topic,
 * repository structure,
 * A/B/C/D/E classification rules,
-* the two-stage title-first conference retrieval strategy,
+* the high-recall title-screening and strict official-confirmation strategy,
 * how conference-level searches are stored,
 * how paper cards are generated,
 * how global indexes are updated,
@@ -196,12 +196,12 @@ Create `04-templates/conference-report.md` with these sections:
 * Limitations
 * Manual Verification Needed
 
-The template must mention the two title retrieval passes:
+The template must mention the broad title retrieval pool:
 
-* Core keyword pass
-* Auxiliary recall pass
+* precise event-camera/DVS/SNN terms
+* broad recall terms such as `event`, `event-based`, `spike`, and `spiking`
 
-It must state that auxiliary keywords are retrieval triggers, not classification evidence.
+It must state that every title hit requires official abstract or official-page inspection before A/B/C promotion, and that title keywords are retrieval triggers, not classification evidence. Broad umbrella terms such as event-based vision, neuromorphic computing, event-driven, asynchronous, low latency, and spike camera do not count as A/B/C evidence by themselves.
 
 5. Scripts
 
@@ -214,7 +214,7 @@ The scripts should be designed for this workflow:
   Output: `mother-list.csv`
 
 * `classify_candidates.py`
-  Purpose: apply two-stage title retrieval and A/B/C/D/E classification rules.
+  Purpose: apply broad high-recall title retrieval and strict A/B/C/D/E classification rules.
   Output: `candidates.csv` and `abc-reviewed.csv`
 
 * `generate_card.py`
@@ -233,7 +233,7 @@ The scripts should be designed for this workflow:
 Use these rules throughout the repository:
 
 A = Intersection / core paper:
-Explicitly combines SNN/spiking neural computation with event cameras, DVS, visual event streams, event-camera datasets, or event-based vision based on event-camera data.
+Explicitly combines SNN/spiking neural computation with event cameras, DVS, visual event sensors, visual event streams, or event-camera datasets/data. Broad labels such as event-based vision or neuromorphic vision count only when the official abstract/page explicitly confirms event-camera/DVS/visual-event-stream data.
 
 B = Event-camera-side paper:
 Clearly about event cameras, DVS, dynamic vision sensors, visual event streams, event-camera datasets, or event-camera tasks, but does not clearly use SNN/spiking neural networks.
@@ -242,7 +242,7 @@ C = SNN-side paper:
 Clearly about SNNs, spiking neural networks, spiking transformers, ANN-to-SNN conversion, surrogate gradients, spike trains, LIF/IF neurons, or SNN training/inference, but does not clearly involve event cameras/DVS/event-camera data.
 
 D = Adjacent/background paper:
-Related to asynchronous processing, temporal sparsity, event-driven computation, low-latency vision, neuromorphic sensors, or spike cameras, but not clearly about event cameras/DVS or SNNs.
+Related to asynchronous processing, temporal sparsity, event-driven computation, low-latency vision, neuromorphic ideas, spike cameras, or broad event-based vision, but not clearly about event cameras/DVS/visual-event-stream data or SNNs.
 
 E = False positive:
 Keyword match is unrelated.
@@ -305,13 +305,13 @@ Repository:
 Use the existing local repository `snn-event-camera-review`.
 
 Main objective:
-Run a high-precision, two-stage conference-level workflow:
+Run a high-recall title-screening workflow with strict official-source confirmation:
 
 1. identify and parse the official main-conference paper list,
 2. save the complete mother list before filtering,
-3. retrieve narrow high-confidence candidates by core title keywords,
-4. retrieve additional recall-expansion candidates by auxiliary title keywords,
-5. inspect abstracts or official paper pages only for retrieved candidates where needed,
+3. retrieve candidates with one broad high-recall title keyword pool,
+4. inspect official abstracts or official paper pages for every retrieved title candidate,
+5. promote only candidates whose official evidence strictly confirms event-camera/DVS/visual-event-stream data or SNN/spiking neural computation,
 6. classify candidates into A/B/C/D/E,
 7. generate conference-level CSVs and report,
 8. generate filled Markdown paper cards for A/B/C papers,
@@ -320,7 +320,7 @@ Run a high-precision, two-stage conference-level workflow:
 11. push to the configured SSH remote if one exists.
 
 Important workflow principle:
-This is a high-precision screening workflow with a controlled auxiliary recall pass, not a full exhaustive systematic review. Do not download or save abstracts for every paper unless the official source already provides them cheaply and directly. Do not perform full-PDF search over all papers. Use title-based retrieval first, then inspect abstracts or official paper pages only for retrieved candidate papers that need confirmation.
+This is a high-recall title-screening workflow with strict official-source confirmation, not a full exhaustive systematic review. Do not download or save abstracts for every paper unless the official source already provides them cheaply and directly. Do not perform full-PDF search over all papers. Use title-based retrieval first, then inspect official abstracts or official paper pages for all retrieved candidate papers before A/B/C promotion.
 
 Strict scope rule:
 Only include main-conference papers from the target venue/year. Exclude workshop papers, challenge papers, demo papers, tutorials, invited talks, non-archival papers, workshop proceedings, and papers from other venues or years. If workshop or non-main-conference papers are discovered during cross-checking, list them separately as out-of-scope findings and do not mix them into the main result.
@@ -338,16 +338,13 @@ This search should focus only on one or both of the following core areas:
 1. Event cameras / DVS / visual event sensors.
 2. Spiking neural networks / spike-based neural computation.
 
-Do not broadly expand the search to general event-based vision, event-driven algorithms, asynchronous processing, low-latency vision, temporal modeling, neuromorphic computing, or efficient vision unless the paper explicitly mentions event cameras/DVS/visual event streams or SNN/spiking neural networks.
+Do not broaden A/B/C inclusion to general event-based vision, event-driven algorithms, asynchronous processing, low-latency vision, temporal modeling, neuromorphic computing, efficient vision, or spike cameras unless the official abstract/page explicitly confirms event cameras/DVS/visual event streams/event-camera data or SNN/spiking neural networks.
 
 Candidate retrieval strategy:
 
-Use two title-based retrieval passes over the full mother list.
+Use one broad, high-recall title keyword pool over the full mother list. This pool intentionally mixes precise terms and broad recall terms. A title hit only creates a raw candidate; it is not classification evidence.
 
-Pass 1: Core title keyword pass.
-This pass finds high-confidence candidates from paper titles.
-
-Core Event Camera / DVS title keywords:
+Precise Event Camera / DVS title keywords:
 
 * event camera
 * event cameras
@@ -364,7 +361,7 @@ Core Event Camera / DVS title keywords:
 * event stream
 * event streams
 
-Core SNN / Spiking title keywords:
+Precise SNN / Spiking title keywords:
 
 * spiking neural network
 * spiking neural networks
@@ -388,11 +385,10 @@ Core SNN / Spiking title keywords:
 * spike-based neural network
 * spike-based neural networks
 
-Pass 2: Auxiliary recall title keyword pass.
-This pass is run across the full mother list after the core pass. It is used to avoid missing papers whose titles use broader or indirect terminology.
+Broad recall title keywords:
 
-Auxiliary recall title keywords:
-
+* event
+* event-based
 * event-based vision
 * event vision
 * event data
@@ -410,10 +406,12 @@ Auxiliary recall title keywords:
 * high-speed vision
 * temporal coding
 * rate coding
+* spike
+* spiking
 * spike camera
 
 Important:
-Auxiliary keywords are retrieval triggers, not classification evidence. A paper found only through auxiliary keywords can be classified as A/B/C only after its abstract or official page explicitly confirms event-camera/DVS/visual-event-stream data or SNN/spiking neural computation. Otherwise it should remain D/E or be listed as an unpromoted auxiliary finding in the report.
+All title keywords are retrieval triggers, not classification evidence. Because `event`, `event-based`, `spike`, and `spiking` are broad base terms, they will retrieve many false positives. A paper can be classified as A/B/C only after its official abstract or official page explicitly confirms event-camera/DVS/visual-event-stream/event-camera-dataset data or SNN/spiking neural computation. Broad umbrella topics such as event-based vision, neuromorphic vision/computing, asynchronous processing, event-driven methods, low-latency vision, or spike cameras are not enough by themselves. Otherwise the paper should remain D/E or be listed as an unpromoted title-candidate finding in the report.
 
 Task labels:
 Use these only to label already retrieved candidates. Do not use these as retrieval keywords:
@@ -476,11 +474,8 @@ Report the total number of papers in the mother list.
 Important:
 The mother list must be saved before any filtering. This is the source-of-truth record for the venue/year.
 
-Step 3: Two-stage title-based candidate retrieval
-Search the full mother list titles using:
-
-1. core Event Camera / DVS title keywords and core SNN / Spiking title keywords,
-2. auxiliary recall title keywords.
+Step 3: High-recall title-based candidate retrieval
+Search the full mother list titles using the unified broad title keyword pool. Include both precise terms and broad recall terms, but treat every title hit as an unverified raw candidate.
 
 Save:
 `01-papers-by-conference/[VENUEYEAR]/candidates.csv`
@@ -496,17 +491,18 @@ Matched axis should be one of:
 * Ambiguous
 
 Important:
-Auxiliary-only candidates should usually use `matched_axis = Ambiguous` until abstract/page inspection confirms a true event-camera or SNN axis.
+Candidates should usually use `matched_axis = Ambiguous` until official abstract/page inspection confirms a true event-camera or SNN axis.
 
 Step 4: Targeted abstract or page inspection
-For each retrieved candidate, inspect the abstract or official paper page only if needed to classify the paper accurately.
+For each retrieved candidate, inspect the official abstract or official paper page before A/B/C promotion. This applies to every title hit, including hits from precise keywords and broad recall keywords.
 
 Use targeted abstract/page inspection when:
 
+* any title keyword match needs confirmation that the keyword is being used in the intended event-camera/DVS or SNN/spiking sense,
 * the title contains a broad word such as "event", "asynchronous", "low latency", or "spiking" but the topic is unclear,
 * the paper may be A but the title does not clearly show both axes,
 * the paper may be a false positive,
-* an auxiliary-only paper needs confirmation before A/B/C promotion,
+* a broad-recall title hit needs confirmation before A/B/C promotion,
 * external cross-check finds a candidate not captured by title search.
 
 Do not inspect abstracts for all papers in the mother list.
@@ -547,7 +543,7 @@ Step 6: Classification
 Classify candidates as A/B/C/D/E using the repository rules.
 
 A = Intersection / core paper:
-Explicitly combines SNN/spiking neural computation with event cameras, DVS, visual event streams, event-camera datasets, or event-based vision based on event-camera data.
+Explicitly combines SNN/spiking neural computation with event cameras, DVS, visual event sensors, visual event streams, or event-camera datasets/data. Broad labels such as event-based vision or neuromorphic vision count only when the official abstract/page explicitly confirms event-camera/DVS/visual-event-stream data.
 
 B = Event-camera-side paper:
 Clearly about event cameras, DVS, dynamic vision sensors, visual event streams, event-camera datasets, or event-camera tasks, but does not clearly use SNN/spiking neural networks.
@@ -556,7 +552,7 @@ C = SNN-side paper:
 Clearly about SNNs, spiking neural networks, spiking transformers, ANN-to-SNN conversion, surrogate gradients, spike trains, LIF/IF neurons, or SNN training/inference, but does not clearly involve event cameras/DVS/event-camera data.
 
 D = Adjacent/background paper:
-Related to asynchronous processing, temporal sparsity, event-driven computation, low-latency vision, neuromorphic sensors, or spike cameras, but not clearly about event cameras/DVS or SNNs.
+Related to asynchronous processing, temporal sparsity, event-driven computation, low-latency vision, neuromorphic ideas, spike cameras, or broad event-based vision, but not clearly about event cameras/DVS/visual-event-stream data or SNNs.
 
 E = False positive:
 Keyword match is unrelated.
@@ -565,8 +561,9 @@ Special handling:
 
 * "Spike camera" papers should not automatically be treated as event-camera/DVS papers. Mark them as D unless they explicitly involve event cameras/DVS or SNNs.
 * "Event-driven" in SNN papers should not count as event-camera evidence unless the paper explicitly mentions event cameras, visual event streams, DVS, dynamic vision sensors, or event-camera data.
-* "Event-based vision" should be treated as B only when the paper clearly uses event-camera data or event-camera datasets.
-* Auxiliary keywords alone are not A/B/C evidence.
+* "Event-based vision" should be treated as B only when the official abstract/page clearly uses event-camera/DVS/visual-event-stream data or event-camera datasets.
+* Broad umbrella terms such as event-based vision, neuromorphic vision/computing, asynchronous, event-driven, low latency, spike, spiking, and spike camera are not sufficient for A/B/C evidence by themselves.
+* Title keywords alone are not sufficient for A/B/C promotion without official abstract/page confirmation.
 * B and C are equal background categories; do not rank B above C by default.
 
 Save:
@@ -642,17 +639,16 @@ The report must include:
 * External Cross-check
 * A/B/C/D/E Counts
 * High-priority Reading List
-* Auxiliary Findings Not Promoted
+* Title Candidates Not Promoted
 * Limitations
 * Manual Verification Needed
 
 The report must explicitly state:
 
-* this workflow used two title-first retrieval passes,
-* core keywords were used for high-confidence retrieval,
-* auxiliary keywords were run across the full mother list for recall expansion,
-* auxiliary keywords are retrieval triggers, not classification evidence,
-* abstracts were inspected only for retrieved candidates where needed,
+* this workflow used one broad high-recall title keyword pool,
+* precise event-camera/DVS/SNN terms and broad recall terms, including `event`, `event-based`, `spike`, and `spiking`, were run across the full mother list,
+* title keywords are retrieval triggers, not classification evidence,
+* official abstracts or official paper pages were inspected for all retrieved candidates before A/B/C promotion,
 * full-PDF search was not performed over all papers,
 * therefore the result is high-precision and systematic, but not guaranteed exhaustive.
 
@@ -688,8 +684,6 @@ Final response:
 After finishing, report:
 
 * number of papers in mother list,
-* number of core title candidates,
-* number of auxiliary title candidates,
 * total number of title-matched candidates,
 * number of externally discovered verified candidates,
 * number of A/B/C/D/E papers,
@@ -703,10 +697,11 @@ After finishing, report:
 
 ## Current Rule Memory
 
-For future venue processing in this repository, use the two-stage title-first retrieval strategy:
+For future venue processing in this repository, use the high-recall title-screening strategy with strict official-source confirmation:
 
-1. Run core event-camera/DVS and SNN/spiking title keywords over the full mother list.
-2. Run auxiliary recall title keywords over the full mother list.
-3. Promote auxiliary-only candidates to A/B/C only after official abstract or official page evidence confirms event-camera/DVS/event-stream data or SNN/spiking neural computation.
-4. Keep auxiliary false positives and adjacent papers in `candidates.csv` and report them under "Auxiliary Findings Not Promoted."
-5. Never treat "spike camera" as event-camera/DVS evidence by default.
+1. Run one unified broad title keyword pool over the full mother list, including precise terms and broad recall terms such as `event`, `event-based`, `spike`, and `spiking`.
+2. Inspect official abstracts or official paper pages for every title hit before A/B/C promotion.
+3. Promote candidates to A/B/C only after official evidence confirms event-camera/DVS/visual-event-stream/event-camera-dataset data or SNN/spiking neural computation.
+4. Keep false positives and adjacent papers in `candidates.csv` and report them under "Title Candidates Not Promoted" or equivalent unpromoted-candidate sections.
+5. Never treat broad umbrella terms such as event-based vision, neuromorphic vision/computing, asynchronous, event-driven, low latency, spike, spiking, or spike camera as A/B/C evidence by themselves.
+6. Never treat "spike camera" as event-camera/DVS evidence by default.

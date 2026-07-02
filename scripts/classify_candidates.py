@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 """Retrieve and classify event-camera/SNN candidates from a mother list.
 
-The workflow uses two title passes:
-1. core keyword retrieval for high-confidence candidates;
-2. auxiliary keyword retrieval for recall expansion.
-
-Auxiliary keywords can trigger inspection, but they are not classification
-evidence by themselves. A/B/C classification still requires explicit
-event-camera/DVS/visual-event-stream or SNN/spiking evidence in the title,
-abstract, notes, or inspected official-page text.
+Title retrieval intentionally uses a broad, high-recall keyword pool. Every
+title hit is only a raw candidate until an official abstract/page confirms one
+of the two target axes: event cameras/DVS/visual event streams/event-camera
+data, or SNN/spiking neural computation. Broader umbrella terms such as
+event-based vision, neuromorphic computing, asynchronous, event-driven, spike,
+or spiking are retrieval triggers only, not A/B/C evidence by themselves.
 """
 
 from __future__ import annotations
@@ -64,7 +62,9 @@ EVENT_EVIDENCE_KEYWORDS = CORE_EVENT_KEYWORDS + [
     "visual event streams",
     "event-camera dataset",
     "event-camera datasets",
-    "event-based vision",
+    "event-camera data",
+    "event camera data",
+    "event-based camera data",
 ]
 
 SNN_EVIDENCE_KEYWORDS = CORE_SNN_KEYWORDS + [
@@ -75,6 +75,8 @@ SNN_EVIDENCE_KEYWORDS = CORE_SNN_KEYWORDS + [
 ]
 
 AUXILIARY_KEYWORDS = [
+    "event",
+    "event-based",
     "event-based vision",
     "event vision",
     "event data",
@@ -92,8 +94,12 @@ AUXILIARY_KEYWORDS = [
     "high-speed vision",
     "temporal coding",
     "rate coding",
+    "spike",
+    "spiking",
     "spike camera",
 ]
+
+TITLE_RETRIEVAL_KEYWORDS = list(dict.fromkeys(CORE_EVENT_KEYWORDS + CORE_SNN_KEYWORDS + AUXILIARY_KEYWORDS))
 
 CANDIDATE_COLUMNS = [
     "id",
@@ -164,19 +170,9 @@ def has_inspection_context(row: dict[str, str]) -> bool:
 
 def title_retrieval(row: dict[str, str]) -> tuple[list[str], str, str]:
     title = row.get("title", "")
-    core_event = matched_keywords(title, CORE_EVENT_KEYWORDS)
-    core_snn = matched_keywords(title, CORE_SNN_KEYWORDS)
-    auxiliary = matched_keywords(title, AUXILIARY_KEYWORDS)
-    matched = core_event + core_snn + auxiliary
-
-    if core_event and core_snn:
-        return matched, "Both axes", "Core title keyword match on both event-camera and SNN axes"
-    if core_event:
-        return matched, "Event Camera axis", "Core title keyword match on the event-camera/DVS axis"
-    if core_snn:
-        return matched, "SNN axis", "Core title keyword match on the SNN/spiking axis"
-    if auxiliary:
-        return matched, "Ambiguous", "Auxiliary title keyword match; requires abstract or official-page inspection before A/B/C classification"
+    matched = matched_keywords(title, TITLE_RETRIEVAL_KEYWORDS)
+    if matched:
+        return matched, "Ambiguous", "Broad title keyword match; requires official abstract or official-page inspection before A/B/C classification"
     return [], "", ""
 
 
@@ -199,11 +195,11 @@ def classify(row: dict[str, str]) -> tuple[str, list[str], str, str]:
         axes.append("snn")
 
     if event_matches and snn_matches:
-        return "A", matched, "Both axes", "Explicit event-camera/DVS and SNN/spiking evidence found"
+        return "A", matched, "Both axes", "Official abstract/page confirms both event-camera/DVS/visual-event-stream data and SNN/spiking neural computation"
     if event_matches:
-        return "B", matched, "Event Camera axis", "Event-camera/DVS-side paper; no clear SNN evidence found"
+        return "B", matched, "Event Camera axis", "Official abstract/page confirms event-camera/DVS/visual-event-stream data; no clear SNN evidence found"
     if snn_matches:
-        return "C", matched, "SNN axis", "SNN/spiking-side paper; no clear event-camera/DVS evidence found"
+        return "C", matched, "SNN axis", "Official abstract/page confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found"
     if auxiliary_matches:
         return "D", matched, "Ambiguous", "Auxiliary keyword match without clear event-camera/DVS or SNN evidence"
     return "E", matched, "none", "Keyword match is unrelated or no workflow keyword match was found"

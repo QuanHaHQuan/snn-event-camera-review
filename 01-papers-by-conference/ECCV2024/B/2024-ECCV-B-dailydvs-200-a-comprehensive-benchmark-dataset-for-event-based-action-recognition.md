@@ -28,5 +28,5 @@ domain of event-based action recognition, recognizing their vast potential for a
 
 ## Personal Notes
 
-检索命中关键词：event-based official cross-check。自动分类理由：Official abstract confirms event cameras and
-DailyDVS-200 event-based action recognition dataset; no clear SNN evidence.。
+检索命中关键词：event camera; event-based action recognition。自动分类理由：Official abstract/page confirms
+event-camera/DVS/event-stream evidence; no clear SNN evidence.。

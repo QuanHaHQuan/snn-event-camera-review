@@ -28,5 +28,6 @@ changes due to their reliance on global self-attention operations.
 
 ## Personal Notes
 
-检索命中关键词：spiking official cross-check。自动分类理由：Official abstract confirms Spiking Wavelet
-Transformer / SNN; no clear event-camera/DVS evidence.。
+检索命中关键词：spiking neural network; spiking transformer; spike-driven; spiking point; spiking
+wavelet。自动分类理由：Official abstract/page confirms SNN/spiking neural computation; no clear
+event-camera/DVS evidence.。

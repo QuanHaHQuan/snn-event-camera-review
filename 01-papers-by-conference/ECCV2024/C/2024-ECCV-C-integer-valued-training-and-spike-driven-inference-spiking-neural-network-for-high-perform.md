@@ -27,5 +27,5 @@ poor performance.
 
 ## Personal Notes
 
-检索命中关键词：spiking neural network。自动分类理由：Official abstract confirms SNN object detection; no
-clear event-camera/DVS evidence.。
+检索命中关键词：spiking neural network; spiking neuron; spike-driven。自动分类理由：Official abstract/page
+confirms SNN/spiking neural computation; no clear event-camera/DVS evidence.。

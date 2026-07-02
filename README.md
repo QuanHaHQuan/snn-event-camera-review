@@ -24,7 +24,7 @@ Use the same A/B/C/D/E rules across reports, cards, scripts, and indexes.
 
 **A = Intersection / core paper**
 
-Explicitly combines SNN/spiking neural computation with event cameras, DVS, visual event streams, event-camera datasets, or event-based vision based on event-camera data.
+Explicitly combines SNN/spiking neural computation with event cameras, DVS, visual event sensors, visual event streams, or event-camera datasets/data. Broad labels such as event-based vision or neuromorphic vision count only when the official abstract/page explicitly confirms event-camera/DVS/visual-event-stream data.
 
 **B = Event-camera-side paper**
 
@@ -36,7 +36,7 @@ Clearly about SNNs, spiking neural networks, spiking transformers, ANN-to-SNN co
 
 **D = Adjacent/background paper**
 
-Related to asynchronous processing, temporal sparsity, event-driven computation, low-latency vision, neuromorphic sensors, or spike cameras, but not clearly about event cameras/DVS or SNNs.
+Related to asynchronous processing, temporal sparsity, event-driven computation, low-latency vision, neuromorphic ideas, spike cameras, or broad event-based vision, but not clearly about event cameras/DVS/visual-event-stream data or SNNs.
 
 **E = False positive**
 
@@ -59,12 +59,9 @@ Each venue/year should receive its own directory under `01-papers-by-conference/
 
 The mother list should come from the official proceedings whenever possible. External sources such as OpenAlex, Semantic Scholar, arXiv, project pages, or search engines may be used for cross-checking, but they are not the primary source of truth.
 
-Candidate retrieval uses two title-based passes:
+Candidate retrieval uses one broad, high-recall title keyword pool. The pool includes precise terms such as `event camera`, `DVS`, `event stream`, `spiking neural network`, and `SNN`, plus broad recall terms such as `event`, `event-based`, `spike`, and `spiking`.
 
-1. **Core keyword pass**: titles matching core event-camera/DVS or SNN/spiking keywords enter the candidate table as high-confidence title candidates.
-2. **Auxiliary recall pass**: titles matching auxiliary terms enter the candidate table as ambiguous recall-expansion candidates.
-
-Auxiliary keywords are retrieval triggers, not classification evidence. A paper found only through auxiliary keywords can be classified as A/B/C only after its abstract or official page explicitly confirms event-camera/DVS/visual-event-stream data or SNN/spiking neural computation. Otherwise it should be marked D or E, or listed as an unpromoted auxiliary finding in the report.
+All title-retrieved candidates require official abstract or official-page inspection before A/B/C promotion. Title keywords are retrieval triggers, not classification evidence. A paper can be classified as A/B/C only after its abstract or official page explicitly confirms event-camera/DVS/visual-event-stream data or SNN/spiking neural computation. Broader umbrella topics such as event-based vision, neuromorphic vision/computing, asynchronous processing, event-driven methods, low-latency vision, or spike cameras are not enough by themselves. Otherwise the paper should be marked D or E, or listed as an unpromoted title-candidate finding in the report.
 
 ## Paper Cards
 

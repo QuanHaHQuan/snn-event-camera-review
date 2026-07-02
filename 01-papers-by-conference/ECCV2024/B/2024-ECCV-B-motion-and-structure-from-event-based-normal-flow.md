@@ -27,5 +27,5 @@ association and multi-view geometry.
 
 ## Personal Notes
 
-检索命中关键词：event-based official cross-check。自动分类理由：Official abstract confirms neuromorphic
-event-based cameras and raw event data; no clear SNN evidence.。
+检索命中关键词：event camera; event data; event-based camera; neuromorphic event。自动分类理由：Official
+abstract/page confirms event-camera/DVS/event-stream evidence; no clear SNN evidence.。

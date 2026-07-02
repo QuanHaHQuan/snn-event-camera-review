@@ -28,5 +28,5 @@ spikes, which can be easily incorporated into any event stream to initiate backd
 
 ## Personal Notes
 
-检索命中关键词：asynchronous。自动分类理由：Auxiliary title hit; official abstract confirms poisoning event
-data streams; no clear SNN evidence.。
+检索命中关键词：event stream; event data。自动分类理由：Official abstract/page confirms event-
+camera/DVS/event-stream evidence; no clear SNN evidence.。

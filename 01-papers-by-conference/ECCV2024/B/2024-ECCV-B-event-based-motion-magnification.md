@@ -26,5 +26,5 @@ These motions are characterized by small amplitudes and high frequencies.
 
 ## Personal Notes
 
-检索命中关键词：event-based official cross-check。自动分类理由：Official abstract confirms event camera plus
-RGB dual-camera system for motion magnification; no clear SNN evidence.。
+检索命中关键词：event camera; event stream; event-based motion。自动分类理由：Official abstract/page
+confirms event-camera/DVS/event-stream evidence; no clear SNN evidence.。

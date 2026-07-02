@@ -27,5 +27,5 @@ pixel-wise dense semantic maps for such challenging scenarios remains labor-inte
 
 ## Personal Notes
 
-检索命中关键词：event cameras。自动分类理由：Official abstract confirms event cameras for weakly supervised
-semantic segmentation; no clear SNN evidence.。
+检索命中关键词：event camera; event data。自动分类理由：Official abstract/page confirms event-
+camera/DVS/event-stream evidence; no clear SNN evidence.。

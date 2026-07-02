@@ -11,20 +11,21 @@ tags: []
 abstract: "Spiking Neural Networks (SNNs) have attracted increasing attention for their biologically inspired temporal dynamics. As their applications expand, understanding their robustness has become an important research focus. However, little is known about how the intrinsic temporal properties of SNNs affect robustness. In this work, we revisit SNN robustness from an information-theoretic perspective and reveal the pivotal role of temporal dynamics. We establish a theoretical link between robustness error and the mutual information (MI) between inputs and latent representations along the temporal dimension, grounded in the information bottleneck principle. Through an analysis of spike-based information transmission, we show that temporal dynamics inherently compress MI, thereby tightening the robustness error bound. Building on this insight, we propose a Temporal Mutual Information (TMI) regularizer that explicitly exploits temporal characteristics to enhance robustness. Extensive experiments on CIFAR-10, CIFAR-100, DVS-CIFAR10, Tiny-ImageNet, and ImageNet demonstrate that our method consistently improves SNN robustness across various architectures and attack settings."
 status: "auto-generated; brief scan note"
 ---
-
 ## Core Problem
 
-SNN 的鲁棒性与其时间动态之间的关系尚不清楚。
+Spiking Neural Networks (SNNs) have attracted increasing attention for their biologically
+inspired temporal dynamics.
 
 ## Core Method
 
-从信息论视角分析时间维度上的输入与潜表示互信息，并据此构建鲁棒性解释。
+As their applications expand, understanding their robustness has become an important
+research focus.
 
 ## Key Metrics and Findings
 
-摘要称该方法建立了鲁棒误差与时间互信息的理论联系。
+尚未深读 PDF，指标、数据集和定量结果需要人工核验。
 
 ## Personal Notes
 
-适合放在 SNN 鲁棒性与理论分析小节。
-
+检索命中关键词：spiking neural network。自动分类理由：Official abstract/page confirms SNN/spiking neural
+computation; no clear event-camera/DVS evidence.。

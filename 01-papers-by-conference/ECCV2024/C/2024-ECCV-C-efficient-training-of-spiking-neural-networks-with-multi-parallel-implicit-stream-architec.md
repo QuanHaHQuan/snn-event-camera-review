@@ -27,5 +27,5 @@ of simulation steps.
 
 ## Personal Notes
 
-检索命中关键词：spiking neural networks。自动分类理由：Official abstract confirms efficient SNN training; no
-clear event-camera/DVS evidence.。
+检索命中关键词：spiking neural network。自动分类理由：Official abstract/page confirms SNN/spiking neural
+computation; no clear event-camera/DVS evidence.。

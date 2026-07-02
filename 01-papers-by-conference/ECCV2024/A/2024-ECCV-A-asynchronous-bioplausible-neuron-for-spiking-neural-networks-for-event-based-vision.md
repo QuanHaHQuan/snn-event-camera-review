@@ -28,9 +28,9 @@ amidst diverse and often unpredictable input signals.
 
 ## Personal Notes
 
-检索命中关键词：spiking neural networks; event-based vision; asynchronous。自动分类理由：Official abstract
-and targeted PDF check confirm SNNs evaluated on event-camera datasets including DVS128
-Gesture and CIFAR10-DVS.。 该卡片用于优先阅读队列，引用前必须核对官方论文。
+检索命中关键词：spiking neural network; event-camera datasets。自动分类理由：Official abstract/page and
+targeted PDF check confirm SNN computation evaluated for event-based vision/event-camera
+dataset context.。 该卡片用于优先阅读队列，引用前必须核对官方论文。
 
 ## Method Details
 

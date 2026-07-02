@@ -28,5 +28,5 @@ interpolation, denoted as Event-VFI.
 
 ## Personal Notes
 
-检索命中关键词：event-based official cross-check。自动分类理由：Official abstract confirms event cameras for
-event-based video frame interpolation; no clear SNN evidence.。
+检索命中关键词：event camera; event data; event-based video frame interpolation。自动分类理由：Official
+abstract/page confirms event-camera/DVS/event-stream evidence; no clear SNN evidence.。

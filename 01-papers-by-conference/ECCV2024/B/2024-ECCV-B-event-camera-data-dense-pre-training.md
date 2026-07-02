@@ -26,5 +26,5 @@ Our approach utilizes solely event data for training.
 
 ## Personal Notes
 
-检索命中关键词：event camera。自动分类理由：Official abstract confirms event camera data dense pre-training;
-no clear SNN evidence.。
+检索命中关键词：event camera; event data。自动分类理由：Official abstract/page confirms event-
+camera/DVS/event-stream evidence; no clear SNN evidence.。

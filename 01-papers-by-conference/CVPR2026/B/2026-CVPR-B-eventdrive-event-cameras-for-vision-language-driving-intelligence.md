@@ -11,20 +11,22 @@ tags: []
 abstract: "Event cameras sense the world through asynchronous brightness changes with microsecond latency and high dynamic range, offering motion fidelity far beyond frame-based sensors and capturing temporal structure that conventional exposures often miss. These properties make events a powerful complement to RGB in autonomous driving, especially under blur, glare, and rapid motion, where frame-based perception can become unreliable. However, existing event-aware vision-language models remain limited to generic perception and do not reveal how event sensing contributes to reasoning and decision-making across the full driving loop. We present EventDrive, a large-scale benchmark and model suite that unifies event streams, RGB frames, and language supervision across four core dimensions: Perception, Understanding, Prediction, and Planning, covering captions, structured QA, grounding, motion-state recognition, trajectory forecasting, and planning tasks. Building on this foundation, EventDrive-VLM introduces a multi-horizon event pyramid and a modality-routing mixture-of-experts to adaptively encode and fuse asynchronous and frame-based information for downstream reasoning. Comprehensive evaluation across diverse tasks shows that event streams provide substantial gains in temporal precision, motion awareness, and robustness, bringing event sensing into the center of driving intelligence."
 status: "auto-generated; brief scan note"
 ---
-
 ## Core Problem
 
-自动驾驶中的模糊、眩光和快速运动会削弱传统 VLM 的感知与推理可靠性。
+Event cameras sense the world through asynchronous brightness changes with microsecond
+latency and high dynamic range, offering motion fidelity far beyond frame-based sensors and
+capturing temporal structure that conventional exposures often miss.
 
 ## Core Method
 
-提出 EventDrive，一套面向驾驶智能的事件相机基准和模型方案。
+These properties make events a powerful complement to RGB in autonomous driving, especially
+under blur, glare, and rapid motion, where frame-based perception can become unreliable.
 
 ## Key Metrics and Findings
 
-摘要强调事件感知对 reasoning 和 decision-making 的作用。
+尚未深读 PDF，指标、数据集和定量结果需要人工核验。
 
 ## Personal Notes
 
-可作为事件相机在驾驶语义任务中的应用背景。
-
+检索命中关键词：event camera; event stream。自动分类理由：Official abstract/page confirms event-
+camera/DVS/event-stream evidence; no clear SNN evidence.。

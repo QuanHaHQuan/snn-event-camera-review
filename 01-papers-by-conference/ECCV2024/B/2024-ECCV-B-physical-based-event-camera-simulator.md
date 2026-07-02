@@ -28,5 +28,5 @@ with the 3D scene.
 
 ## Personal Notes
 
-检索命中关键词：event camera。自动分类理由：Official abstract confirms physical-based event camera
-simulator; no clear SNN evidence.。
+检索命中关键词：event camera; event stream。自动分类理由：Official abstract/page confirms event-
+camera/DVS/event-stream evidence; no clear SNN evidence.。

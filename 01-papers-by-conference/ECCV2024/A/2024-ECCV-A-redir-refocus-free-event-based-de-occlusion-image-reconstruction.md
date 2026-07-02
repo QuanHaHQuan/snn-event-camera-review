@@ -28,8 +28,8 @@ camera motion on SAI acquisition methods.
 
 ## Personal Notes
 
-检索命中关键词：event-based official cross-check。自动分类理由：Official abstract confirms pure event
-streams/event data and an SNN block for de-occlusion reconstruction.。
+检索命中关键词：event data; pure event streams; SNN block。自动分类理由：Official abstract confirms pure
+event streams/event data and an SNN block for de-occlusion reconstruction.。
 该卡片用于优先阅读队列，引用前必须核对官方论文。
 
 ## Method Details

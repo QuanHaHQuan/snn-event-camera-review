@@ -11,20 +11,21 @@ tags: []
 abstract: "Spiking Neural Networks (SNNs) utilize spike-based activations to mimic the brain's energy-efficient information processing. However, the binary and discontinuous nature of spike activations causes vanishing gradients, making adversarial robustness evaluation via gradient descent unreliable. While improved surrogate gradient methods have been proposed, their effectiveness under strong adversarial attacks remains unclear. We propose a more reliable framework for evaluating SNN adversarial robustness. We theoretically analyze the degree of gradient vanishing in surrogate gradients and introduce the Adaptive Sharpness Surrogate Gradient (ASSG), which adaptively evolves the shape of the surrogate function according to the input distribution during attack iterations, thereby enhancing gradient accuracy while mitigating gradient vanishing. In addition, we design an adversarial attack with adaptive step size under the L_infinity constraint--Stable Adaptive Projected Gradient Descent (SA-PGD), achieving faster and more stable convergence under imprecise gradients. Extensive experiments show that our approach substantially increases attack success rates across diverse adversarial training schemes, SNN architectures and neuron models, providing a more generalized and reliable evaluation of SNN adversarial robustness. The experimental results further reveal that the robustness of current SNNs has been significantly overestimated and highlighting the need for more dependable adversarial training methods. The code is released at https://github.com/craree/ASSG-SNNs-Robustness-Evaluation"
 status: "auto-generated; brief scan note"
 ---
-
 ## Core Problem
 
-SNN 的二值与不连续激活使梯度消失严重，导致对抗鲁棒性评估不稳定。
+Spiking Neural Networks (SNNs) utilize spike-based activations to mimic the brain's energy-
+efficient information processing.
 
 ## Core Method
 
-提出更可靠的评估框架，并设计 Adaptive Sharpness Surrogate Gradient 来缓解梯度消失。
+However, the binary and discontinuous nature of spike activations causes vanishing
+gradients, making adversarial robustness evaluation via gradient descent unreliable.
 
 ## Key Metrics and Findings
 
-摘要强调传统梯度下降式评估在强攻击下不够可靠。
+尚未深读 PDF，指标、数据集和定量结果需要人工核验。
 
 ## Personal Notes
 
-适合放在 SNN 训练与评估方法部分。
-
+检索命中关键词：spiking neural network; surrogate gradient。自动分类理由：Official abstract/page confirms
+SNN/spiking neural computation; no clear event-camera/DVS evidence.。

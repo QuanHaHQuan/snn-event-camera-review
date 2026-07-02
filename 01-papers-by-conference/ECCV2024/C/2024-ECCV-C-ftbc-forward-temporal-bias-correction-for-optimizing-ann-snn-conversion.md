@@ -30,5 +30,5 @@ most notably through ANN-SNN conversion.
 
 ## Personal Notes
 
-检索命中关键词：SNN。自动分类理由：Official abstract confirms ANN-SNN conversion optimization; no clear
-event-camera/DVS evidence.。
+检索命中关键词：spiking neural network; spiking neuron; ANN-SNN。自动分类理由：Official abstract/page
+confirms SNN/spiking neural computation; no clear event-camera/DVS evidence.。

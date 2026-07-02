@@ -27,5 +27,5 @@ different modality, transforming image deblurring.
 
 ## Personal Notes
 
-检索命中关键词：event representation。自动分类理由：Auxiliary title hit; official abstract confirms event
-cameras for image deblurring; no clear SNN evidence.。
+检索命中关键词：event camera。自动分类理由：Official abstract/page confirms event-camera/DVS/event-stream
+evidence; no clear SNN evidence.。

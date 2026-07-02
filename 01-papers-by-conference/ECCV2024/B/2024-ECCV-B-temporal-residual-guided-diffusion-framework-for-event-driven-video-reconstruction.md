@@ -28,5 +28,5 @@ scene, resulting in over-smoothing and blurry artifacts.
 
 ## Personal Notes
 
-检索命中关键词：event-driven。自动分类理由：Auxiliary title hit; official abstract confirms event-based
-video reconstruction from event flow; no clear SNN evidence.。
+检索命中关键词：visual event stream; continuous event flow; events。自动分类理由：Official abstract confirms
+event-based video reconstruction from continuous event flow; no clear SNN evidence.。

@@ -29,5 +29,5 @@ is non-trivial.
 
 ## Personal Notes
 
-检索命中关键词：event-based official cross-check。自动分类理由：Official abstract confirms event data and
-event-based recognition with N-Caltech101/N-ImageNet; no clear SNN evidence.。
+检索命中关键词：event data。自动分类理由：Official abstract/page confirms event-camera/DVS/event-stream
+evidence; no clear SNN evidence.。

@@ -29,9 +29,9 @@ reconstruction.
 
 ## Personal Notes
 
-检索命中关键词：spike official cross-check。自动分类理由：Official abstract confirms event-to-video
-reconstruction from neuromorphic event streams using cascaded SNNs.。
-该卡片用于优先阅读队列，引用前必须核对官方论文。
+检索命中关键词：event stream; neuromorphic event; event-to-video; spiking neural network; spike-
+driven。自动分类理由：Official abstract/page confirms both event-camera/DVS/event-stream evidence
+and SNN/spiking neural computation.。 该卡片用于优先阅读队列，引用前必须核对官方论文。
 
 ## Method Details
 

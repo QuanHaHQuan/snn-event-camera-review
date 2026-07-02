@@ -27,5 +27,5 @@ movement and extreme lighting.
 
 ## Personal Notes
 
-检索命中关键词：event-based official cross-check。自动分类理由：Official abstract confirms event
-cameras/event streams for head pose estimation; no clear SNN evidence.。
+检索命中关键词：event camera; event stream; event-based head pose。自动分类理由：Official abstract/page
+confirms event-camera/DVS/event-stream evidence; no clear SNN evidence.。

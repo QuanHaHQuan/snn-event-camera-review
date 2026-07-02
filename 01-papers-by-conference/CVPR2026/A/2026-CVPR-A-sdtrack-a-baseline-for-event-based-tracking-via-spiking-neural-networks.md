@@ -11,36 +11,49 @@ tags: []
 abstract: "Event cameras provide superior temporal resolution, dynamic range, energy efficiency, and pixel bandwidth. Spiking Neural Networks (SNNs) naturally complement event data through discrete spike signals, making them ideal for event-based tracking. However, current approaches combining Artificial Neural Networks (ANNs) and SNNs suffer from suboptimal architectures that compromise energy efficiency and limit tracking performance. To address these limitations, we propose the first Transformer-based Spike-Driven Tracking (SDTrack) pipeline. It incorporates a novel event frame aggregation method called Global Trajectory Prompt (GTP) and a Transformer-based tracker. The GTP method effectively captures global trajectory information and aggregates it with event streams into event frames to enhance spatiotemporal representation. The Transformer-based tracker comprises a fully spike-driven SNN backbone and a simple tracking head. The SDTrack pipeline operates end-to-end without data augmentation or post-processing. Extensive experiments demonstrate that our SDTrack-Tiny pipeline achieves competitive accuracy with only 19.61M parameters and 8.16mJ energy consumption, while our Base version achieves state-of-the-art accuracy across three datasets. Our work establishes a solid foundation for future neuromorphic vision research."
 status: "auto-generated; needs human review"
 ---
-
 ## Core Problem
 
-事件相机跟踪需要兼顾高时间分辨率与能效，但现有 ANN/SNN 混合方案架构并不理想。
+Event cameras provide superior temporal resolution, dynamic range, energy efficiency, and
+pixel bandwidth.
 
 ## Core Method
 
-提出 Transformer-based Spike-Driven Tracking (SDTrack)，并用 GTP 事件帧聚合与跟踪器协同建模。
+Spiking Neural Networks (SNNs) naturally complement event data through discrete spike
+signals, making them ideal for event-based tracking.
 
 ## Key Metrics and Findings
 
-摘要声称该基线在性能和能效上都优于现有方案。
+自动流程尚未深读 PDF，不能可靠提取完整指标、数据集、对比方法和数值结论；需要人工核验后补充。
 
 ## Personal Notes
 
-这是事件相机与 SNN 交叉方向的另一篇核心候选。
+检索命中关键词：event camera; event stream; event data; spiking neural network; spike-
+driven。自动分类理由：Official abstract/page confirms both event-camera/DVS/event-stream evidence
+and SNN/spiking neural computation.。 该卡片用于优先阅读队列，引用前必须核对官方论文。
 
 ## Method Details
 
-GTP 用于事件帧聚合，Transformer tracker 用于表征时序轨迹。
+However, current approaches combining Artificial Neural Networks (ANNs) and SNNs suffer from
+suboptimal architectures that compromise energy efficiency and limit tracking performance.
+To address these limitations, we propose the first Transformer-based Spike-Driven Tracking
+(SDTrack) pipeline. It incorporates a novel event frame aggregation method called Global
+Trajectory Prompt (GTP) and a Transformer-based tracker. The GTP method effectively captures
+global trajectory information and aggregates it with event streams into event frames to
+enhance spatiotemporal representation. The Transformer-based tracker comprises a fully
+spike-driven SNN backbone and a simple tracking head. The SDTrack pipeline operates end-to-
+end without data augmentation or post-processing. Extensive experiments demonstrate that our
+SDTrack-Tiny pipeline achieves competitive accuracy with only 19.61M parameters and 8.16mJ
+energy consumption, while our Base version achieves state-of-the-art accuracy across three
+datasets. Our work establishes a solid foundation for future neuromorphic vision research.
 
 ## Experimental Analysis
 
-需要核对跟踪基准、能耗度量和对照模型。
+需要人工检查实验数据集、任务设置、baselines、消融、延迟、能耗与硬件条件，避免把摘要级表述当成最终结论。
 
 ## Related Work Connections
 
-可与 SpikeTrack 组成 A 类核心跟踪组。
+该论文应与 Level B 的事件相机背景论文和 Level C 的 SNN 背景论文交叉阅读，确认它真正处在 SNN 与事件相机交叉点。
 
 ## Survey-Usable Points
 
-适合放在事件相机 + SNN 跟踪章节的主线。
-
+可作为交叉方向候选核心论文；最终可用观点需要在人工阅读全文后再写入综述草稿。
