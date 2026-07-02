@@ -11,21 +11,19 @@ tags: []
 abstract: "Events provide High Dynamic Range (HDR) intensity change which can guide Low Dynamic Range (LDR) image for HDR reconstruction. However, events only provide temporal intensity differences and it is still ill-posed in over-/under-exposed areas due to missing initial reference brightness and color information. With strong generation ability, diffusion models have shown their potential for tackling ill-posed problems. Therefore, we introduce conditional diffusion models to hallucinate missing information. Whereas, directly adopting events and LDR image as conditions is complicated for diffusion models to sufficiently utilize their information. Thus we introduce a pretrained events-image encoder tailored for HDR reconstruction and a pyramid fusion module to provide HDR conditions, which can be efficiently and effectively utilized by the diffusion model. Moreover, the generation results of diffusion models usually exhibit distortion, particularly for fine-grained details. To better preserve fidelity and suppress distortion, we propose a fine-grained detail recovery approach using a histogram-based structural loss. Experiments on real and synthetic data show the effectiveness of the proposed method in terms of both detail preservation and information hallucination."
 status: "auto-generated; brief scan note"
 ---
+
 ## Core Problem
 
-Events provide High Dynamic Range (HDR) intensity change which can guide Low Dynamic Range
-(LDR) image for HDR reconstruction.
+Events provide High Dynamic Range (HDR) intensity change which can guide Low Dynamic Range (LDR) image for HDR reconstruction.
 
 ## Core Method
 
-However, events only provide temporal intensity differences and it is still ill-posed in
-over-/under-exposed areas due to missing initial reference brightness and color information.
+However, events only provide temporal intensity differences and it is still ill-posed in over-/under-exposed areas due to missing initial reference brightness and color information.
 
 ## Key Metrics and Findings
 
-尚未深读 PDF，指标、数据集和定量结果需要人工核验。
+自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
 
 ## Personal Notes
 
-检索命中关键词：events; events-image encoder; event-guided HDR。自动分类理由：Official abstract confirms
-events and an events-image encoder for HDR reconstruction; no clear SNN evidence.。
+严格两阶段复扫：标题宽召回命中 `event-guided hdr visual-event context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

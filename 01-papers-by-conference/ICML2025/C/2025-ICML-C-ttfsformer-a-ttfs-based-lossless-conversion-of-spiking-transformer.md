@@ -1,6 +1,6 @@
 ---
 title: "TTFSFormer: A TTFS-based Lossless Conversion of Spiking Transformer"
-authors: ["Lusen Zhao", "Zihan Huang", "Jianhao Ding", "Zhaofei Yu"]
+authors: ["Lusen Zhao, Zihan Huang, Jianhao Ding, Zhaofei Yu"]
 conference: "ICML"
 year: 2025
 level: "C"
@@ -26,4 +26,4 @@ Among various coding methods used in ANN-to-SNN conversion, time-to-first-spike 
 
 ## Personal Notes
 
-检索命中关键词：spiking transformer; spiking。自动分类理由：Official abstract/page confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.。该卡片为草稿笔记，引用前必须核对官方论文。
+严格两阶段复扫：标题宽召回命中 `spiking neural networks; snns; ann-to-snn; spiking transformers`，官方摘要/页面证据为 `Official abstract/page strictly confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

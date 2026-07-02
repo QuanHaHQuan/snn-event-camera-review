@@ -11,22 +11,19 @@ tags: []
 abstract: "Visual 3D motion estimation aims to infer the motion of 2D pixels in 3D space based on visual cues. The key challenge arises from depth variation induced spatio-temporal motion inconsistencies, disrupting the assumptions of local spatial or temporal motion smoothness in previous motion estimation frameworks. In contrast, event cameras offer new possibilities for 3D motion estimation through continuous adaptive pixel-level responses to scene changes. This paper presents EMoTive, a novel event-based framework that models spatio-temporal trajectories via event-guided non-uniform parametric curves, effectively characterizing locally heterogeneous spatio-temporal motion. Specifically, we first introduce Event Kymograph - an event projection method that leverages a continuous temporal projection kernel and decouples spatial observations to encode fine-grained temporal evolution explicitly. For motion representation, we introduce a density-aware adaptation mechanism to fuse spatial and temporal features under event guidance, coupled with a non-uniform rational curve parameterization framework to adaptively model heterogeneous trajectories. The final 3D motion estimation is achieved through multi-temporal sampling of parametric trajectories, yielding optical flow and depth motion fields. To facilitate evaluation, we introduce CarlaEvent3D, a multi-dynamic synthetic dataset for comprehensive validation. Extensive experiments on both this dataset and a real-world benchmark demonstrate the effectiveness of the proposed method."
 status: "auto-generated; brief scan note"
 ---
+
 ## Core Problem
 
-Visual 3D motion estimation aims to infer the motion of 2D pixels in 3D space based on
-visual cues.
+Visual 3D motion estimation aims to infer the motion of 2D pixels in 3D space based on visual cues.
 
 ## Core Method
 
-The key challenge arises from depth variation induced spatio-temporal motion
-inconsistencies, disrupting the assumptions of local spatial or temporal motion smoothness
-in previous motion estimation frameworks.
+The key challenge arises from depth variation induced spatio-temporal motion inconsistencies, disrupting the assumptions of local spatial or temporal motion smoothness in previous motion estimation frameworks.
 
 ## Key Metrics and Findings
 
-尚未深读 PDF，指标、数据集和定量结果需要人工核验。
+自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
 
 ## Personal Notes
 
-检索命中关键词：event camera。自动分类理由：Official abstract/page confirms event-camera/DVS/event-stream
-evidence; no clear SNN evidence.。
+严格两阶段复扫：标题宽召回命中 `event cameras; event camera visual-event context; event cameras visual-event context; event-based with event-camera context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

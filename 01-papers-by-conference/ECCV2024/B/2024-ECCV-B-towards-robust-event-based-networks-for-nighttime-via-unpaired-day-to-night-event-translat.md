@@ -11,6 +11,7 @@ tags: []
 abstract: "Event cameras with high dynamic range ensure scene capture even in low-light conditions. However, night events exhibit patterns different from those captured during the day. This difference causes performance degradation when applying night events to a model trained solely on day events. This limitation persists due to a lack of annotated night events. To overcome the limitation, we aim to alleviate data imbalance by translating annotated day data into night events. However, generating events from different modalities challenges reproducing their unique properties. Accordingly, we propose an unpaired event-to-event day-to-night translation model that effectively learns to map from one domain to another using Diffusion GAN. The proposed translation model analyzes events in spatio-temporal dimension with wavelet decomposition and disentangled convolution layers. We also propose a new temporal contrastive learning with a novel shuffling and sampling strategy to regularize temporal continuity. To validate the efficacy of the proposed methodology, we redesign metrics for evaluating events translated in an unpaired setting, aligning them with the event modality for the first time. Our framework shows the successful day-to-night event translation while preserving the characteristics of events. In addition, through our translation method, we facilitate event-based modes to learn about night events by translating annotated day events into night events. Our approach effectively mitigates the performance degradation of applying real night events to downstream tasks."
 status: "auto-generated; brief scan note"
 ---
+
 ## Core Problem
 
 Event cameras with high dynamic range ensure scene capture even in low-light conditions.
@@ -21,9 +22,8 @@ However, night events exhibit patterns different from those captured during the 
 
 ## Key Metrics and Findings
 
-尚未深读 PDF，指标、数据集和定量结果需要人工核验。
+自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
 
 ## Personal Notes
 
-检索命中关键词：event camera。自动分类理由：Official abstract/page confirms event-camera/DVS/event-stream
-evidence; no clear SNN evidence.。
+严格两阶段复扫：标题宽召回命中 `event cameras; event camera visual-event context; event cameras visual-event context; event-based with event-camera context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

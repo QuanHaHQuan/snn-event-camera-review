@@ -1,6 +1,6 @@
 ---
 title: "A Chaotic Dynamics Framework Inspired by Dorsal Stream for Event Signal Processing"
-authors: ["Yu Chen", "Jing Lian", "Zhaofei Yu", "Jizhao Liu", "Jisheng Dang", "Gang Wang"]
+authors: ["Yu Chen, Jing Lian, Zhaofei Yu, Jizhao Liu, Jisheng Dang, Gang Wang"]
 conference: "ICML"
 year: 2025
 level: "B"
@@ -26,4 +26,4 @@ Current state-of-the-art event stream processing methods rely on end-to-end deep
 
 ## Personal Notes
 
-检索命中关键词：event。自动分类理由：Official abstract/page confirms event-camera/DVS/visual-event-stream evidence; no clear SNN evidence found.。该卡片为草稿笔记，引用前必须核对官方论文。
+严格两阶段复扫：标题宽召回命中 `event cameras; event camera visual-event context; event cameras visual-event context; event stream with event-camera context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

@@ -5,29 +5,25 @@ conference: "NeurIPS"
 year: 2025
 level: "C"
 category: "SNN"
-pdf_link: "https://papers.nips.cc/paper_files/paper/2025/file/3d9f111e9139bb008ffdfc6b466f3bf5-Paper-Conference.pdf"
+pdf_link: "https://papers.nips.cc/paper_files/paper/2025/hash/3d9f111e9139bb008ffdfc6b466f3bf5-Paper-Conference.pdf"
 official_page: "https://papers.nips.cc/paper_files/paper/2025/hash/3d9f111e9139bb008ffdfc6b466f3bf5-Abstract-Conference.html"
 tags: []
 abstract: "Spiking Neural Networks (SNNs), as a biologically plausible alternative to Artificial Neural Networks (ANNs), have demonstrated advantages in terms of energy efficiency, temporal processing, and biological plausibility. However, SNNs are highly sensitive to distribution shifts, which can significantly degrade their performance in real-world scenarios. Traditional test-time adaptation (TTA) methods designed for ANNs often fail to address the unique computational dynamics of SNNs, such as sparsity and temporal spiking behavior. To address these challenges, we propose SPike-Aware Consistency Enhancement (SPACE), the first source-free and single-instance TTA method specifically designed for SNNs. SPACE leverages the inherent spike dynamics of SNNs to maximize the consistency of spike-behavior-based local feature maps across augmented versions of a single test sample, enabling robust adaptation without requiring source data. We evaluate SPACE on multiple datasets. Furthermore, SPACE exhibits robust generalization across diverse network architectures, consistently enhancing the performance of SNNs on CNNs, Transformer, and ConvLSTM architectures. Experimental results show that SPACE outperforms state-of-the-art ANN methods while maintaining lower computational cost, highlighting its effectiveness and robustness for SNNs in real-world settings. The code will be available at https://github.com/ethanxyluo/SPACE."
 status: "auto-generated; brief scan note"
 ---
+
 ## Core Problem
 
-Spiking Neural Networks (SNNs), as a biologically plausible alternative to Artificial Neural
-Networks (ANNs), have demonstrated advantages in terms of energy efficiency, temporal
-processing, and biological plausibility.
+Spiking Neural Networks (SNNs), as a biologically plausible alternative to Artificial Neural Networks (ANNs), have demonstrated advantages in terms of energy efficiency, temporal processing, and biological plausibility.
 
 ## Core Method
 
-However, SNNs are highly sensitive to distribution shifts, which can significantly degrade
-their performance in real-world scenarios.
+However, SNNs are highly sensitive to distribution shifts, which can significantly degrade their performance in real-world scenarios.
 
 ## Key Metrics and Findings
 
-尚未深读 PDF，指标、数据集和定量结果需要人工核验。
+自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
 
 ## Personal Notes
 
-检索命中关键词：SNN/spiking neural computation。自动分类理由：Official abstract confirms SNN/spiking neural
-computation; no clear event-camera/DVS evidence.。 备注：Track: Main Conference Track. Official
-abstract/page inspected under broad high-recall title workflow.。
+严格两阶段复扫：标题宽召回命中 `spiking neural networks; snns`，官方摘要/页面证据为 `Official abstract/page strictly confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

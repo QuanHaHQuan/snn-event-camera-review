@@ -11,11 +11,10 @@ tags: []
 abstract: "With the superior sensitivity of event cameras to high-speed motion and extreme lighting conditions, event-based monocular depth estimation has gained popularity to predict structural information about surrounding scenes in challenging environments. However, the scarcity of labeled event data constrains prior supervised learning methods. Unleashing the promising potential of the existing RGB-based depth foundation model, DAM, we propose Depth Any Event stream (EventDAM) to achieve high-performance event based monocular depth estimation in an annotation-free manner. EventDAM effectively combines paired dense RGB images with sparse event data by incorporating three key cross-modality components: Sparsity-aware Feature Mixture (SFM), Sparsity-aware Feature Distillation (SFD), and Sparsity-invariant Consistency Module (SCM). With the proposed sparsity metric, SFM mixes features from RGB images and event data to generate auxiliary depth predictions, while SFD facilitates adaptive feature distillation. Furthermore, SCM ensures output consistency across varying sparsity levels in event data, thereby endowing EventDAM with zero shot capabilities across diverse scenes. Extensive experiments across a variety of benchmark datasets, compared to approaches using diverse input modalities, robustly substantiate the generalization and zero-shot capabilities of EventDAM."
 status: "auto-generated; brief scan note"
 ---
+
 ## Core Problem
 
-With the superior sensitivity of event cameras to high-speed motion and extreme lighting
-conditions, event-based monocular depth estimation has gained popularity to predict
-structural information about surrounding scenes in challenging environments.
+With the superior sensitivity of event cameras to high-speed motion and extreme lighting conditions, event-based monocular depth estimation has gained popularity to predict structural information about surrounding scenes in challenging environments.
 
 ## Core Method
 
@@ -23,9 +22,8 @@ However, the scarcity of labeled event data constrains prior supervised learning
 
 ## Key Metrics and Findings
 
-尚未深读 PDF，指标、数据集和定量结果需要人工核验。
+自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
 
 ## Personal Notes
 
-检索命中关键词：event camera; event stream; event data; event-based monocular。自动分类理由：Official
-abstract/page confirms event-camera/DVS/event-stream evidence; no clear SNN evidence.。
+严格两阶段复扫：标题宽召回命中 `event cameras; event camera visual-event context; event cameras visual-event context; event stream with event-camera context; event-based with event-camera context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

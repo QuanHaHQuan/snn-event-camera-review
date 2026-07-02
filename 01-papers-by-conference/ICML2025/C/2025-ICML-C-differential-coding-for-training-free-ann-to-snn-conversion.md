@@ -1,6 +1,6 @@
 ---
 title: "Differential Coding for Training-Free ANN-to-SNN Conversion"
-authors: ["Zihan Huang", "Wei Fang", "Tong Bu", "Peng Xue", "Zecheng Hao", "Wenxuan Liu", "Yuanhong Tang", "Zhaofei Yu", "Tiejun Huang"]
+authors: ["Zihan Huang, Wei Fang, Tong Bu, Peng Xue, Zecheng Hao, Wenxuan Liu, Yuanhong Tang, Zhaofei Yu, Tiejun Huang"]
 conference: "ICML"
 year: 2025
 level: "C"
@@ -26,4 +26,4 @@ Converting Artificial Neural Networks (ANNs) to SNNs is an efficient way to achi
 
 ## Personal Notes
 
-检索命中关键词：snn; ann-to-snn。自动分类理由：Official abstract/page confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.。该卡片为草稿笔记，引用前必须核对官方论文。
+严格两阶段复扫：标题宽召回命中 `spiking neural networks; snns; spiking neurons; ann-to-snn`，官方摘要/页面证据为 `Official abstract/page strictly confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

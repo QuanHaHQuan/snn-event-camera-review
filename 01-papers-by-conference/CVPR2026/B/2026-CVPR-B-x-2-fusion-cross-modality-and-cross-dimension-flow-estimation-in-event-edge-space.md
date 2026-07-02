@@ -11,21 +11,19 @@ tags: []
 abstract: "Estimating dense 2D optical flow and 3D scene flow is essential for dynamic scene understanding. Recent work combines images, LiDAR, and event data to jointly predict 2D and 3D motion, yet most approaches operate in separate heterogeneous feature spaces. Without a shared latent space that all modalities can align to, these systems rely on multiple modality-specific blocks, leaving cross-sensor mismatches unresolved and making fusion unnecessarily complex. Event cameras naturally provide a spatiotemporal edge signal, which we can treat as an intrinsic edge field to anchor a unified latent representation, termed the Event Edge Space. Building on this idea, we introduce x^2-Fusion, which reframes multimodal fusion as representation unification: event-derived spatiotemporal edges define an edge-centric homogeneous space, and image and LiDAR features are explicitly aligned in this shared representation. Within this space, we perform reliability-aware adaptive fusion to estimate modality reliability and emphasize stable cues under degradation. We further employ cross-dimension contrast learning to tightly couple 2D optical flow with 3D scene flow. Extensive experiments on both synthetic and real benchmarks show that x^2-Fusion achieves state-of-the-art accuracy under standard conditions and delivers substantial improvements in challenging scenarios."
 status: "auto-generated; brief scan note"
 ---
+
 ## Core Problem
 
-Estimating dense 2D optical flow and 3D scene flow is essential for dynamic scene
-understanding.
+Estimating dense 2D optical flow and 3D scene flow is essential for dynamic scene understanding.
 
 ## Core Method
 
-Recent work combines images, LiDAR, and event data to jointly predict 2D and 3D motion, yet
-most approaches operate in separate heterogeneous feature spaces.
+Recent work combines images, LiDAR, and event data to jointly predict 2D and 3D motion, yet most approaches operate in separate heterogeneous feature spaces.
 
 ## Key Metrics and Findings
 
-尚未深读 PDF，指标、数据集和定量结果需要人工核验。
+自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
 
 ## Personal Notes
 
-检索命中关键词：event camera; event data。自动分类理由：Official abstract/page confirms event-
-camera/DVS/event-stream evidence; no clear SNN evidence.。
+严格两阶段复扫：标题宽召回命中 `event cameras; event camera visual-event context; event cameras visual-event context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

@@ -11,22 +11,19 @@ tags: []
 abstract: "Most event-based algorithms typically split the event stream into fixed groups (e.g., fixed time or fixed count) for downstream processing, lacking adaptivity to scene dynamics. Several adaptive partitioning strategies have been proposed, but they are unable to cope well with heterogeneous velocity scenarios (HVS) involving both fast- and slow-moving objects. To address this issue, we propose Adaptive Spatial-Temporal Window (ASTW) strategy, which simultaneously achieves temporal adaptivity and spatial locality in event partitioning. Based on the principle of maximum entropy, we derive a patch-level time window determination criterion and efficiently implement it based on event density and vectorized calculations. Experiments on publicly available event-based object detection and tracking datasets demonstrate that ASTW significantly outperforms existing state-of-the-art partitioning strategies. We also construct HetVel, the first RGB-event dual-modality dataset for HVS, and further highlight the advantages of ASTW on this challenging benchmark. We believe that our ASTW strategy and the constructed HetVel dataset will advance the field of neuromorphic vision."
 status: "auto-generated; brief scan note"
 ---
+
 ## Core Problem
 
-Most event-based algorithms typically split the event stream into fixed groups (e.g., fixed
-time or fixed count) for downstream processing, lacking adaptivity to scene dynamics.
+Most event-based algorithms typically split the event stream into fixed groups (e.g., fixed time or fixed count) for downstream processing, lacking adaptivity to scene dynamics.
 
 ## Core Method
 
-Several adaptive partitioning strategies have been proposed, but they are unable to cope
-well with heterogeneous velocity scenarios (HVS) involving both fast- and slow-moving
-objects.
+Several adaptive partitioning strategies have been proposed, but they are unable to cope well with heterogeneous velocity scenarios (HVS) involving both fast- and slow-moving objects.
 
 ## Key Metrics and Findings
 
-尚未深读 PDF，指标、数据集和定量结果需要人工核验。
+自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
 
 ## Personal Notes
 
-检索命中关键词：event camera; event stream; rgb-event。自动分类理由：Official abstract/page confirms event-
-camera/DVS/event-stream evidence; no clear SNN evidence.。
+严格两阶段复扫：标题宽召回命中 `event cameras; event camera visual-event context; event cameras visual-event context; rgb-event visual-event context; event-based object visual-event context; event stream with event-camera context; event-based with event-camera context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

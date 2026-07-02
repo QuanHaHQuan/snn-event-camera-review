@@ -1,6 +1,6 @@
 ---
 title: "Hybrid Spiking Vision Transformer for Object Detection with Event Cameras"
-authors: ["Qi Xu", "Jie Deng", "Jiangrong Shen", "Biwu Chen", "Huajin Tang", "Gang Pan"]
+authors: ["Qi Xu, Jie Deng, Jiangrong Shen, Biwu Chen, Huajin Tang, Gang Pan"]
 conference: "ICML"
 year: 2025
 level: "A"
@@ -26,11 +26,11 @@ Leveraging these advantages, spiking neural networks (SNNs) have emerged as a pr
 
 ## Personal Notes
 
-检索命中关键词：event cameras; event; spiking。自动分类理由：Official abstract/page confirms both event-camera/DVS/visual-event-stream evidence and SNN/spiking neural computation.。该卡片为草稿笔记，引用前必须核对官方论文。
+严格两阶段复扫：标题宽召回命中 `event cameras; dvs; address-event; event camera visual-event context; event cameras visual-event context; dvs visual-event context; address-event visual-event context; event-based object visual-event context; event-based with event-camera context; spiking neural networks; snns`，官方摘要/页面证据为 `Official abstract/page strictly confirms both event-camera/DVS/visual-event-sensor evidence and SNN/spiking neural computation.`。该卡片为草稿笔记，引用前必须核对官方论文。
 
 ## Method Details
 
-摘要显示该论文同时触及事件相机/视觉事件流与 SNN 或脉冲神经计算；更细的模型结构、编码方式和训练细节需要人工阅读全文确认。
+摘要显示该论文同时触及事件相机/DVS/视觉事件数据与 SNN 或脉冲神经计算；更细的模型结构、编码方式和训练细节需要人工阅读全文确认。
 
 ## Experimental Analysis
 

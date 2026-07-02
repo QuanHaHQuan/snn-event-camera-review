@@ -1,6 +1,6 @@
 ---
 title: "Faster and Stronger: When ANN-SNN Conversion Meets Parallel Spiking Calculation"
-authors: ["Zecheng Hao", "Qichao Ma", "Kang Chen", "Yi Zhang", "Zhaofei Yu", "Tiejun Huang"]
+authors: ["Zecheng Hao, Qichao Ma, Kang Chen, Yi Zhang, Zhaofei Yu, Tiejun Huang"]
 conference: "ICML"
 year: 2025
 level: "C"
@@ -26,4 +26,4 @@ The predominant training methodologies, namely Spatial-Temporal Back-propagation
 
 ## Personal Notes
 
-检索命中关键词：snn; spiking。自动分类理由：Official abstract/page confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.。该卡片为草稿笔记，引用前必须核对官方论文。
+严格两阶段复扫：标题宽召回命中 `spiking neural networks; snns; spiking neurons`，官方摘要/页面证据为 `Official abstract/page strictly confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

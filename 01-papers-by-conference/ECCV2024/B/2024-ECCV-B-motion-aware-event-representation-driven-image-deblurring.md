@@ -11,21 +11,19 @@ tags: []
 abstract: "Traditional image deblurring struggles with high-quality reconstruction due to limited motion data from single blurred images. Excitingly, the high-temporal resolution of event cameras records motion more precisely in a different modality, transforming image deblurring. However, many event camera-based methods, which only care about the final value of the polarity accumulation, ignore the influence of the absolute intensity change where events generate so fall short in perceiving motion patterns and effectively aiding image reconstruction. To overcome this, in this work, we propose a new event preprocessing technique that accumulates the deviation from the initial moment each time the event is updated. This process can distinguish the order of events to improve the perception of object motion patterns. To complement our proposed event representation, we create a recurrent module designed to meticulously extract motion features across local and global time scales. To further facilitate the event feature and image feature integration, which assists in image reconstruction, we develop a bi-directional feature alignment and fusion module. This module works to lessen inter-modal inconsistencies. Our approach has been thoroughly tested through rigorous experiments carried out on several datasets with different distributions. These trials have delivered promising results, with our method achieving top-tier performance in both quantitative and qualitative assessments."
 status: "auto-generated; brief scan note"
 ---
+
 ## Core Problem
 
-Traditional image deblurring struggles with high-quality reconstruction due to limited
-motion data from single blurred images.
+Traditional image deblurring struggles with high-quality reconstruction due to limited motion data from single blurred images.
 
 ## Core Method
 
-Excitingly, the high-temporal resolution of event cameras records motion more precisely in a
-different modality, transforming image deblurring.
+Excitingly, the high-temporal resolution of event cameras records motion more precisely in a different modality, transforming image deblurring.
 
 ## Key Metrics and Findings
 
-尚未深读 PDF，指标、数据集和定量结果需要人工核验。
+自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
 
 ## Personal Notes
 
-检索命中关键词：event camera。自动分类理由：Official abstract/page confirms event-camera/DVS/event-stream
-evidence; no clear SNN evidence.。
+严格两阶段复扫：标题宽召回命中 `event cameras; event camera visual-event context; event cameras visual-event context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

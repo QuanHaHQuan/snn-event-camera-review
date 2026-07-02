@@ -11,23 +11,19 @@ tags: []
 abstract: "Event-based cameras (EBCs) have emerged as a bio-inspired alternative to traditional cameras, offering advantages in power efficiency, temporal resolution, and high dynamic range. However, the development of image analysis methods for EBCs is challenging due to the sparse and asynchronous nature of the data. This work addresses the problem of object detection for EBC cameras. The current approaches to EBC object detection focus on constructing complex data representations and rely on specialized architectures. We introduce I2EvDet (Image-to-Event Detection), a novel adaptation framework that bridges mainstream object detection with temporal event data processing. First, we demonstrate that a Real-Time DEtection TRansformer, or RT-DETR, a state-of-the-art natural image detector, trained on a simple image-like representation of the EBC data achieves performance comparable to specialized EBC methods. Next, as part of our framework, we develop an efficient adaptation technique that transforms image-based detectors into event-based detection models by modifying their frozen latent representation space through minimal architectural additions. The resulting EvRT-DETR model reaches state-of-the-art performance on the standard benchmark datasets Gen1 (mAP +2.3) and 1Mpx/Gen4 (mAP +1.4). These results demonstrate a fundamentally new approach to EBC object detection through principled adaptation of mainstream architectures, offering an efficient alternative with potential applications to other temporal visual domains."
 status: "auto-generated; brief scan note"
 ---
+
 ## Core Problem
 
-Event-based cameras (EBCs) have emerged as a bio-inspired alternative to traditional
-cameras, offering advantages in power efficiency, temporal resolution, and high dynamic
-range.
+Event-based cameras (EBCs) have emerged as a bio-inspired alternative to traditional cameras, offering advantages in power efficiency, temporal resolution, and high dynamic range.
 
 ## Core Method
 
-However, the development of image analysis methods for EBCs is challenging due to the sparse
-and asynchronous nature of the data.
+However, the development of image analysis methods for EBCs is challenging due to the sparse and asynchronous nature of the data.
 
 ## Key Metrics and Findings
 
-尚未深读 PDF，指标、数据集和定量结果需要人工核验。
+自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
 
 ## Personal Notes
 
-检索命中关键词：event data; event-based vision; event-based camera; event-based
-detection。自动分类理由：Official abstract/page confirms event-camera/DVS/event-stream evidence; no
-clear SNN evidence.。
+严格两阶段复扫：标题宽召回命中 `event-based cameras`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

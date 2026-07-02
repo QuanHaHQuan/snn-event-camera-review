@@ -1,6 +1,6 @@
 ---
 title: "Delay-DSGN: A Dynamic Spiking Graph Neural Network with Delay Mechanisms for Evolving Graph"
-authors: ["Zhiqiang Wang", "Jianghao Wen", "Jianqing Liang"]
+authors: ["Zhiqiang Wang, Jianghao Wen, Jianqing Liang"]
 conference: "ICML"
 year: 2025
 level: "C"
@@ -26,4 +26,4 @@ However, existing SNN-based methods often fail to effectively capture the impact
 
 ## Personal Notes
 
-检索命中关键词：spiking。自动分类理由：Official abstract/page confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.。该卡片为草稿笔记，引用前必须核对官方论文。
+严格两阶段复扫：标题宽召回命中 `spiking neural networks; snns`，官方摘要/页面证据为 `Official abstract/page strictly confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

@@ -338,7 +338,7 @@ This search should focus only on one or both of the following core areas:
 1. Event cameras / DVS / visual event sensors.
 2. Spiking neural networks / spike-based neural computation.
 
-Do not broaden A/B/C inclusion to general event-based vision, event-driven algorithms, asynchronous processing, low-latency vision, temporal modeling, neuromorphic computing, efficient vision, or spike cameras unless the official abstract/page explicitly confirms event cameras/DVS/visual event streams/event-camera data or SNN/spiking neural networks.
+Do not broaden A/B/C inclusion to general event-based vision, event-driven algorithms, asynchronous processing, low-latency vision, temporal modeling, neuromorphic computing, efficient vision, temporal point processes, biological spikes, or spike cameras unless the official abstract/page explicitly confirms event cameras/DVS/visual event sensors/event-camera data or SNN/spiking neural networks.
 
 Candidate retrieval strategy:
 
@@ -411,7 +411,16 @@ Broad recall title keywords:
 * spike camera
 
 Important:
-All title keywords are retrieval triggers, not classification evidence. Because `event`, `event-based`, `spike`, and `spiking` are broad base terms, they will retrieve many false positives. A paper can be classified as A/B/C only after its official abstract or official page explicitly confirms event-camera/DVS/visual-event-stream/event-camera-dataset data or SNN/spiking neural computation. Broad umbrella topics such as event-based vision, neuromorphic vision/computing, asynchronous processing, event-driven methods, low-latency vision, or spike cameras are not enough by themselves. Otherwise the paper should remain D/E or be listed as an unpromoted title-candidate finding in the report.
+All title keywords are retrieval triggers, not classification evidence. Because `event`, `event-based`, `spike`, and `spiking` are broad base terms, they will retrieve many false positives. A paper can be classified as A/B/C only after its official abstract or official page explicitly confirms event-camera/DVS/visual-event-sensor/event-camera-dataset data or SNN/spiking neural computation.
+
+Second-stage evidence must be strict:
+
+* `event stream`, `event data`, and `event-based vision` count as event-camera evidence only when the official abstract/page ties them to event cameras, DVS, visual event sensors, address-event representation, asynchronous brightness-change sensing, an event-camera dataset, or a clearly visual event-stream task such as RGB-Event/frame-event/image-event fusion, event-to-video reconstruction, event-based deblurring, event-based stereo, event-based optical flow, event-based object detection, or event-based action recognition.
+* Generic event sequences, event logs, event-triggered control, time-to-event data, temporal point processes, event-level video understanding, and ordinary asynchronous algorithms do not count as event-camera evidence.
+* `spike` and `spiking` count as SNN evidence only when they refer to spiking neural networks, spiking neurons, LIF/IF models, ANN-to-SNN conversion, surrogate gradients, spiking transformers, or comparable spike-based neural computation.
+* Biological spikes, spike sorting, spike cameras, and generic neuromorphic language are not sufficient for SNN evidence by themselves.
+
+Otherwise the paper should remain D/E or be listed as an unpromoted title-candidate finding in the report.
 
 Task labels:
 Use these only to label already retrieved candidates. Do not use these as retrieval keywords:
@@ -562,6 +571,10 @@ Special handling:
 * "Spike camera" papers should not automatically be treated as event-camera/DVS papers. Mark them as D unless they explicitly involve event cameras/DVS or SNNs.
 * "Event-driven" in SNN papers should not count as event-camera evidence unless the paper explicitly mentions event cameras, visual event streams, DVS, dynamic vision sensors, or event-camera data.
 * "Event-based vision" should be treated as B only when the official abstract/page clearly uses event-camera/DVS/visual-event-stream data or event-camera datasets.
+* `Event stream`, `event data`, and `event-based vision` count as event-camera evidence only when tied to event cameras, DVS, visual event sensors, address-event representation, asynchronous brightness-change sensing, event-camera datasets, or clearly visual event-stream tasks such as RGB-Event/frame-event/image-event fusion, event-to-video reconstruction, event-based deblurring, event-based stereo, event-based optical flow, event-based object detection, or event-based action recognition.
+* Generic event sequences, event logs, event-triggered control, time-to-event data, temporal point processes, event-level video understanding, and ordinary asynchronous algorithms are D/E unless event-camera/DVS evidence is explicit.
+* `Spike` and `spiking` count as SNN evidence only when tied to spiking neural networks, spiking neurons, LIF/IF models, ANN-to-SNN conversion, surrogate gradients, spiking transformers, or comparable spike-based neural computation.
+* Biological spikes, spike sorting, spike cameras, and generic neuromorphic language are not sufficient for SNN evidence by themselves.
 * Broad umbrella terms such as event-based vision, neuromorphic vision/computing, asynchronous, event-driven, low latency, spike, spiking, and spike camera are not sufficient for A/B/C evidence by themselves.
 * Title keywords alone are not sufficient for A/B/C promotion without official abstract/page confirmation.
 * B and C are equal background categories; do not rank B above C by default.

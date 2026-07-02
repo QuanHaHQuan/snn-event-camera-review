@@ -11,22 +11,19 @@ tags: []
 abstract: "This paper addresses the challenges of estimating a continuous-time field from a stream of events. Existing Human Mesh Recovery (HMR) methods rely predominantly on frame-based approaches, which are prone to aliasing and inaccuracies due to limited temporal resolution and motion blur. In this work, we predict a continuous-time human motion field from events caused by human motion. Prior state-of-the-art methods rely on computationally intensive optimization across a fixed number of poses at high frame rates, which becomes prohibitively expensive as we increase the temporal resolution. In comparison, our model leverages a recurrent feed-forward neural network to predict human motion in the latent space of possible human motions. We present the first work that replaces traditional event volume-based discrete-time pre-dictions with a continuous human motion field represented as a time-implicit function, enabling parallel pose queries at arbitrary temporal resolutions. To advance the evaluation of continuous-time human pose estimation, we introduce the Beam-splitter Event Agile Human Motion Dataset--a hardware-synchronized high-speed human dataset tailored for this purpose. EvHuman improves joint errors by 23.8 % compared to previous event human methods, while reducing the computational time by 69%."
 status: "auto-generated; brief scan note"
 ---
+
 ## Core Problem
 
-This paper addresses the challenges of estimating a continuous-time field from a stream of
-events.
+This paper addresses the challenges of estimating a continuous-time field from a stream of events.
 
 ## Core Method
 
-Existing Human Mesh Recovery (HMR) methods rely predominantly on frame-based approaches,
-which are prone to aliasing and inaccuracies due to limited temporal resolution and motion
-blur.
+Existing Human Mesh Recovery (HMR) methods rely predominantly on frame-based approaches, which are prone to aliasing and inaccuracies due to limited temporal resolution and motion blur.
 
 ## Key Metrics and Findings
 
-尚未深读 PDF，指标、数据集和定量结果需要人工核验。
+自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
 
 ## Personal Notes
 
-检索命中关键词：event camera。自动分类理由：Official abstract/page confirms event-camera/DVS/event-stream
-evidence; no clear SNN evidence.。
+严格两阶段复扫：标题宽召回命中 `event cameras; event camera visual-event context; event cameras visual-event context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

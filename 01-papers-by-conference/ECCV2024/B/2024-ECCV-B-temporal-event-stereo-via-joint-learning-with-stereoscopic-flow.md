@@ -11,10 +11,10 @@ tags: []
 abstract: "Event cameras are dynamic vision sensors inspired by the biological retina, characterized by their high dynamic range, high temporal resolution, and low power consumption. These features make them capable of perceiving 3D environments even in extreme conditions. Event data is continuous across the time dimension, which allows a detailed description of each pixel's movements. To fully utilize the temporally dense and continuous nature of event cameras, we propose a novel temporal event stereo, a framework that continuously uses information from previous time steps. This is accomplished through the simultaneous training of an event stereo matching network alongside stereoscopic flow, a new concept that captures all pixel movements from stereo cameras. Since obtaining ground truth for optical flow during training is challenging, we propose a method that uses only disparity maps to train the stereoscopic flow. Ultimately, we enhance the performance of event-based stereo matching by temporally aggregating information using the flows. We have achieved state-of-the-art performance on the MVSEC and the DSEC dataset. Our method is computationally efficient as it stacks previous information in a cascading manner."
 status: "auto-generated; brief scan note"
 ---
+
 ## Core Problem
 
-Event cameras are dynamic vision sensors inspired by the biological retina, characterized by
-their high dynamic range, high temporal resolution, and low power consumption.
+Event cameras are dynamic vision sensors inspired by the biological retina, characterized by their high dynamic range, high temporal resolution, and low power consumption.
 
 ## Core Method
 
@@ -22,9 +22,8 @@ These features make them capable of perceiving 3D environments even in extreme c
 
 ## Key Metrics and Findings
 
-尚未深读 PDF，指标、数据集和定量结果需要人工核验。
+自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
 
 ## Personal Notes
 
-检索命中关键词：event camera; DVS; event data; event-based stereo。自动分类理由：Official abstract/page
-confirms event-camera/DVS/event-stream evidence; no clear SNN evidence.。
+严格两阶段复扫：标题宽召回命中 `event cameras; dynamic vision sensors; event camera visual-event context; event cameras visual-event context; dynamic vision sensor visual-event context; event-based stereo visual-event context; event-based with event-camera context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

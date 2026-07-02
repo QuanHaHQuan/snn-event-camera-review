@@ -1,6 +1,6 @@
 ---
 title: "EvFocus: Learning to Reconstruct Sharp Images from Out-of-Focus Event Streams"
-authors: ["Lin Zhu", "Xiantao Ma", "Xiao Wang", "Lizhi Wang", "Hua Huang"]
+authors: ["Lin Zhu, Xiantao Ma, Xiao Wang, Lizhi Wang, Hua Huang"]
 conference: "ICML"
 year: 2025
 level: "B"
@@ -26,4 +26,4 @@ These cameras offer substantial advantages over conventional cameras, including 
 
 ## Personal Notes
 
-检索命中关键词：event streams; event。自动分类理由：Official abstract/page confirms event-camera/DVS/visual-event-stream evidence; no clear SNN evidence found.。该卡片为草稿笔记，引用前必须核对官方论文。
+严格两阶段复扫：标题宽召回命中 `event cameras; brightness changes as asynchronous events; event camera visual-event context; event cameras visual-event context; brightness change visual-event context; event stream with event-camera context; event-based with event-camera context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

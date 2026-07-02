@@ -61,7 +61,11 @@ The mother list should come from the official proceedings whenever possible. Ext
 
 Candidate retrieval uses one broad, high-recall title keyword pool. The pool includes precise terms such as `event camera`, `DVS`, `event stream`, `spiking neural network`, and `SNN`, plus broad recall terms such as `event`, `event-based`, `spike`, and `spiking`.
 
-All title-retrieved candidates require official abstract or official-page inspection before A/B/C promotion. Title keywords are retrieval triggers, not classification evidence. A paper can be classified as A/B/C only after its abstract or official page explicitly confirms event-camera/DVS/visual-event-stream data or SNN/spiking neural computation. Broader umbrella topics such as event-based vision, neuromorphic vision/computing, asynchronous processing, event-driven methods, low-latency vision, or spike cameras are not enough by themselves. Otherwise the paper should be marked D or E, or listed as an unpromoted title-candidate finding in the report.
+All title-retrieved candidates require official abstract or official-page inspection before A/B/C promotion. Title keywords are retrieval triggers, not classification evidence. A paper can be classified as A/B/C only after its abstract or official page explicitly confirms event-camera/DVS/visual-event-sensor data or SNN/spiking neural computation.
+
+The second stage is intentionally strict. `event stream`, `event data`, and `event-based vision` count as event-camera evidence only when the official abstract/page ties them to event cameras, DVS, visual event sensors, address-event representation, asynchronous brightness-change sensing, an event-camera dataset, or a clearly visual event-stream task such as RGB-Event/frame-event/image-event fusion, event-to-video reconstruction, event-based deblurring, event-based stereo, event-based optical flow, event-based object detection, or event-based action recognition. Generic event sequences, event logs, event-triggered control, time-to-event data, or temporal point processes do not count. Likewise, `spike` and `spiking` count as SNN evidence only when they refer to spiking neural networks, spiking neurons, LIF/IF models, ANN-to-SNN conversion, surrogate gradients, spiking transformers, or comparable spike-based neural computation. Biological spikes, spike sorting, spike cameras, and generic neuromorphic language are not enough by themselves.
+
+Otherwise the paper should be marked D or E, or listed as an unpromoted title-candidate finding in the report.
 
 ## Paper Cards
 

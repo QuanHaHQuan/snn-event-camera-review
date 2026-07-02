@@ -11,22 +11,19 @@ tags: []
 abstract: "We present EventUPS, the first uncalibrated photometric stereo (UPS) method using an event camera--a neuromorphic sensor that asynchronously detects brightness changes with microsecond resolution. Traditional frame-based UPS methods are hindered by high bandwidth demands and limited use in dynamic scenes. These methods require dense image correspondence under varying illumination and are incompatible with the fundamentally different sensing paradigm of event data. Our approach introduces three key innovations: an augmented null space formulation that directly relates each event to joint constraints on surface normals and lighting, naturally handling ambient illumination; a continuous parameterization of time-varying illumination that connects asynchronous events to synchronized lighting estimation; and a lighting fixture with known relative geometry that reduces ambiguity to a convex-concave uncertainty. We validate EventUPS using a custom-built LED lighting system. Experimental results show that our method achieves accuracy surpassing its frame-based counterpart while requiring only 5% of the data bandwidth."
 status: "auto-generated; brief scan note"
 ---
+
 ## Core Problem
 
-We present EventUPS, the first uncalibrated photometric stereo (UPS) method using an event
-camera--a neuromorphic sensor that asynchronously detects brightness changes with
-microsecond resolution.
+We present EventUPS, the first uncalibrated photometric stereo (UPS) method using an event camera--a neuromorphic sensor that asynchronously detects brightness changes with microsecond resolution.
 
 ## Core Method
 
-Traditional frame-based UPS methods are hindered by high bandwidth demands and limited use
-in dynamic scenes.
+Traditional frame-based UPS methods are hindered by high bandwidth demands and limited use in dynamic scenes.
 
 ## Key Metrics and Findings
 
-尚未深读 PDF，指标、数据集和定量结果需要人工核验。
+自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
 
 ## Personal Notes
 
-检索命中关键词：event camera; event data。自动分类理由：Official abstract/page confirms event-
-camera/DVS/event-stream evidence; no clear SNN evidence.。
+严格两阶段复扫：标题宽召回命中 `event cameras; event camera visual-event context; brightness change visual-event context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

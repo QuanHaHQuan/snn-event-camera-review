@@ -11,21 +11,19 @@ tags: []
 abstract: "Event cameras excel in high temporal resolution and dynamic range but suffer from dense noise in rainy conditions. Existing event deraining methods face trade-offs between temporal precision, deraining effectiveness, and computational efficiency. In this paper, we propose PRE-Mamba, a novel point-based event camera deraining framework that fully exploits the spatiotemporal characteristics of raw event and rain. Our framework introduces a 4D event cloud representation that integrates dual temporal scales to preserve high temporal precision, a Spatio-Temporal Decoupling and Fusion module (STDF) that enhances deraining capability by enabling shallow decoupling and interaction of temporal and spatial information, and a Multi-Scale State Space Model (MS3M) that captures deeper rain dynamics across dual-temporal and multi-spatial scales with linear computational complexity. Enhanced by frequency-domain regularization, PRE-Mamba achieves superior performance (0.95 SR, 0.91 NR, and 0.4s/M events) with only 0.26M parameters on EventRain-27K, a comprehensive dataset with labeled synthetic and real-world sequences. Moreover, our method generalizes well across varying rain intensities, viewpoints, and even snowy conditions. Code and dataset: https://github.com/softword-tt/PRE-Mamba."
 status: "auto-generated; brief scan note"
 ---
+
 ## Core Problem
 
-Event cameras excel in high temporal resolution and dynamic range but suffer from dense
-noise in rainy conditions.
+Event cameras excel in high temporal resolution and dynamic range but suffer from dense noise in rainy conditions.
 
 ## Core Method
 
-Existing event deraining methods face trade-offs between temporal precision, deraining
-effectiveness, and computational efficiency.
+Existing event deraining methods face trade-offs between temporal precision, deraining effectiveness, and computational efficiency.
 
 ## Key Metrics and Findings
 
-尚未深读 PDF，指标、数据集和定量结果需要人工核验。
+自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
 
 ## Personal Notes
 
-检索命中关键词：event camera。自动分类理由：Official abstract/page confirms event-camera/DVS/event-stream
-evidence; no clear SNN evidence.。
+严格两阶段复扫：标题宽召回命中 `event cameras; event camera visual-event context; event cameras visual-event context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

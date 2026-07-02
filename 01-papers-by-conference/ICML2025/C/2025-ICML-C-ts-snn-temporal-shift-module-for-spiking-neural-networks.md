@@ -1,6 +1,6 @@
 ---
 title: "TS-SNN: Temporal Shift Module for Spiking Neural Networks"
-authors: ["Kairong Yu", "Tianqing Zhang", "Qi Xu", "Gang Pan", "Hongwei Wang"]
+authors: ["Kairong Yu, Tianqing Zhang, Qi Xu, Gang Pan, Hongwei Wang"]
 conference: "ICML"
 year: 2025
 level: "C"
@@ -26,4 +26,4 @@ SNNs inherently process temporal information by leveraging the precise timing of
 
 ## Personal Notes
 
-检索命中关键词：spiking neural networks; snn; spiking。自动分类理由：Official abstract/page confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.。该卡片为草稿笔记，引用前必须核对官方论文。
+严格两阶段复扫：标题宽召回命中 `spiking neural networks; snns`，官方摘要/页面证据为 `Official abstract/page strictly confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

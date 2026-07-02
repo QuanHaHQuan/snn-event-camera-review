@@ -1,6 +1,6 @@
 ---
 title: "When Every Millisecond Counts: Real-Time Anomaly Detection via the Multimodal Asynchronous Hybrid Network"
-authors: ["Dong Xiao", "Guangyao Chen", "Peixi Peng", "Yangru Huang", "Yifan Zhao", "Yongxing Dai", "Yonghong Tian"]
+authors: ["Dong Xiao, Guangyao Chen, Peixi Peng, Yangru Huang, Yifan Zhao, Yongxing Dai, Yonghong Tian"]
 conference: "ICML"
 year: 2025
 level: "B"
@@ -26,4 +26,4 @@ Current methods often focus on detection accuracy but neglect response time, whi
 
 ## Personal Notes
 
-检索命中关键词：asynchronous。自动分类理由：Official abstract/page confirms event-camera/DVS/visual-event-stream evidence; no clear SNN evidence found.。该卡片为草稿笔记，引用前必须核对官方论文。
+严格两阶段复扫：标题宽召回命中 `event cameras; event camera visual-event context; event cameras visual-event context; event stream with event-camera context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

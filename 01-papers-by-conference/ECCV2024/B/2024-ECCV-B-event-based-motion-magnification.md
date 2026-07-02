@@ -11,10 +11,10 @@ tags: []
 abstract: "Detecting and magnifying imperceptible high-frequency motions in real-world scenarios has substantial implications for industrial and medical applications. These motions are characterized by small amplitudes and high frequencies. Traditional motion magnification methods rely on costly high-speed cameras or active light sources, which limit the scope of their applications. In this work, we propose a dual-camera system consisting of an event camera and a conventional RGB camera for video motion magnification, providing temporally-dense information from the event stream and spatially-dense data from the RGB images. This innovative combination enables a broad and cost-effective amplification of high-frequency motions. By revisiting the physical camera model, we observe that estimating motion direction and magnitude necessitates the integration of event streams with additional image features. On this basis, we propose a novel deep network tailored for event-based motion magnification. Our approach utilizes the Second-order Recurrent Propagation module to proficiently interpolate multiple frames while addressing artifacts and distortions induced by magnified motions. Additionally, we employ a temporal filter to distinguish between noise and useful signals, thus minimizing the impact of noise. We also introduced the first event-based motion magnification dataset, which includes a synthetic subset and a real-captured subset for training and benchmarking. Through extensive experiments in magnifying small-amplitude, high-frequency motions, we demonstrate the effectiveness and accuracy of our dual-camera system and network, offering a cost-effective and flexible solution for motion detection and magnification. Both the code and dataset will be released upon publication."
 status: "auto-generated; brief scan note"
 ---
+
 ## Core Problem
 
-Detecting and magnifying imperceptible high-frequency motions in real-world scenarios has
-substantial implications for industrial and medical applications.
+Detecting and magnifying imperceptible high-frequency motions in real-world scenarios has substantial implications for industrial and medical applications.
 
 ## Core Method
 
@@ -22,9 +22,8 @@ These motions are characterized by small amplitudes and high frequencies.
 
 ## Key Metrics and Findings
 
-尚未深读 PDF，指标、数据集和定量结果需要人工核验。
+自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
 
 ## Personal Notes
 
-检索命中关键词：event camera; event stream; event-based motion。自动分类理由：Official abstract/page
-confirms event-camera/DVS/event-stream evidence; no clear SNN evidence.。
+严格两阶段复扫：标题宽召回命中 `event cameras; event camera visual-event context; event-based motion visual-event context; event stream with event-camera context; event-based with event-camera context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

@@ -1,6 +1,6 @@
 ---
 title: "SpikeVideoFormer: An Efficient Spike-Driven Video Transformer with Hamming Attention and $\\mathcalO(T)$ Complexity"
-authors: ["Shihao Zou", "Qingfeng Li", "Wei Ji", "Jingjing Li", "Yongkui Yang", "Guoqi Li", "Chao Dong"]
+authors: ["Shihao Zou, Qingfeng Li, Wei Ji, Jingjing Li, Yongkui Yang, Guoqi Li, Chao Dong"]
 conference: "ICML"
 year: 2025
 level: "C"
@@ -26,4 +26,4 @@ However, existing SNN-based Transformers primarily focus on single-image tasks, 
 
 ## Personal Notes
 
-检索命中关键词：spike。自动分类理由：Official abstract/page confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.。该卡片为草稿笔记，引用前必须核对官方论文。
+严格两阶段复扫：标题宽召回命中 `spiking neural networks; snns; spike-driven`，官方摘要/页面证据为 `Official abstract/page strictly confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

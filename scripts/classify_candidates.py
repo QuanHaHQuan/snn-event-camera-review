@@ -57,14 +57,72 @@ CORE_SNN_KEYWORDS = [
     "spike-based neural networks",
 ]
 
-EVENT_EVIDENCE_KEYWORDS = CORE_EVENT_KEYWORDS + [
-    "visual event stream",
-    "visual event streams",
-    "event-camera dataset",
-    "event-camera datasets",
-    "event-camera data",
-    "event camera data",
-    "event-based camera data",
+EVENT_EVIDENCE_PATTERNS = [
+    r"\bevent cameras?\b",
+    r"\bevent-camera\b",
+    r"\bevent based cameras?\b",
+    r"\bevent-based cameras?\b",
+    r"\bdynamic vision sensors?\b",
+    r"\bdvs\b",
+    r"\bcifar10-dvs\b",
+    r"\bn-caltech\b",
+    r"\bn-mnist\b",
+    r"\bvisual event sensors?\b",
+    r"\bvisual event streams?\b",
+    r"\bevent camera data\b",
+    r"\bevent-camera data\b",
+    r"\bevent-camera datasets?\b",
+    r"\baddress-event\b",
+    r"\basynchronous brightness changes?\b",
+    r"\bbrightness changes? as asynchronous events?\b",
+]
+
+EVENT_STREAM_CONTEXT_TERMS = [
+    "event camera",
+    "event cameras",
+    "event-camera",
+    "dynamic vision sensor",
+    "dvs",
+    "address-event",
+    "brightness change",
+    "asynchronous brightness",
+    "rgb-event",
+    "event-rgb",
+    "frame-event",
+    "event-frame",
+    "image-event",
+    "event-image",
+    "event-to-video",
+    "events-to-video",
+    "event voxel",
+    "event voxels",
+    "event flow",
+    "raw events",
+    "pure event streams",
+    "neuromorphic event streams",
+    "event-based video",
+    "event-based image",
+    "event-based object",
+    "event-based action",
+    "event-based stereo",
+    "event-based optical",
+    "event-based motion",
+    "event-based deblurring",
+    "event-based reconstruction",
+    "event-based synthetic aperture",
+    "event-guided video",
+    "event-guided hdr",
+    "event dataset",
+    "event datasets",
+]
+
+EVENT_BASED_VISION_CONTEXT_TERMS = [
+    "event camera",
+    "event cameras",
+    "event-camera",
+    "dynamic vision sensor",
+    "dvs",
+    "address-event",
 ]
 
 SNN_EVIDENCE_KEYWORDS = CORE_SNN_KEYWORDS + [
@@ -72,6 +130,7 @@ SNN_EVIDENCE_KEYWORDS = CORE_SNN_KEYWORDS + [
     "SNN inference",
     "IF neuron",
     "IF neurons",
+    "spike-driven",
 ]
 
 AUXILIARY_KEYWORDS = [
@@ -151,6 +210,40 @@ def matched_keywords(text: str, keywords: list[str]) -> list[str]:
     return [keyword for keyword in keywords if keyword_pattern(keyword).search(text)]
 
 
+def has_event_camera_evidence(text: str) -> tuple[bool, list[str]]:
+    lower_text = text.lower()
+    evidence = [
+        pattern.strip(r"\b").replace(r"\?", "")
+        for pattern in EVENT_EVIDENCE_PATTERNS
+        if re.search(pattern, lower_text, re.IGNORECASE)
+    ]
+    for term in EVENT_STREAM_CONTEXT_TERMS:
+        if term in lower_text:
+            evidence.append(f"{term} visual-event context")
+    if "event stream" in lower_text or "event streams" in lower_text:
+        if any(term in lower_text for term in EVENT_STREAM_CONTEXT_TERMS):
+            evidence.append("event stream with event-camera context")
+    if "event-based vision" in lower_text or "event based vision" in lower_text:
+        if any(term in lower_text for term in EVENT_BASED_VISION_CONTEXT_TERMS):
+            evidence.append("event-based vision with event-camera context")
+    return bool(evidence), list(dict.fromkeys(evidence))
+
+
+def has_snn_evidence(text: str) -> tuple[bool, list[str]]:
+    evidence = matched_keywords(text, SNN_EVIDENCE_KEYWORDS)
+    lower_text = text.lower()
+    generic_biological_context = any(
+        term in lower_text
+        for term in ("spike sorting", "electrophysiology", "calcium imaging", "spike-informed lfp")
+    )
+    if generic_biological_context and not any(
+        term in lower_text
+        for term in ("spiking neural network", "spiking neural networks", "snn", "snns", "spiking transformer")
+    ):
+        return False, []
+    return bool(evidence), evidence
+
+
 def searchable_text(row: dict[str, str]) -> str:
     fields = [
         row.get("title", ""),
@@ -178,27 +271,27 @@ def title_retrieval(row: dict[str, str]) -> tuple[list[str], str, str]:
 
 def classify(row: dict[str, str]) -> tuple[str, list[str], str, str]:
     text = searchable_text(row)
-    event_matches = matched_keywords(text, EVENT_EVIDENCE_KEYWORDS)
-    snn_matches = matched_keywords(text, SNN_EVIDENCE_KEYWORDS)
+    has_event, event_matches = has_event_camera_evidence(text)
+    has_snn, snn_matches = has_snn_evidence(text)
     auxiliary_matches = matched_keywords(text, AUXILIARY_KEYWORDS)
     matched = event_matches + snn_matches + auxiliary_matches
 
     lower_text = text.lower()
     has_spike_camera = "spike camera" in lower_text or "spike cameras" in lower_text
-    if has_spike_camera and not event_matches and not snn_matches:
+    if has_spike_camera and not has_event and not has_snn:
         return "D", ["spike camera"], "Ambiguous", "Spike camera mention without explicit event-camera/DVS or SNN evidence"
 
     axes: list[str] = []
-    if event_matches:
+    if has_event:
         axes.append("event_camera")
-    if snn_matches:
+    if has_snn:
         axes.append("snn")
 
-    if event_matches and snn_matches:
+    if has_event and has_snn:
         return "A", matched, "Both axes", "Official abstract/page confirms both event-camera/DVS/visual-event-stream data and SNN/spiking neural computation"
-    if event_matches:
+    if has_event:
         return "B", matched, "Event Camera axis", "Official abstract/page confirms event-camera/DVS/visual-event-stream data; no clear SNN evidence found"
-    if snn_matches:
+    if has_snn:
         return "C", matched, "SNN axis", "Official abstract/page confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found"
     if auxiliary_matches:
         return "D", matched, "Ambiguous", "Auxiliary keyword match without clear event-camera/DVS or SNN evidence"

@@ -11,10 +11,10 @@ tags: []
 abstract: "3D Gaussian Splatting (3D-GS) has demonstrated exceptional capabilities in synthesizing novel views of 3D scenes. However, its training is heavily reliant on high-quality images and precise camera poses. Meeting these criteria can be challenging in non-ideal real-world conditions, where motion-blurred images frequently occur due to high-speed camera movements.To address these challenges, we introduce Event Stream Assisted Gaussian Splatting (EvaGaussians), a novel approach that harnesses event streams captured by event cameras to facilitate the learning of high-quality 3D-GS from motion-blurred images. Capitalizing on the high temporal resolution and dynamic range offered by event streams, we seamlessly integrate them into the initialization and optimization of 3D-GS, thereby enhancing the acquisition of high-fidelity novel views with intricate texture details. We also contribute two novel datasets comprising RGB frames, event streams, and corresponding camera parameters, featuring a wide variety of scenes and various camera motions. The comparison results reveal that our approach not only excels in generating high-fidelity novel views, but also offers improved training and inference efficiency. Video and code are available at the project page."
 status: "auto-generated; brief scan note"
 ---
+
 ## Core Problem
 
-3D Gaussian Splatting (3D-GS) has demonstrated exceptional capabilities in synthesizing
-novel views of 3D scenes.
+3D Gaussian Splatting (3D-GS) has demonstrated exceptional capabilities in synthesizing novel views of 3D scenes.
 
 ## Core Method
 
@@ -22,9 +22,8 @@ However, its training is heavily reliant on high-quality images and precise came
 
 ## Key Metrics and Findings
 
-尚未深读 PDF，指标、数据集和定量结果需要人工核验。
+自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
 
 ## Personal Notes
 
-检索命中关键词：event camera; event stream。自动分类理由：Official abstract/page confirms event-
-camera/DVS/event-stream evidence; no clear SNN evidence.。
+严格两阶段复扫：标题宽召回命中 `event cameras; event camera visual-event context; event cameras visual-event context; event stream with event-camera context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

@@ -1,6 +1,6 @@
 ---
 title: "Self-cross Feature based Spiking Neural Networks for Efficient Few-shot Learning"
-authors: ["Qi Xu", "Junyang Zhu", "Dongdong Zhou", "Hao Chen", "Yang Liu", "Jiangrong Shen", "Qiang Zhang"]
+authors: ["Qi Xu, Junyang Zhu, Dongdong Zhou, Hao Chen, Yang Liu, Jiangrong Shen, Qiang Zhang"]
 conference: "ICML"
 year: 2025
 level: "C"
@@ -26,4 +26,4 @@ However, DNNs are computationally expensive with scalability issues in real worl
 
 ## Personal Notes
 
-检索命中关键词：spiking neural networks; spiking。自动分类理由：Official abstract/page confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.。该卡片为草稿笔记，引用前必须核对官方论文。
+严格两阶段复扫：标题宽召回命中 `spiking neural networks; snns; spike trains`，官方摘要/页面证据为 `Official abstract/page strictly confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

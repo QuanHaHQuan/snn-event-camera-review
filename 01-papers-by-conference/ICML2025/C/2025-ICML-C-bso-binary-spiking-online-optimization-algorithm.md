@@ -1,6 +1,6 @@
 ---
 title: "BSO: Binary Spiking Online Optimization Algorithm"
-authors: ["Yu Liang", "Yu Yang", "Wenjie Wei", "Ammar Belatreche", "Shuai Wang", "Malu Zhang", "Yang Yang"]
+authors: ["Yu Liang, Yu Yang, Wenjie Wei, Ammar Belatreche, Shuai Wang, Malu Zhang, Yang Yang"]
 conference: "ICML"
 year: 2025
 level: "C"
@@ -26,4 +26,4 @@ However, their training algorithms often require substantial memory overhead due
 
 ## Personal Notes
 
-检索命中关键词：spiking。自动分类理由：Official abstract/page confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.。该卡片为草稿笔记，引用前必须核对官方论文。
+严格两阶段复扫：标题宽召回命中 `spiking neural networks`，官方摘要/页面证据为 `Official abstract/page strictly confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

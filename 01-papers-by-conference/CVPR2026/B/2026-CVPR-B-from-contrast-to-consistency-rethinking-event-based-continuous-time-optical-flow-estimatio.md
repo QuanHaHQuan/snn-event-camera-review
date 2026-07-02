@@ -11,22 +11,19 @@ tags: []
 abstract: "Estimating continuous optical flow is a fundamental yet challenging problem in dynamic visual perception. Event-based cameras, with microsecond latency and high dynamic range, capture brightness changes asynchronously, offering a unique opportunity to model motion with fine temporal precision. However, the scarcity of temporally dense ground-truth annotations limits the effectiveness of supervised learning, while contrast maximization (CM) frameworks, focused on sharpening the Image of Warped Events (IWE), often neglect temporal continuity and structural coherence, leading to distorted trajectories under complex motion.To overcome these challenges, we propose a hybrid-supervised framework for continuous-time optical flow estimation, grounded in the principle of Spatio-temporal Structural Consistency (STSC). This paradigm jointly enforces local structural stability and trajectory continuity, ensuring physically coherent motion across time. To further enhance representation and robustness, we design a bidirectionally complementary multi-scale architecture and employ a curriculum-guided hybrid training strategy, enabling a smooth transition from supervised point constraints to self-supervised manifold regularization.Comprehensive experiments across multiple benchmarks show that our method achieves state-of-the-art performance in both continuous-time and standard optical flow estimation, demonstrating the effectiveness of the proposed learning paradigm."
 status: "auto-generated; brief scan note"
 ---
+
 ## Core Problem
 
-Estimating continuous optical flow is a fundamental yet challenging problem in dynamic
-visual perception.
+Estimating continuous optical flow is a fundamental yet challenging problem in dynamic visual perception.
 
 ## Core Method
 
-Event-based cameras, with microsecond latency and high dynamic range, capture brightness
-changes asynchronously, offering a unique opportunity to model motion with fine temporal
-precision.
+Event-based cameras, with microsecond latency and high dynamic range, capture brightness changes asynchronously, offering a unique opportunity to model motion with fine temporal precision.
 
 ## Key Metrics and Findings
 
-尚未深读 PDF，指标、数据集和定量结果需要人工核验。
+自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
 
 ## Personal Notes
 
-检索命中关键词：event-based camera。自动分类理由：Official abstract/page confirms event-camera/DVS/event-
-stream evidence; no clear SNN evidence.。
+严格两阶段复扫：标题宽召回命中 `event-based cameras; brightness change visual-event context; event-based with event-camera context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

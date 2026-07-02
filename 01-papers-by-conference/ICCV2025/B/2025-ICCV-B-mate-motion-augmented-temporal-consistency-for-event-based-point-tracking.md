@@ -11,21 +11,19 @@ tags: []
 abstract: "Tracking Any Point (TAP) plays a crucial role in motion analysis. Video-based approaches rely on iterative local matching for tracking, but they assume linear motion during the blind time between frames, which leads to point loss under large displacements or nonlinear motion. The high temporal resolution and motion blur-free characteristics of event cameras provide continuous, fine-grained motion information, capturing subtle variations with microsecond precision. This paper presents an event-based framework for tracking any point, which tackles the challenges posed by spatial sparsity and motion sensitivity in events through two tailored modules. Specifically, to resolve ambiguities caused by event sparsity, a motion-guidance module incorporates kinematic vectors into the local matching process. Additionally, a variable motion aware module is integrated to ensure temporally consistent responses that are insensitive to varying velocities, thereby enhancing matching precision.To validate the effectiveness of the approach, two event dataset for tracking any point is constructed by simulation. The method improves the Survival_ 50 metric by 17.9% over event-only tracking of any point baseline. Moreover, on standard feature tracking benchmarks, it outperforms all existing methods, even those that combine events and video frames."
 status: "auto-generated; brief scan note"
 ---
+
 ## Core Problem
 
 Tracking Any Point (TAP) plays a crucial role in motion analysis.
 
 ## Core Method
 
-Video-based approaches rely on iterative local matching for tracking, but they assume linear
-motion during the blind time between frames, which leads to point loss under large
-displacements or nonlinear motion.
+Video-based approaches rely on iterative local matching for tracking, but they assume linear motion during the blind time between frames, which leads to point loss under large displacements or nonlinear motion.
 
 ## Key Metrics and Findings
 
-尚未深读 PDF，指标、数据集和定量结果需要人工核验。
+自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
 
 ## Personal Notes
 
-检索命中关键词：event camera; event data。自动分类理由：Official abstract/page confirms event-
-camera/DVS/event-stream evidence; no clear SNN evidence.。
+严格两阶段复扫：标题宽召回命中 `event cameras; event camera visual-event context; event cameras visual-event context; event dataset visual-event context; event-based with event-camera context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

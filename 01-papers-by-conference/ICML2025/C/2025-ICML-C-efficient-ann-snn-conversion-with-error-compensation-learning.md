@@ -1,6 +1,6 @@
 ---
 title: "Efficient ANN-SNN Conversion with Error Compensation Learning"
-authors: ["Chang Liu", "Jiangrong Shen", "Xuming Ran", "Mingkun Xu", "Qi Xu", "Yi Xu", "Gang Pan"]
+authors: ["Chang Liu, Jiangrong Shen, Xuming Ran, Mingkun Xu, Qi Xu, Yi Xu, Gang Pan"]
 conference: "ICML"
 year: 2025
 level: "C"
@@ -26,4 +26,4 @@ Spiking neural networks (SNNs) operate through discrete spike events and offer s
 
 ## Personal Notes
 
-检索命中关键词：snn。自动分类理由：Official abstract/page confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.。该卡片为草稿笔记，引用前必须核对官方论文。
+严格两阶段复扫：标题宽召回命中 `spiking neural networks; snns; ann-to-snn`，官方摘要/页面证据为 `Official abstract/page strictly confirms SNN/spiking neural computation; no clear event-camera/DVS evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。

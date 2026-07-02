@@ -11,21 +11,19 @@ tags: []
 abstract: "Event cameras are emerging vision sensors whose noise is challenging to characterize. Existing denoising methods for event cameras are often designed in isolation and thus consider other tasks, such as motion estimation, separately (i.e., sequentially after denoising). However, motion is an intrinsic part of event data, since scene edges cannot be sensed without motion. We propose, to the best of our knowledge, the first method that simultaneously estimates motion in its various forms (e.g., ego-motion, optical flow) and noise. The method is flexible, as it allows replacing the one-step motion estimation of the widely-used Contrast Maximization framework with any other motion estimator, such as deep neural networks. The experiments show that the proposed method achieves state-of-the-art results on the E-MLB denoising benchmark and competitive results on the DND21 benchmark, while demonstrating effectiveness across motion estimation and intensity reconstruction tasks. Our approach advances event-data denoising theory and expands practical denoising use-cases via open-source code. Project page: https://github.com/tub-rip/ESMD"
 status: "auto-generated; brief scan note"
 ---
+
 ## Core Problem
 
 Event cameras are emerging vision sensors whose noise is challenging to characterize.
 
 ## Core Method
 
-Existing denoising methods for event cameras are often designed in isolation and thus
-consider other tasks, such as motion estimation, separately (i.e., sequentially after
-denoising).
+Existing denoising methods for event cameras are often designed in isolation and thus consider other tasks, such as motion estimation, separately (i.e., sequentially after denoising).
 
 ## Key Metrics and Findings
 
-尚未深读 PDF，指标、数据集和定量结果需要人工核验。
+自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
 
 ## Personal Notes
 
-检索命中关键词：event camera; event data。自动分类理由：Official abstract/page confirms event-
-camera/DVS/event-stream evidence; no clear SNN evidence.。
+严格两阶段复扫：标题宽召回命中 `event cameras; event camera visual-event context; event cameras visual-event context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。
