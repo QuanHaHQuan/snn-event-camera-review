@@ -6,6 +6,25 @@ This document is the shareable, formal instruction set for initializing and usin
 
 The workflow is designed for venue-specific, auditable literature screening. It prioritizes official proceedings, preserves full venue mother lists before filtering, and uses high-recall title screening followed by strict official abstract/page confirmation.
 
+Current scope is intentionally narrow:
+
+* SNN / Spiking Neural Networks;
+* Event Camera / DVS / visual event streams;
+* SNN for Event Camera.
+
+Do not broaden the repository into generic event-based systems, event logs, event-triggered control, temporal point processes, general asynchronous systems, biological spike sorting, or broad neuromorphic computing without clear SNN or event-camera evidence.
+
+The current pre-enrollment reading strategy is maintained as a separate reading-plan layer:
+
+* `00-index/reading-plan-core.md` = `unique(P0 papers + advisor_track papers)`;
+* target size is about 60 papers;
+* if fewer than 60 genuinely strong papers are available, do not pad the list;
+* `P1` is optional reading;
+* `P2` is for automatic summaries;
+* `P3` is retained but inactive;
+* `advisor_track` is only for understanding the uploaded SECNet / ICML 2026 method chain and selected SECNet references;
+* do not encode or speculate about future TPAMI extension ideas.
+
 ## Part 1: Repository Initialization Instruction
 
 Use this instruction when creating a fresh review repository.
@@ -718,3 +737,29 @@ For future venue processing in this repository, use the high-recall title-screen
 4. Keep false positives and adjacent papers in `candidates.csv` and report them under "Title Candidates Not Promoted" or equivalent unpromoted-candidate sections.
 5. Never treat broad umbrella terms such as event-based vision, neuromorphic vision/computing, asynchronous, event-driven, low latency, spike, spiking, or spike camera as A/B/C evidence by themselves.
 6. Never treat "spike camera" as event-camera/DVS evidence by default.
+
+For the reading-plan layer, run:
+
+```bash
+python3 scripts/update_reading_plan.py
+```
+
+This script reads existing indexes, reviewed abstracts, cards, and the curated SECNet-reference subset. It generates:
+
+* `00-index/reading-plan-core.md`
+* `00-index/reading-plan-p1.md`
+* `00-index/auto-summary-p2.md`
+* `00-index/out-of-scope-x.md`
+* `00-index/advisor-track.md`
+* `00-index/uncertain-review.md`
+
+It does not replace conference search, candidate classification, paper-card generation, or `scripts/update_index.py`.
+
+Reading-plan refined levels:
+
+* `A`: true SNN x Event Camera core paper.
+* `B`: event-camera background.
+* `C`: SNN background.
+* `X`: out of scope / false positive.
+
+Important correction: a generic SNN paper that only evaluates on CIFAR10-DVS, N-MNIST, DVS-Gesture, N-Caltech101, or similar event-camera benchmark datasets is `C`, not `A`, unless the method itself is clearly designed for event-camera / visual-event-stream data.
