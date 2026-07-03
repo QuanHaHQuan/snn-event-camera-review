@@ -744,6 +744,14 @@ For the reading-plan layer, run:
 python3 scripts/update_reading_plan.py
 ```
 
+Manual overrides live in:
+
+```text
+00-index/reading-plan-overrides.yaml
+```
+
+When a new venue/year is added, do not edit generated reading-plan Markdown files by hand. First run the normal venue workflow and `scripts/update_index.py`; then, only if needed, add paper IDs to `advisor_track`, `p0_extra`, or `p1_extra` in the YAML file and rerun `scripts/update_reading_plan.py`.
+
 This script reads existing indexes, reviewed abstracts, cards, and the curated SECNet-reference subset. It generates:
 
 * `00-index/reading-plan-core.md`

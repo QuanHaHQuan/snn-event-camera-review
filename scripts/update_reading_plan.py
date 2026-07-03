@@ -47,128 +47,6 @@ READING_COLUMNS = [
     "uncertain",
 ]
 
-CURRENT_ADVISOR_IDS = {
-    "ICCV2025-1060",
-    "ICCV2025-1983",
-    "NeurIPS2025-5608",
-    "ICML2025-0323",
-    "NeurIPS2025-2692",
-    "NeurIPS2025-4086",
-    "CVPR2026-1228",
-    "CVPR2026-2918",
-    "CVPR2026-1312",
-    "ECCV2024-1631",
-    "ICCV2025-1879",
-    "ICCV2025-1798",
-    "ICLR2025-1232",
-    "NeurIPS2025-0641",
-    "ICML2025-2762",
-}
-
-P0_EXTRA_IDS = {
-    # A-level survey-core papers not necessarily in advisor_track.
-    "ECCV2024-1168",
-    "ECCV2024-1740",
-    "ECCV2024-1778",
-    "ICCV2025-1790",
-    "CVPR2026-1798",
-    "CVPR2026-1873",
-    "CVPR2026-3630",
-    "NeurIPS2025-4041",
-    # High-value event-camera representation/background papers.
-    "ICCV2025-0082",
-    "ICCV2025-1538",
-    "CVPR2026-0479",
-    "ECCV2024-1591",
-    "NeurIPS2025-4822",
-    "CVPR2026-3561",
-    "CVPR2026-2514",
-    "CVPR2026-1573",
-    "CVPR2026-0881",
-    "NeurIPS2025-2978",
-    "NeurIPS2025-2173",
-    # High-value SNN background papers.
-    "ICLR2025-0872",
-    "ICLR2025-0522",
-    "ICLR2025-2660",
-    "ICLR2025-3479",
-    "ICML2025-3117",
-    "ICML2025-3251",
-    "NeurIPS2025-3401",
-    "NeurIPS2025-3455",
-    "NeurIPS2025-5334",
-}
-
-P1_EXTRA_IDS = {
-    # Representative event-camera background to read only if time allows.
-    "ECCV2024-0732",
-    "ECCV2024-0945",
-    "ECCV2024-1083",
-    "ECCV2024-1102",
-    "ECCV2024-1328",
-    "ECCV2024-1636",
-    "ECCV2024-1737",
-    "ECCV2024-1884",
-    "ECCV2024-2251",
-    "ECCV2024-2318",
-    "ICCV2025-0953",
-    "ICCV2025-1066",
-    "ICCV2025-1773",
-    "ICCV2025-1940",
-    "ICCV2025-2463",
-    "ICCV2025-2618",
-    "ICLR2025-0595",
-    "NeurIPS2025-0035",
-    "NeurIPS2025-1018",
-    "NeurIPS2025-1126",
-    "NeurIPS2025-1159",
-    "NeurIPS2025-1835",
-    "NeurIPS2025-4192",
-    "NeurIPS2025-4786",
-    "CVPR2026-0298",
-    "CVPR2026-0516",
-    "CVPR2026-0912",
-    "CVPR2026-1239",
-    "CVPR2026-1824",
-    "CVPR2026-2084",
-    "CVPR2026-2308",
-    "CVPR2026-2511",
-    "CVPR2026-3465",
-    # Representative SNN background to read after the core set.
-    "ECCV2024-0537",
-    "ECCV2024-1361",
-    "ECCV2024-1484",
-    "ICCV2025-1096",
-    "ICLR2025-1551",
-    "ICLR2025-2158",
-    "ICML2025-0988",
-    "ICML2025-1579",
-    "ICML2025-1843",
-    "ICML2025-2813",
-    "ICML2025-2940",
-    "NeurIPS2025-1514",
-    "NeurIPS2025-2213",
-    "NeurIPS2025-3724",
-    "NeurIPS2025-5098",
-    "NeurIPS2025-5157",
-    "NeurIPS2025-5700",
-    "CVPR2026-0399",
-    "CVPR2026-2929",
-}
-
-FORCE_REFINED_C = {
-    # Generic SNN methods with event-camera datasets used as benchmarks only.
-    "ECCV2024-1484",
-    "ICLR2025-1232",
-    "ICLR2025-1551",
-    "ICLR2025-2158",
-    "ICML2025-2813",
-    "ICML2025-2940",
-    "NeurIPS2025-3724",
-    "NeurIPS2025-5098",
-    "NeurIPS2025-2213",
-}
-
 P3_TITLE_PATTERNS = [
     r"\bllm\b",
     r"large language model",
@@ -190,64 +68,76 @@ class SecnetReference:
     whether_in_current_corpus: str = "no"
 
 
-SECNET_REFERENCES = [
-    SecnetReference(
-        title="Rethinking Efficient and Effective Point-based Networks for Event Camera Classification and Regression",
-        authors="Hongwei Ren et al.",
-        year="2025",
-        venue="TPAMI",
-        why_read="Direct predecessor from the advisor group and the closest conceptual parent of SECNet.",
-        relation_to_secnet="Point-based event-camera classification/regression and EventMamba-style method chain.",
-    ),
-    SecnetReference(
-        title="SpikePoint: An Efficient Point-based Spiking Neural Network for Event Cameras Action Recognition",
-        authors="Hongwei Ren et al.",
-        year="2024",
-        venue="ICLR",
-        why_read="Advisor-group point-based SNN bridge between the survey topic and SECNet's event-cloud direction.",
-        relation_to_secnet="Point-based event-camera action recognition and SNN/event-camera intersection.",
-    ),
-    SecnetReference(
-        title="TTPOINT: A Tensorized Point Cloud Network for Lightweight Action Recognition with Event Cameras",
-        authors="Hongwei Ren et al.",
-        year="2023",
-        venue="ACM MM",
-        why_read="Advisor-group lightweight point/event representation baseline.",
-        relation_to_secnet="Tensorized point-cloud processing for event-camera action recognition.",
-    ),
-    SecnetReference(
-        title="Event Voxel Set Transformer for Spatiotemporal Representation Learning on Event Streams",
-        authors="B. Xie et al.",
-        year="2024",
-        venue="TCSVT",
-        why_read="Recent event-stream voxel/set-transformer baseline.",
-        relation_to_secnet="Voxel/set-transformer contrast against SECNet's Event Cloud representation.",
-    ),
-    SecnetReference(
-        title="Voxel-based Multi-Scale Transformer Network for Event Stream Processing",
-        authors="D. Liu, T. Wang, and C. Sun",
-        year="2023",
-        venue="TCSVT",
-        why_read="VMST-Net is a direct SECNet comparison target.",
-        relation_to_secnet="Voxel-based transformer baseline for event stream processing.",
-    ),
-    SecnetReference(
-        title="Action Recognition and Benchmark Using Event Cameras",
-        authors="Y. Gao et al.",
-        year="2023",
-        venue="TPAMI",
-        why_read="Important event-camera action-recognition benchmark context.",
-        relation_to_secnet="THUE-ACT-50 and recognition benchmark context used around SECNet.",
-    ),
-    SecnetReference(
-        title="Mamba: Linear-Time Sequence Modeling with Selective State Spaces",
-        authors="Albert Gu and Tri Dao",
-        year="2023",
-        venue="arXiv / core architecture",
-        why_read="Core sequence-modeling architecture behind Mamba-style event networks.",
-        relation_to_secnet="Background for state-space sequence modeling comparisons.",
-    ),
-]
+@dataclass(frozen=True)
+class ReadingOverrides:
+    advisor_ids: set[str]
+    p0_extra_ids: set[str]
+    p1_extra_ids: set[str]
+    force_refined_c_ids: set[str]
+    secnet_references: list[SecnetReference]
+
+
+def parse_scalar(value: str) -> str:
+    value = value.strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {'"', "'"}:
+        return value[1:-1]
+    return value
+
+
+def load_reading_overrides(path: Path) -> ReadingOverrides:
+    """Load the small project-owned YAML subset without adding a dependency."""
+    if not path.exists():
+        raise FileNotFoundError(f"Reading-plan overrides file not found: {path}")
+
+    list_sections = {
+        "advisor_track": [],
+        "p0_extra": [],
+        "p1_extra": [],
+        "force_refined_c": [],
+    }
+    references: list[dict[str, str]] = []
+    current_section = ""
+    current_reference: dict[str, str] | None = None
+
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.rstrip()
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        if not line.startswith(" ") and stripped.endswith(":"):
+            current_section = stripped[:-1]
+            current_reference = None
+            continue
+        if current_section in list_sections and stripped.startswith("- "):
+            list_sections[current_section].append(parse_scalar(stripped[2:]))
+            continue
+        if current_section == "secnet_references" and stripped.startswith("- "):
+            current_reference = {}
+            references.append(current_reference)
+            key, value = stripped[2:].split(":", 1)
+            current_reference[key.strip()] = parse_scalar(value)
+            continue
+        if current_section == "secnet_references" and current_reference is not None and ":" in stripped:
+            key, value = stripped.split(":", 1)
+            current_reference[key.strip()] = parse_scalar(value)
+
+    return ReadingOverrides(
+        advisor_ids=set(list_sections["advisor_track"]),
+        p0_extra_ids=set(list_sections["p0_extra"]),
+        p1_extra_ids=set(list_sections["p1_extra"]),
+        force_refined_c_ids=set(list_sections["force_refined_c"]),
+        secnet_references=[
+            SecnetReference(
+                title=ref.get("title", ""),
+                authors=ref.get("authors", ""),
+                year=ref.get("year", ""),
+                venue=ref.get("venue", ""),
+                why_read=ref.get("why_read", ""),
+                relation_to_secnet=ref.get("relation_to_secnet", ""),
+            )
+            for ref in references
+        ],
+    )
 
 
 EVENT_EXPLICIT_PATTERNS = [
@@ -395,7 +285,7 @@ def is_snn_dataset_only(text: str) -> bool:
     ) and not has_method_event
 
 
-def classify_refined(row: dict[str, str], abstract: str) -> tuple[str, str, str, str]:
+def classify_refined(row: dict[str, str], abstract: str, overrides: ReadingOverrides) -> tuple[str, str, str, str]:
     text = "\n".join([row.get("title", ""), abstract or ""])
     title = row.get("title", "")
     event_explicit = pattern_hits(text, EVENT_EXPLICIT_PATTERNS)
@@ -404,7 +294,7 @@ def classify_refined(row: dict[str, str], abstract: str) -> tuple[str, str, str,
     snn = pattern_hits(text, SNN_PATTERNS)
     evidence_source = "abstract" if abstract else "metadata"
 
-    if row["id"] in FORCE_REFINED_C and snn:
+    if row["id"] in overrides.force_refined_c_ids and snn:
         return (
             "C",
             "Generic SNN method; event-camera evidence appears mainly as benchmark/dataset usage, so it is SNN background rather than A.",
@@ -509,18 +399,18 @@ def high_value_c(row: dict[str, str], abstract: str) -> bool:
     )
 
 
-def assign_priority(row: dict[str, str], refined_level: str, abstract: str) -> str:
+def assign_priority(row: dict[str, str], refined_level: str, abstract: str, overrides: ReadingOverrides) -> str:
     text = f"{row.get('title', '')}\n{abstract}".lower()
     if refined_level == "X":
         return "P3"
-    if row["id"] in CURRENT_ADVISOR_IDS or row["id"] in P0_EXTRA_IDS:
+    if row["id"] in overrides.advisor_ids or row["id"] in overrides.p0_extra_ids:
         return "P0"
     if any(re.search(pattern, text) for pattern in P3_TITLE_PATTERNS):
         return "P3"
     if refined_level == "A":
         return "P0"
     if refined_level in {"B", "C"}:
-        return "P1" if row["id"] in P1_EXTRA_IDS else "P2"
+        return "P1" if row["id"] in overrides.p1_extra_ids else "P2"
     return "P2"
 
 
@@ -569,7 +459,7 @@ def reference_to_md(ref: SecnetReference) -> str:
     )
 
 
-def write_advisor_track(path: Path, current_rows: list[dict[str, str]]) -> None:
+def write_advisor_track(path: Path, current_rows: list[dict[str, str]], overrides: ReadingOverrides) -> None:
     lines = [
         "# Advisor Track",
         "",
@@ -590,7 +480,7 @@ def write_advisor_track(path: Path, current_rows: list[dict[str, str]]) -> None:
             "| --- | --- | --- | --- | --- | --- | --- | --- |",
         ]
     )
-    lines.extend(reference_to_md(ref) for ref in SECNET_REFERENCES)
+    lines.extend(reference_to_md(ref) for ref in overrides.secnet_references)
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
@@ -605,7 +495,7 @@ def write_uncertain(path: Path, rows: list[dict[str, str]]) -> None:
     )
 
 
-def write_level_t(path: Path, current_rows: list[dict[str, str]]) -> None:
+def write_level_t(path: Path, current_rows: list[dict[str, str]], overrides: ReadingOverrides) -> None:
     advisor = [row for row in current_rows if row["advisor_track"] == "yes"]
     t0 = advisor[:8]
     t1 = advisor[8:]
@@ -637,12 +527,12 @@ def write_level_t(path: Path, current_rows: list[dict[str, str]]) -> None:
             "| --- | --- | --- | --- |",
         ]
     )
-    for ref in SECNET_REFERENCES:
+    for ref in overrides.secnet_references:
         lines.append(f"| {table_escape(ref.title)} | {ref.year} | {ref.venue} | {table_escape(ref.why_read)} |")
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def build_rows(repo_root: Path) -> list[dict[str, str]]:
+def build_rows(repo_root: Path, overrides: ReadingOverrides) -> list[dict[str, str]]:
     all_rows = read_csv(repo_root / "00-index" / "all-papers.csv")
     reviewed = read_reviewed_metadata(repo_root)
     enriched: list[dict[str, str]] = []
@@ -650,9 +540,9 @@ def build_rows(repo_root: Path) -> list[dict[str, str]]:
         merged = {column: row.get(column, "") for column in BASE_COLUMNS}
         meta = reviewed.get(row["id"], {})
         abstract = meta.get("abstract", "")
-        refined_level, reason, evidence_source, uncertain = classify_refined(merged, abstract)
-        priority = assign_priority(merged, refined_level, abstract)
-        advisor_track = "yes" if row["id"] in CURRENT_ADVISOR_IDS else "no"
+        refined_level, reason, evidence_source, uncertain = classify_refined(merged, abstract, overrides)
+        priority = assign_priority(merged, refined_level, abstract, overrides)
+        advisor_track = "yes" if row["id"] in overrides.advisor_ids else "no"
         merged.update(
             {
                 "refined_level": refined_level,
@@ -687,11 +577,19 @@ def sort_rows(rows: list[dict[str, str]]) -> list[dict[str, str]]:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate core reading-plan indexes.")
     parser.add_argument("--repo-root", type=Path, default=Path.cwd(), help="Repository root")
+    parser.add_argument(
+        "--overrides",
+        type=Path,
+        default=Path("00-index/reading-plan-overrides.yaml"),
+        help="YAML file with reading-plan manual overrides",
+    )
     args = parser.parse_args()
 
     repo_root = args.repo_root.resolve()
+    overrides_path = args.overrides if args.overrides.is_absolute() else repo_root / args.overrides
+    overrides = load_reading_overrides(overrides_path)
     index_dir = repo_root / "00-index"
-    index_rows = build_rows(repo_root)
+    index_rows = build_rows(repo_root, overrides)
     rows = sort_rows(index_rows)
     columns = BASE_COLUMNS + READING_COLUMNS
     write_csv(index_dir / "all-papers.csv", index_rows, columns)
@@ -714,12 +612,12 @@ def main() -> int:
     write_plan(index_dir / "reading-plan-p1.md", "P1 Optional Reading", ["Important papers to read if time allows."], p1_rows)
     write_plan(index_dir / "auto-summary-p2.md", "P2 Auto-Summary Queue", ["Keep these papers for later LLM/Codex summaries rather than human精读."], p2_rows)
     write_plan(index_dir / "out-of-scope-x.md", "Out of Scope / P3", ["Papers retained for auditability but not active reading."], x_rows)
-    write_advisor_track(index_dir / "advisor-track.md", rows)
+    write_advisor_track(index_dir / "advisor-track.md", rows, overrides)
     write_uncertain(index_dir / "uncertain-review.md", rows)
-    write_level_t(index_dir / "level-T-advisor-direction.md", rows)
+    write_level_t(index_dir / "level-T-advisor-direction.md", rows, overrides)
 
     current_core_ids = {row["id"] for row in core_current}
-    total_core_unique = len(current_core_ids) + len(SECNET_REFERENCES)
+    total_core_unique = len(current_core_ids) + len(overrides.secnet_references)
     counts = Counter(row["refined_level"] for row in rows)
     priorities = Counter(row["priority"] for row in rows)
     uncertain_count = sum(1 for row in rows if row["uncertain"] == "yes")
@@ -728,7 +626,7 @@ def main() -> int:
     print("Refined levels: " + ", ".join(f"{key}={counts.get(key, 0)}" for key in ["A", "B", "C", "X"]))
     print("Priorities: " + ", ".join(f"{key}={priorities.get(key, 0)}" for key in ["P0", "P1", "P2", "P3"]))
     print(f"advisor_track current corpus: {len(current_advisor_rows)}")
-    print(f"advisor_track SECNet references: {len(SECNET_REFERENCES)}")
+    print(f"advisor_track SECNet references: {len(overrides.secnet_references)}")
     print(f"unique(P0 current + advisor_track current + SECNet references): {total_core_unique}")
     print(f"uncertain=yes: {uncertain_count}")
     if total_core_unique > 65:
