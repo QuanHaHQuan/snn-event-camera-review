@@ -43,17 +43,18 @@
 
 ## A/B/C/D/E Counts
 
-- A: 2
+- A: 1
 - B: 34
-- C: 2
+- C: 3
 - D: 1
 - E: 7
 
 ## High-priority Reading List
 
-- A: ClearSight: Human Vision-Inspired Solutions for Event-Based Motion Deblurring; SpiLiFormer: Enhancing Spiking Transformers with Lateral Inhibition
+- A: ClearSight: Human Vision-Inspired Solutions for Event-Based Motion Deblurring
 - B: E-NeMF: Event-based Neural Motion Field for Novel Space-time View Synthesis of Dynamic Scenes; Event-based Tiny Object Detection: A Benchmark Dataset and Baseline; EMoTive: Event-guided Trajectory Modeling for 3D Motion Estimation; From Sharp to Blur: Unsupervised Domain Adaptation for 2D Human Pose Estimation Under Extreme Motion Blur Using Event Cameras; Asynchronous Event Error-Minimizing Noise for Safeguarding Event Dataset; Simultaneous Motion And Noise Estimation with Event Cameras; EvaGaussians: Event Stream Assisted Gaussian Splatting from Blurry Images; EventUPS: Uncalibrated Photometric Stereo Using an Event Camera; Separation for Better Integration: Disentangling Edge and Motion in Event-based Deblurring; Enhanced Event-based Dense Stereo via Cross-Sensor Knowledge Distillation; Event-boosted Deformable 3D Gaussians for Dynamic Scene Reconstruction; A Linear N-Point Solver for Structure and Motion from Asynchronous Tracks; Continuous-Time Human Motion Field from Event Cameras; Unsupervised Joint Learning of Optical Flow and Intensity with Event Cameras; PRE-Mamba: A 4D State Space Model for Ultra-High-Frequent Event Camera Deraining; Depth AnyEvent: A Cross-Modal Distillation Paradigm for Event-Based Monocular Depth Estimation; Event-guided Unified Framework for Low-light Video Enhancement, Frame Interpolation, and Deblurring; STD-GS: Exploring Frame-Event Interaction for SpatioTemporal-Disentangled Gaussian Splatting to Reconstruct High-Dynamic Scene; SAMPLE: Semantic Alignment through Temporal-Adaptive Multimodal Prompt Learning for Event-Based Open-Vocabulary Action Recognition; Unleashing the Temporal Potential of Stereo Event Cameras for Continuous-Time 3D Object Detection; EvRT-DETR: Latent Space Adaptation of Image Detectors for Event-based Vision; Low-Light Image Enhancement Using Event-Based Illumination Estimation; Event-based Visual Vibrometry; EVDM: Event-based Real-world Video Deblurring with Mamba; Event-aided Dense and Continuous Point Tracking: Everywhere and Anytime; Efficient Event Camera Data Pretraining with Adaptive Prompt Fusion; TESPEC: Temporally-Enhanced Self-Supervised Pretraining for Event Cameras; Depth Any Event Stream: Enhancing Event-based Monocular Depth Estimation via Dense-to-Sparse Distillation; Exploiting Frequency Dynamics for Enhanced Multimodal Event-based Action Recognition; SuperEvent: Cross-Modal Learning of Event-based Keypoint Detection for SLAM; EMatch: A Unified Framework for Event-based Optical Flow and Stereo Matching; LLaFEA: Frame-Event Complementary Fusion for Fine-Grained Spatiotemporal Understanding in LMMs; MATE: Motion-Augmented Temporal Consistency for Event-based Point Tracking; Event-guided HDR Reconstruction with Diffusion Priors
-- C: Efficient Spiking Point Mamba for Point Cloud Analysis; SpikePack: Enhanced Information Flow in Spiking Neural Networks with High Hardware Compatibility
+- C: Efficient Spiking Point Mamba for Point Cloud Analysis; SpiLiFormer: Enhancing Spiking Transformers with Lateral Inhibition; SpikePack: Enhanced Information Flow in Spiking Neural Networks with High Hardware Compatibility
+
 
 ## Title Candidates Not Promoted
 

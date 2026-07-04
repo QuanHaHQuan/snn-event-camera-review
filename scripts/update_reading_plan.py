@@ -416,6 +416,13 @@ def assign_priority(row: dict[str, str], refined_level: str, abstract: str, over
         return "P0"
     if any(re.search(pattern, text) for pattern in P3_TITLE_PATTERNS):
         return "P3"
+    is_neurips_non_main = (
+        row.get("conference") == "NeurIPS"
+        and "track: main conference track" not in row.get("notes", "").lower()
+        and "track:" in row.get("notes", "").lower()
+    )
+    if refined_level == "A" and is_neurips_non_main:
+        return "P1"
     if refined_level == "A":
         return "P0"
     if refined_level in {"B", "C"}:

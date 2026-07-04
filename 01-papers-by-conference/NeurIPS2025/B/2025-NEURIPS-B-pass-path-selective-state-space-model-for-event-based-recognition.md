@@ -11,19 +11,24 @@ tags: []
 abstract: "Event cameras are bio-inspired sensors that capture intensity changes asynchronously with distinct advantages, such as high temporal resolution. Existing methods for event-based object/action recognition predominantly sample and convert event representation at every fixed temporal interval (or frequency). However, they are constrained to processing a limited number of event lengths and show poor frequency generalization, thus not fully leveraging the event's high temporal resolution. In this paper, we present our PASS framework, exhibiting superior capacity for spatiotemporal event modeling towards a larger number of event lengths and generalization across varying inference temporal frequencies. Our key insight is to learn adaptively encoded event features via the state space models (SSMs), whose linear complexity and generalization on input frequency make them ideal for processing high temporal resolution events. Specifically, we propose a Path-selective Event Aggregation and Scan (PEAS) module to encode events into features with fixed dimensions by adaptively scanning and selecting aggregated event presentation. On top of it, we introduce a novel Multi-faceted Selection Guiding (MSG) loss to minimize the randomness and redundancy of the encoded features during the PEAS selection process. Our method outperforms prior methods on five public datasets and shows strong generalization across varying inference frequencies with less accuracy drop (ours -8.62% v.s. -20.69% for the baseline). Moreover, our model exhibits strong long spatiotemporal modeling for a broader distribution of event length (1-10^9), precise temporal perception, and effective generalization for real-world scenarios. Code and checkpoints will be released upon acceptance."
 status: "auto-generated; brief scan note"
 ---
-
 ## Core Problem
 
-Event cameras are bio-inspired sensors that capture intensity changes asynchronously with distinct advantages, such as high temporal resolution.
+Event cameras are bio-inspired sensors that capture intensity changes asynchronously with
+distinct advantages, such as high temporal resolution.
 
 ## Core Method
 
-Existing methods for event-based object/action recognition predominantly sample and convert event representation at every fixed temporal interval (or frequency).
+Existing methods for event-based object/action recognition predominantly sample and convert
+event representation at every fixed temporal interval (or frequency).
 
 ## Key Metrics and Findings
 
-自动流程未深读 PDF；具体指标、数据集、对比方法和数值结论需要人工核验。
+尚未深读 PDF，指标、数据集和定量结果需要人工核验。
 
 ## Personal Notes
 
-严格两阶段复扫：标题宽召回命中 `event cameras; event camera visual-event context; event cameras visual-event context; event-based object visual-event context; event-based with event-camera context`，官方摘要/页面证据为 `Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor evidence; no clear SNN evidence found.`。该卡片为草稿笔记，引用前必须核对官方论文。
+检索命中关键词：event cameras; event camera visual-event context; event cameras visual-event
+context; event-based object visual-event context; event-based with event-camera
+context。自动分类理由：Official abstract/page strictly confirms event-camera/DVS/visual-event-sensor
+evidence; no clear SNN evidence found.。 备注：strict two-stage rescan; official abstract/page
+inspected; needs human verification; Track: Main Conference Track。

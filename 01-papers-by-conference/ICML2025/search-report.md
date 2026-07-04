@@ -43,17 +43,18 @@
 
 ## A/B/C/D/E Counts
 
-- A: 4
+- A: 1
 - B: 3
-- C: 14
+- C: 17
 - D: 0
 - E: 17
 
 ## High-priority Reading List
 
-- A: Temporal Misalignment in ANN-SNN Conversion and its Mitigation via Probabilistic Spiking Neurons; Hybrid Spiking Vision Transformer for Object Detection with Event Cameras; Training High Performance Spiking Neural Network by Temporal Model Calibration; Efficient Logit-based Knowledge Distillation of Deep Spiking Neural Networks for Full-Range Timestep Deployment
+- A: Hybrid Spiking Vision Transformer for Object Detection with Event Cameras
 - B: A Chaotic Dynamics Framework Inspired by Dorsal Stream for Event Signal Processing; When Every Millisecond Counts: Real-Time Anomaly Detection via the Multimodal Asynchronous Hybrid Network; EvFocus: Learning to Reconstruct Sharp Images from Out-of-Focus Event Streams
-- C: Efficient Parallel Training Methods for Spiking Neural Networks with Constant Time Complexity; ReverB-SNN: Reversing Bit of the Weight and Activation for Spiking Neural Networks; Faster and Stronger: When ANN-SNN Conversion Meets Parallel Spiking Calculation; Differential Coding for Training-Free ANN-to-SNN Conversion; BSO: Binary Spiking Online Optimization Algorithm; Efficient ANN-SNN Conversion with Error Compensation Learning; Time to Spike? Understanding the Representational Power of Spiking Neural Networks in Discrete Time; Sorbet: A Neuromorphic Hardware-Compatible Transformer-Based Spiking Language Model; Delay-DSGN: A Dynamic Spiking Graph Neural Network with Delay Mechanisms for Evolving Graph; SpikF: Spiking Fourier Network for Efficient Long-term Prediction; Self-cross Feature based Spiking Neural Networks for Efficient Few-shot Learning; TS-SNN: Temporal Shift Module for Spiking Neural Networks; TTFSFormer: A TTFS-based Lossless Conversion of Spiking Transformer; SpikeVideoFormer: An Efficient Spike-Driven Video Transformer with Hamming Attention and $\mathcalO(T)$ Complexity
+- C: Temporal Misalignment in ANN-SNN Conversion and its Mitigation via Probabilistic Spiking Neurons; Efficient Parallel Training Methods for Spiking Neural Networks with Constant Time Complexity; ReverB-SNN: Reversing Bit of the Weight and Activation for Spiking Neural Networks; Faster and Stronger: When ANN-SNN Conversion Meets Parallel Spiking Calculation; Differential Coding for Training-Free ANN-to-SNN Conversion; BSO: Binary Spiking Online Optimization Algorithm; Efficient ANN-SNN Conversion with Error Compensation Learning; Time to Spike? Understanding the Representational Power of Spiking Neural Networks in Discrete Time; Sorbet: A Neuromorphic Hardware-Compatible Transformer-Based Spiking Language Model; Delay-DSGN: A Dynamic Spiking Graph Neural Network with Delay Mechanisms for Evolving Graph; SpikF: Spiking Fourier Network for Efficient Long-term Prediction; Self-cross Feature based Spiking Neural Networks for Efficient Few-shot Learning; Training High Performance Spiking Neural Network by Temporal Model Calibration; TS-SNN: Temporal Shift Module for Spiking Neural Networks; Efficient Logit-based Knowledge Distillation of Deep Spiking Neural Networks for Full-Range Timestep Deployment; TTFSFormer: A TTFS-based Lossless Conversion of Spiking Transformer; SpikeVideoFormer: An Efficient Spike-Driven Video Transformer with Hamming Attention and $\mathcalO(T)$ Complexity
+
 
 ## Title Candidates Not Promoted
 

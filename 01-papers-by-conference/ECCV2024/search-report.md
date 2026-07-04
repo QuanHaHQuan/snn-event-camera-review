@@ -43,17 +43,18 @@
 
 ## A/B/C/D/E Counts
 
-- A: 6
+- A: 4
 - B: 28
-- C: 4
+- C: 6
 - D: 1
 - E: 8
 
 ## High-priority Reading List
 
-- A: Efficient Training of Spiking Neural Networks with Multi-Parallel Implicit Stream Architecture; EAS-SNN: End-to-End Adaptive Sampling and Representation for Event-based Detection with Recurrent Spiking Neural Networks; Spiking Wavelet Transformer; REDIR: Refocus-free Event-based De-occlusion Image Reconstruction; Exploring Vulnerabilities in Spiking Neural Networks: Direct Adversarial Attacks on Raw Event Data; Spike-Temporal Latent Representation for Energy-Efficient Event-to-Video Reconstruction
+- A: EAS-SNN: End-to-End Adaptive Sampling and Representation for Event-based Detection with Recurrent Spiking Neural Networks; REDIR: Refocus-free Event-based De-occlusion Image Reconstruction; Exploring Vulnerabilities in Spiking Neural Networks: Direct Adversarial Attacks on Raw Event Data; Spike-Temporal Latent Representation for Energy-Efficient Event-to-Video Reconstruction
 - B: Motion and Structure from Event-based Normal Flow; LiDAR-Event Stereo Fusion with Hallucinations; Towards Real-world Event-guided Low-light Video Enhancement and Deblurring; BeNeRF:Neural Radiance Fields from a Single Blurry Image and Event Stream; Temporal Event Stereo via Joint Learning with Stereoscopic Flow; CMTA: Cross-Modal Temporal Alignment for Event-guided Video Deblurring; Event Camera Data Dense Pre-training; Motion Aware Event Representation-driven Image Deblurring; Event Trojan: Asynchronous Event-based Backdoor Attacks; Temporal Residual Guided Diffusion Framework for Event-Driven Video Reconstruction; Revisit Event Generation Model: Self-Supervised Learning of Event-to-Video Reconstruction with Implicit Neural Representations; FARSE-CNN: Fully Asynchronous, Recurrent and Sparse Event-Based CNN; Event-Aided Time-To-Collision Estimation for Autonomous Driving; Event-Adapted Video Super-Resolution; Finding Meaning in Points: Weakly Supervised Semantic Segmentation for Event Cameras; Event-Based Motion Magnification; Event-based Head Pose Estimation: Benchmark and Method; Towards Robust Event-based Networks for Nighttime via Unpaired Day-to-Night Event Translation; Efficient Learning of Event-based Dense Representation using Hierarchical Memories with Adaptive Update; DailyDVS-200: A Comprehensive Benchmark Dataset for Event-Based Action Recognition; TimeLens-XL: Real-time Event-based Video Frame Interpolation with Large Motion; EDformer: Transformer-Based Event Denoising Across Varied Noise Levels; Physical-Based Event Camera Simulator; UniINR: Event-guided Unified Rolling Shutter Correction, Deblurring, and Interpolation; Event-based Mosaicing Bundle Adjustment; Temporal-Mapping Photography for Event Cameras; Edge-Guided Fusion and Motion Augmentation for Event-Image Stereo; Un-EVIMO: Unsupervised Event-based Independent Motion Segmentation
-- C: Asynchronous Bioplausible Neuron for Spiking Neural Networks for Event-Based Vision; Integer-Valued Training and Spike-driven Inference Spiking Neural Network for High-performance and Energy-efficient Object Detection; BKDSNN: Enhancing the Performance of Learning-based Spiking Neural Networks Training with Blurred Knowledge Distillation; FTBC: Forward Temporal Bias Correction for Optimizing ANN-SNN Conversion
+- C: Asynchronous Bioplausible Neuron for Spiking Neural Networks for Event-Based Vision; Integer-Valued Training and Spike-driven Inference Spiking Neural Network for High-performance and Energy-efficient Object Detection; Efficient Training of Spiking Neural Networks with Multi-Parallel Implicit Stream Architecture; BKDSNN: Enhancing the Performance of Learning-based Spiking Neural Networks Training with Blurred Knowledge Distillation; FTBC: Forward Temporal Bias Correction for Optimizing ANN-SNN Conversion; Spiking Wavelet Transformer
+
 
 ## Title Candidates Not Promoted
 

@@ -42,17 +42,18 @@
 
 ## A/B/C/D/E Counts
 
-- A: 3
+- A: 0
 - B: 1
-- C: 8
+- C: 11
 - D: 0
 - E: 14
 
 ## High-priority Reading List
 
-- A: Rethinking Spiking Neural Networks from an Ensemble Learning Perspective; DeepTAGE: Deep Temporal-Aligned Gradient Enhancement for Optimizing Spiking Neural Networks; Temporal Flexibility in Spiking Neural Networks: Towards Generalization Across Time Steps and Deployment Friendliness
+- A: None
 - B: RGB-Event ISP: The Dataset and Benchmark
-- C: Quantized Spike-driven Transformer; Spiking Vision Transformer with Saccadic Attention; TS-LIF: A Temporal Segment Spiking Neuron Network for Time Series Forecasting; SpikeLLM: Scaling up Spiking Neural Network to Large Language Models via Saliency-based Spiking; P-SPIKESSM: HARNESSING PROBABILISTIC SPIKING STATE SPACE MODELS FOR LONG-RANGE DEPENDENCY TASKS; Improving Generalization and Robustness in SNNs Through Signed Rate Encoding and Sparse Encoding Attacks; Improving the Sparse Structure Learning of Spiking Neural Networks from the View of Compression Efficiency; QP-SNN: Quantized and Pruned Spiking Neural Networks
+- C: Quantized Spike-driven Transformer; Spiking Vision Transformer with Saccadic Attention; TS-LIF: A Temporal Segment Spiking Neuron Network for Time Series Forecasting; SpikeLLM: Scaling up Spiking Neural Network to Large Language Models via Saliency-based Spiking; Rethinking Spiking Neural Networks from an Ensemble Learning Perspective; DeepTAGE: Deep Temporal-Aligned Gradient Enhancement for Optimizing Spiking Neural Networks; Temporal Flexibility in Spiking Neural Networks: Towards Generalization Across Time Steps and Deployment Friendliness; P-SPIKESSM: HARNESSING PROBABILISTIC SPIKING STATE SPACE MODELS FOR LONG-RANGE DEPENDENCY TASKS; Improving Generalization and Robustness in SNNs Through Signed Rate Encoding and Sparse Encoding Attacks; Improving the Sparse Structure Learning of Spiking Neural Networks from the View of Compression Efficiency; QP-SNN: Quantized and Pruned Spiking Neural Networks
+
 
 ## Title Candidates Not Promoted
 
