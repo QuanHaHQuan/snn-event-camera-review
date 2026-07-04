@@ -309,7 +309,16 @@ def classify_refined(row: dict[str, str], abstract: str, overrides: ReadingOverr
     title_has_snn = bool(pattern_hits(title, SNN_PATTERNS))
     event_is_only_benchmark = bool(event_bench) and not title_has_event and not event_explicit and not event_context
 
-    if has_event and has_snn and not event_is_only_benchmark and title_has_event:
+    if row.get("level", "").upper() == "B":
+        uncertain = "yes" if (not has_event or (event_context and not event_explicit and not event_bench)) else "no"
+        return (
+            "B",
+            "Title/abstract indicate event-camera, DVS, visual event stream, or event-camera task background without clear SNN method.",
+            evidence_source,
+            uncertain,
+        )
+
+    if has_event and has_snn and not event_is_only_benchmark and (title_has_event or row.get("level", "").upper() == "A"):
         return (
             "A",
             "Title/abstract indicate both event-camera or visual-event-stream data and SNN/spiking modeling as part of the method.",

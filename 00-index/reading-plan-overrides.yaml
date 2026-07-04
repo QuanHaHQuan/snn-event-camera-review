@@ -22,6 +22,7 @@ advisor_track:
   - ICLR2025-1232
   - NeurIPS2025-0641
   - ICML2025-2762
+  - CVPR2025-0513
 
 p0_extra:
   # High-value event-camera representation/background papers.
@@ -102,6 +103,19 @@ p1_extra:
   - NeurIPS2025-5700
   - CVPR2026-0399
   - CVPR2026-2929
+  # Representative CVPR 2025 event-camera background.
+  - CVPR2025-1096
+  - CVPR2025-1552
+  - CVPR2025-1668
+  - CVPR2025-1878
+  - CVPR2025-2400
+  # Representative CVPR 2025 SNN background.
+  - CVPR2025-0053
+  - CVPR2025-0097
+  - CVPR2025-2020
+  - CVPR2025-2085
+  - CVPR2025-2098
+  - CVPR2025-2494
 
 force_refined_c:
   # Generic SNN methods with event-camera datasets used as benchmarks only.
@@ -114,6 +128,8 @@ force_refined_c:
   - NeurIPS2025-3724
   - NeurIPS2025-5098
   - NeurIPS2025-2213
+  - CVPR2025-0097
+  - CVPR2025-2098
 
 secnet_references:
   - title: "Rethinking Efficient and Effective Point-based Networks for Event Camera Classification and Regression"
