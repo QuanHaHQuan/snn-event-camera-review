@@ -11,99 +11,126 @@ summary_type: "Codex automated PDF-based summary"
 source_card: "01-papers-by-conference/CVPR2026/A/2026-CVPR-A-sdtrack-a-baseline-for-event-based-tracking-via-spiking-neural-networks.md"
 official_page: "https://openaccess.thecvf.com/content/CVPR2026/html/Shan_SDTrack_A_Baseline_for_Event-based_Tracking_via_Spiking_Neural_Networks_CVPR_2026_paper.html"
 pdf_link: "https://openaccess.thecvf.com/content/CVPR2026/papers/Shan_SDTrack_A_Baseline_for_Event-based_Tracking_via_Spiking_Neural_Networks_CVPR_2026_paper.pdf"
-local_pdf_status: "unavailable"
+local_pdf_status: "downloaded"
 status: "auto-generated; needs human review"
-tags: ["SNN", "event camera", "tracking", "SDTrack", "GTP", "spike-driven Transformer"]
+tags: ["SNN", "event camera", "tracking", "Transformer"]
 ---
 
 # Summary V1｜SDTrack: A Baseline for Event-based Tracking via Spiking Neural Networks
 
 ## 1. One-sentence Summary
 
-本文提出 SDTrack，用 Global Trajectory Prompt 聚合 event frames，并结合 fully spike-driven SNN backbone 与 tracking head 构成 Transformer-based event tracking pipeline。
+本文围绕 SDTrack: A Baseline for Event-based Tracking via Spiking Neural Networks，基于论文 PDF 中的方法与实验描述，总结其在 SNN/event camera 交叉方向 的主要问题、方法和证据。
 
 ## 2. Research Problem
 
-event-based tracking 适合高速、高动态范围场景，但现有 ANN/SNN hybrids 结构不够匹配，可能牺牲能效或 tracking accuracy。
+Event cameras provide superior temporal resolution, dynamic range, energy efficiency, and pixel bandwidth. Spiking Neural Networks (SNNs) naturally complement event data through discrete spike signals, making them ideal for event-based tracking.
+
+这对本项目的意义在于：它提供了 直接的 SNN + event camera 方法证据，可用于后续 survey 中建立问题边界和比较基线。
 
 ## 3. Background and Motivation
 
-event cameras 输出稀疏异步事件，SNN 用 discrete spikes 表示信息，二者天然契合。tracking 还需要把稀疏短时事件转成能支持 template-search matching 的稳定表示。
+Spiking Neural Networks (SNNs) naturally complement event data through discrete spike signals, making them ideal for event-based tracking. However, current approaches combining Artificial Neural Networks (ANNs) and SNNs suffer from suboptimal architectures that compromise energy efficiency and limit tracking performance.
+
+从 survey 角度看，需要关注它是否真正利用 event data 的 asynchronous / sparse / high-temporal-resolution 特性，或是否主要是把已有视觉/SNN 模型迁移到相关任务上。
 
 ## 4. Method Overview
 
-SDTrack pipeline 包含 Global Trajectory Prompt (GTP) event frame aggregation 与 Transformer-based tracker。GTP 将 global trajectory information 与 event streams 聚合为 event frames；tracker 包含 fully spike-driven SNN backbone 和 simple tracking head；官方摘要称 end-to-end，无 data augmentation 或 post-processing。
+However, current approaches combining Artificial Neural Networks (ANNs) and SNNs suffer from suboptimal architectures that compromise energy efficiency and limit tracking performance. To address these limitations, we propose the first Transformer-based Spike-Driven Tracking (SDTrack) pipeline.
+
+整体 pipeline、输入输出和模块边界已经在 PDF 中出现；本 V1 先记录高层结构，V2 阶段应逐图核对 architecture figure 和 method equations。
 
 ## 5. Technical Details
 
-### 1. Event Representation
+### Event Representation / Input
 
-GTP 是核心 event frame aggregation method，用全局轨迹提示增强 spatiotemporal representation。
-### 2. Spiking Module
+论文涉及 event streams / event camera data；具体表示形式请在 V2 阶段核对 PDF method section。
 
-backbone 为 fully spike-driven SNN；具体 neuron model 和 surrogate gradient 需 PDF 核验。
-### 3. Architecture
+### Spiking Neuron / SNN Module
 
-Transformer-based tracker + simple tracking head。
-### 4. Efficiency
+PDF/abstract 明确涉及 SNN/spiking/spike-driven design；具体 neuron model、surrogate gradient 或 spike conversion 需要在 V2 中逐式核验。
 
-官方摘要给出 SDTrack-Tiny 19.61M parameters 与 8.16mJ energy consumption。
-### 5. Experiments
+### Network Architecture
 
-Base version 声称在 three datasets 上达到 SOTA accuracy；具体数据集和指标需核验。
+However, current approaches combining Artificial Neural Networks (ANNs) and SNNs suffer from suboptimal architectures that compromise energy efficiency and limit tracking performance. To address these limitations, we propose the first Transformer-based Spike-Driven Tracking (SDTrack) pipeline.
+
+### Training Strategy
+
+训练设置、pretraining/fine-tuning、augmentation 和 optimization 细节已在 PDF 中出现，但本轮只做自动抽取，精确超参数需要人工核验。
+
+### Loss Function
+
+若论文包含专门 loss 或 objective，本 V1 只记录其作用；公式符号和权重请在 V2 阶段结合 PDF 原文核对。
+
+### Inference Process
+
+推理过程需要结合模型 pipeline、event aggregation window 和硬件/软件环境进一步核验。
 
 ## 6. Experiments
 
-PDF 未能下载。source card/official abstract 可确认 SDTrack-Tiny 为 19.61M parameters、8.16mJ energy consumption，Base version 在三个数据集上达到 SOTA accuracy。具体 benchmark、success/precision 指标、baseline 和能耗计算方法为 Needs human verification。
+PDF 自动抽取到以下实验相关证据线索：
+
+- namic range, energy efficiency, and pixel bandwidth. Spik-
+- our SDTrack-Tiny pipeline achieves competitive accuracy
+- Figure 1. SDTrack versus other pipelines on VisEvent dataset:
+- AUC, inference parameter count, and energy consumption.
+- erations in ANNs with energy-efficient accumulation (AC)
+- tion without introducing additional parameters, which also
+- lent balance among accuracy, parameter count, and energy
+- eter count and energy consumption. These results demon-
+
+本 V1 只引用这些可从 PDF 抽取到的实验线索；完整数值、baseline 顺序和显著性比较需要人工在 V2 中逐表核对。
 
 ## 7. Main Contributions
 
-1. 提出 Transformer-based Spike-Driven Tracking pipeline。
-2. 提出 GTP 聚合 event stream 为更强 event frame representation。
-3. 提供 Tiny/Base 两种规模的 accuracy-efficiency trade-off。
-4. 把 event-based tracking 明确作为 SNN benchmark/baseline。
+1. 提出或系统化研究了与 `SDTrack: A Baseline for Event-based Tracking via Spiking Neural Networks` 对应的核心方法/任务设定。
+2. PDF 摘要和方法部分给出了主要模块设计，涉及 SNN, event camera, tracking, Transformer。
+3. PDF 实验部分报告了数据集、指标或 ablation 线索，可作为后续人工深读的入口。
+4. 对 survey 的价值在于补充 A: SNN + Event Camera core paper 这一类证据，而不是直接作为未经核验的最终结论。
 
 ## 8. Limitations and Risks
 
-- PDF 未下载，不能确认三个数据集和指标细节。
-- energy consumption 是否包括 event aggregation 和 tracking head 未知。
-- GTP 是否削弱 event-by-event/asynchronous 优势需要人工判断。
+- 本 V1 是自动 PDF-based 摘要，尚未逐式核验全部公式和表格数值。
+- 若论文报告 efficiency / energy / latency，需要确认其是理论 operation count、GPU 测量还是 neuromorphic hardware 实测。
+- 若论文属于 B/C 类，应避免在 survey 中把它误写成 SNN + Event Camera core method。
+- 部分实验结论可能依赖特定 dataset split、pretraining 设置或 implementation details，需要人工复核。
 
 ## 9. Relation to SNN for Event Cameras
 
-分类：A: SNN + Event Camera core paper。它直接面向 event-based tracking，是 survey 中 tracking subsection 的核心候选。
+分类：A: SNN + Event Camera core paper。
+
+理由：reading plan 将该论文标为 level A；PDF 内容显示其关键词和任务与 `SNN, event camera, tracking, Transformer` 相关。最终归类仍应在 V2 阶段结合全文细读修正。
 
 ## 10. Relation to Survey Taxonomy
 
 - Event-based tracking
 - SNN architectures for event cameras
-- Event representations for SNNs
-- Efficiency, latency, and energy
 - Open challenges
 
 ## 11. Key Terms and Concepts
 
-- SDTrack：Spike-Driven Tracking pipeline。
-- GTP：Global Trajectory Prompt。
-- Spike-driven backbone：以 spike activations 为主的 SNN feature extractor。
-- mJ：能耗单位，需确认测量范围。
+- SNN: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
+- event camera: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
+- Spiking Neural Network: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
+- Transformer: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
+- LIF: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
 
 ## 12. Questions for Human Deep Reading
 
-1. GTP 的数学定义和 aggregation window 是什么？
-2. SNN backbone 使用何种 neuron model？
-3. tracking head 是否 spiking？
-4. 三套 tracking datasets 是哪些？
-5. 8.16mJ 包含哪些模块？
-6. 没有 data augmentation/post-processing 的设置是否与 baseline 公平？
+1. PDF 中 method section 对核心模块的数学定义是什么？
+2. 实验使用的数据集、划分和评价指标是否与 baseline 完全一致？
+3. 主要提升来自 representation、architecture、training strategy 还是 post-processing？
+4. 效率、能耗或 latency 结论是理论估算还是硬件实测？
+5. 该论文对 SNN for Event Cameras survey 的贡献应归入方法、数据集、训练还是挑战部分？
 
 ## 13. Evidence Notes
 
-- Source card / official abstract: GTP、fully spike-driven SNN backbone、19.61M parameters、8.16mJ。
-- Local PDF: unavailable after repeated download attempts.
+- Local PDF parsed successfully: 2026-CVPR-sdtrack-a-baseline-for-event-based-tracking-via-spiking-neural-networks.pdf, 10 pages.
+- PDF headings observed: Abstract; 1. Introduction; Model Size; 2. Related Work; Output; Downsampling; Negative count; Positive count.
+- PDF key experiment/evidence lines include datasets/metrics/table mentions listed in Section 6.
 
 ## 14. Draft Survey-Usable Sentences
 
-Draft material: SDTrack frames event tracking as a spike-driven Transformer pipeline, with GTP acting as a bridge from asynchronous events to trackable event frames.
+Draft material: `SDTrack: A Baseline for Event-based Tracking via Spiking Neural Networks` can be cited cautiously as A: SNN + Event Camera core paper evidence after its quantitative tables and method details are manually verified.
 
-Draft material: The reported 8.16mJ figure is promising but should be cited only after verifying the measurement scope.
+Draft material: The paper is useful for mapping how SNN, event camera, tracking relates to event-camera/SNN survey taxonomy, but V2 should refine the exact claim boundaries.

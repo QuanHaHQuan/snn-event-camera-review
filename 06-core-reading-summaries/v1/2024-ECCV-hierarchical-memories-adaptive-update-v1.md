@@ -54,7 +54,9 @@ event cameras 的价值在于高 temporal resolution。为了在 segmentation/de
 
 ## 6. Experiments
 
-PDF 和 card 显示方法在多种 event-based dense prediction tasks 上取得 competitive performance，同时相对 existing methods 有更低 latency。具体 datasets、metrics、ablation 和 latency 数值需要人工核验。
+PDF 的 Experiments section 明确包含三类 event-based dense prediction tasks：semantic segmentation、object detection 和 depth estimation。基础设置中使用 three memory levels，维度为 `Di in {32, 64, 128}`，window stride sizes 为 `{4, 8, 16}`，cross-attention heads 为 4，adaptive update threshold `th=0.5`；训练使用 Adam、batch size 4、initial learning rate 5.0e-4 和 cosine LR scheduler，并在 NVIDIA Tesla V100 GPU 上报告 latency。
+
+Semantic segmentation 使用 DSEC-Semantic；object detection 使用 GEN1，并接 YOLOX detector head、训练 300k iterations；depth estimation 的对比结果在 Table 2 中报告。论文声称方法在 segmentation 上取得 competitive mIoU，同时相对 HMNetB3/L3 有约 50%/70% latency improvement；在 GEN1 detection 中优于多数 recurrent baselines 的 mAP/latency；在 depth estimation 中相对 RAMNet 和固定更新 HMNet variants 有 latency 改善。具体 mIoU、mAP、depth metrics 数值在 V2 阶段仍需人工逐表核对。
 
 ## 7. Main Contributions
 
@@ -96,8 +98,12 @@ PDF 和 card 显示方法在多种 event-based dense prediction tasks 上取得 
 
 ## 13. Evidence Notes
 
-- Source card / official abstract: hierarchical memories、adaptive update、dense prediction motivation。
-- PDF available locally; detailed tables need human verification.
+- Abstract：说明 set-based event processing、hierarchical multi-level latent memory、attention-based spatial association 和 data-adaptive update rate。
+- Experiments section：列出 segmentation、object detection、depth estimation 三类任务，以及 memory levels、stride sizes、optimizer、batch size、learning rate、V100 latency setup。
+- Figure 3 / Figure 4：展示 memory states 的 temporal evolution 和不同输入下的 memory patterns。
+- Table 1：包含 DSEC-Semantic segmentation 与 GEN1 object detection 的比较结果和 latency discussion。
+- Table 2：包含 depth estimation 对比，并报告相对 RAMNet、HMNet-B3/L3 的 latency improvement。
+- Figure 6：比较 adaptive update 与 uniform memory update，用于支撑 adaptive update ablation。
 
 ## 14. Draft Survey-Usable Sentences
 

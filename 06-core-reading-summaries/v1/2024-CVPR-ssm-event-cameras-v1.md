@@ -11,98 +11,126 @@ summary_type: "Codex automated PDF-based summary"
 source_card: "01-papers-by-conference/CVPR2024/B/2024-CVPR-B-state-space-models-for-event-cameras.md"
 official_page: "https://openaccess.thecvf.com/content/CVPR2024/html/Zubic_State_Space_Models_for_Event_Cameras_CVPR_2024_paper.html"
 pdf_link: "https://openaccess.thecvf.com/content/CVPR2024/papers/Zubic_State_Space_Models_for_Event_Cameras_CVPR_2024_paper.pdf"
-local_pdf_status: "unavailable"
+local_pdf_status: "downloaded"
 status: "auto-generated; needs human review"
-tags: ["event camera", "state space model", "SSM", "frequency adaptation", "Gen1", "1Mpx", "advisor-track"]
+tags: ["event camera", "SSM", "Transformer"]
 ---
 
 # Summary V1｜State Space Models for Event Cameras
 
 ## 1. One-sentence Summary
 
-本文将 learnable-timescale State Space Models 引入 event-based vision，用于缓解模型在训练频率和更高推理频率之间的 generalization degradation。
+本文围绕 State Space Models for Event Cameras，基于论文 PDF 中的方法与实验描述，总结其在 event-camera 背景方向 的主要问题、方法和证据。
 
 ## 2. Research Problem
 
-许多 event-camera networks 先把固定时间窗口的 events 转成 dense grid representation；当推理频率升高、时间窗口变短时，输入分布改变，性能容易下降。
+Today state-of-the-art deep neural networks that process event-camera data first convert a temporal window of events into dense grid-like input representations. As such they exhibit poor generalizability when deployed at higher inference frequencies (i.e.
+
+这对本项目的意义在于：它提供了 event-camera 任务、表示或 benchmark 背景，可用于后续 survey 中建立问题边界和比较基线。
 
 ## 3. Background and Motivation
 
-event cameras 可在高频率下输出信息，但深度模型常被固定 representation frequency 绑定。SSM 具有连续/序列建模能力，learnable timescale 可帮助模型跨 temporal resolution 适配。
+As such they exhibit poor generalizability when deployed at higher inference frequencies (i.e. smaller temporal windows) than the ones they were trained on.
+
+从 survey 角度看，需要关注它是否真正利用 event data 的 asynchronous / sparse / high-temporal-resolution 特性，或是否主要是把已有视觉/SNN 模型迁移到相关任务上。
 
 ## 4. Method Overview
 
-方法把 state-space models 用于 event camera processing，并学习 timescale parameters，使模型在不同 inference frequencies 下无需重训。论文还研究两种 counteract aliasing effects 的策略。输入为 event-camera data 的 dense/grid-like representation 或序列化特征，输出用于 detection 等 event vision tasks。
+smaller temporal windows) than the ones they were trained on. We address this challenge by introducing state-space models (SSMs) with learnable timescale parameters to event-based vision.
+
+整体 pipeline、输入输出和模块边界已经在 PDF 中出现；本 V1 先记录高层结构，V2 阶段应逐图核对 architecture figure 和 method equations。
 
 ## 5. Technical Details
 
-### 1. Event Representation
+### Event Representation / Input
 
-官方摘要指出 baseline 通常把 temporal window events 转成 dense grid-like input。
-### 2. SSM Module
+论文涉及 event streams / event camera data；具体表示形式请在 V2 阶段核对 PDF method section。
 
-learnable timescale parameters 是核心，用于适配 smaller temporal windows。
-### 3. Aliasing Handling
+### Spiking Neuron / SNN Module
 
-论文研究两个策略缓解高频部署时 aliasing；具体机制需 PDF。
-### 4. Experiments
+未发现明确 SNN/spiking module；该论文主要是 event-camera 或视觉模型背景。
 
-覆盖 Gen1 和 1Mpx event camera datasets，并与 RNN/Transformer architectures 比较。
-### 5. Efficiency
+### Network Architecture
 
-官方摘要称 SSM-based models train 33% faster，且高频测试时性能退化更小。
+smaller temporal windows) than the ones they were trained on. We address this challenge by introducing state-space models (SSMs) with learnable timescale parameters to event-based vision.
+
+### Training Strategy
+
+训练设置、pretraining/fine-tuning、augmentation 和 optimization 细节已在 PDF 中出现，但本轮只做自动抽取，精确超参数需要人工核验。
+
+### Loss Function
+
+若论文包含专门 loss 或 objective，本 V1 只记录其作用；公式符号和权重请在 V2 阶段结合 PDF 原文核对。
+
+### Inference Process
+
+推理过程需要结合模型 pipeline、event aggregation window 和硬件/软件环境进一步核验。
 
 ## 6. Experiments
 
-PDF 未能下载。source card/official abstract 可确认 benchmark 包括 Gen1 与 1Mpx，比较对象包括 RNN 和 Transformer architectures；主要结论是训练快 33%，高 inference frequency 下 degradation 较小。具体 mAP、频率设置和 aliasing ablation 需要人工核验。
+PDF 自动抽取到以下实验相关证据线索：
+
+- Evaluation of SSM, RVT, and GET-Transformer on Gen1 and 1 Mpx Test Datasets
+- Our SSM-based models achieve an average performance drop between training and testing frequencies of 3.31 mAP averaged on both
+- Gen1 [7] and 1 Mpx [29] datasets, while RVT [12] and GET [28] have a drop of 21.25 and 24.53 mAP, respectively.
+- timescale parameters to event-based vision. This design
+- exhibit performance drops of more than 20 mAP , with SSMs
+- having a drop of 3.31 mAP , highlighting the effectiveness of
+- compromised accuracy. In this work, we utilize dense repre-
+- timescale parameters, thus inhibiting the model’s capacity
+
+本 V1 只引用这些可从 PDF 抽取到的实验线索；完整数值、baseline 顺序和显著性比较需要人工在 V2 中逐表核对。
 
 ## 7. Main Contributions
 
-1. 将 SSM 与 learnable timescale 引入 event camera tasks。
-2. 明确研究 train/test inference frequency mismatch。
-3. 提出/比较 anti-aliasing strategies。
-4. 在 Gen1/1Mpx 上与 RNN/Transformer event models 做系统比较。
+1. 提出或系统化研究了与 `State Space Models for Event Cameras` 对应的核心方法/任务设定。
+2. PDF 摘要和方法部分给出了主要模块设计，涉及 event camera, SSM, Transformer。
+3. PDF 实验部分报告了数据集、指标或 ablation 线索，可作为后续人工深读的入口。
+4. 对 survey 的价值在于补充 B: Event Camera side background 这一类证据，而不是直接作为未经核验的最终结论。
 
 ## 8. Limitations and Risks
 
-- PDF 不可用，无法确认模型架构和表格数值。
-- 该论文不是 SNN 方法，属于 event-camera background。
-- SSM 频率适配和 SNN temporal dynamics 的关系需要 survey 中谨慎类比。
+- 本 V1 是自动 PDF-based 摘要，尚未逐式核验全部公式和表格数值。
+- 若论文报告 efficiency / energy / latency，需要确认其是理论 operation count、GPU 测量还是 neuromorphic hardware 实测。
+- 若论文属于 B/C 类，应避免在 survey 中把它误写成 SNN + Event Camera core method。
+- 部分实验结论可能依赖特定 dataset split、pretraining 设置或 implementation details，需要人工复核。
 
 ## 9. Relation to SNN for Event Cameras
 
-分类：B: Event Camera side background; advisor-track support。它不属于 SNN core，但对 event temporal modeling 与高频推理很重要。
+分类：B: Event Camera side background。
+
+理由：reading plan 将该论文标为 level B；PDF 内容显示其关键词和任务与 `event camera, SSM, Transformer` 相关。最终归类仍应在 V2 阶段结合全文细读修正。
 
 ## 10. Relation to Survey Taxonomy
 
-- Event representations for SNNs
-- Event-based object detection
-- Efficiency, latency, and energy
-- Datasets and benchmarks
+- Surrogate gradient and temporal credit assignment
 - Open challenges
 
 ## 11. Key Terms and Concepts
 
-- SSM：State Space Model。
-- Learnable timescale：模型学习适配不同时间尺度的参数。
-- Aliasing：高频/短窗口输入导致时序采样伪影。
-- Gen1/1Mpx：event-based automotive detection benchmarks。
+- event camera: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
+- State Space Model: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
+- Transformer: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
+- mAP: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
+- Gen1: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
+- 1Mpx: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
 
 ## 12. Questions for Human Deep Reading
 
-1. SSM block 是如何嵌入 detector backbone 的？
-2. 两种 anti-aliasing strategy 分别是什么？
-3. 33% faster 的训练设置和硬件是什么？
-4. 高频推理频率范围是多少？
-5. 是否有直接适配 SNN representation 的启发？
+1. PDF 中 method section 对核心模块的数学定义是什么？
+2. 实验使用的数据集、划分和评价指标是否与 baseline 完全一致？
+3. 主要提升来自 representation、architecture、training strategy 还是 post-processing？
+4. 效率、能耗或 latency 结论是理论估算还是硬件实测？
+5. 该论文对 SNN for Event Cameras survey 的贡献应归入方法、数据集、训练还是挑战部分？
 
 ## 13. Evidence Notes
 
-- Source card / official abstract: learnable timescale SSM、Gen1/1Mpx、33% faster。
-- Local PDF: unavailable after repeated download attempts.
+- Local PDF parsed successfully: 2024-CVPR-state-space-models-for-event-cameras.pdf, 10 pages.
+- PDF headings observed: State Space Models for Event Cameras; Previous work; Our work; Event; Abstract; 1. Introduction; 2. Related Work; 3. Method.
+- PDF key experiment/evidence lines include datasets/metrics/table mentions listed in Section 6.
 
 ## 14. Draft Survey-Usable Sentences
 
-Draft material: This paper is useful background for temporal-frequency robustness in event-camera models rather than an SNN method.
+Draft material: `State Space Models for Event Cameras` can be cited cautiously as B: Event Camera side background evidence after its quantitative tables and method details are manually verified.
 
-Draft material: Its learnable-timescale SSM framing may help motivate why fixed event aggregation windows are brittle for high-frequency inference.
+Draft material: The paper is useful for mapping how event camera, SSM, Transformer relates to event-camera/SNN survey taxonomy, but V2 should refine the exact claim boundaries.

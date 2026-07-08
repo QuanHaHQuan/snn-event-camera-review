@@ -11,97 +11,124 @@ summary_type: "Codex automated PDF-based summary"
 source_card: "01-papers-by-conference/ICCV2025/B/2025-ICCV-B-efficient-event-camera-data-pretraining-with-adaptive-prompt-fusion.md"
 official_page: "https://openaccess.thecvf.com/content/ICCV2025/html/Liang_Efficient_Event_Camera_Data_Pretraining_with_Adaptive_Prompt_Fusion_ICCV_2025_paper.html"
 pdf_link: "https://openaccess.thecvf.com/content/ICCV2025/papers/Liang_Efficient_Event_Camera_Data_Pretraining_with_Adaptive_Prompt_Fusion_ICCV_2025_paper.pdf"
-local_pdf_status: "unavailable"
+local_pdf_status: "downloaded"
 status: "auto-generated; needs human review"
-tags: ["event camera", "pretraining", "adaptive prompt fusion", "STP", "N-ImageNet", "advisor-track"]
+tags: ["event camera", "pretraining"]
 ---
 
 # Summary V1｜Efficient Event Camera Data Pretraining with Adaptive Prompt Fusion
 
 ## 1. One-sentence Summary
 
-本文提出 STP adaptive prompt fusion，将 event data representation 调整到 image-pretrained models 可接受的形式，并以轻量 spatiotemporal prompting 提升 event pretraining efficiency。
+本文围绕 Efficient Event Camera Data Pretraining with Adaptive Prompt Fusion，基于论文 PDF 中的方法与实验描述，总结其在 event-camera 背景方向 的主要问题、方法和证据。
 
 ## 2. Research Problem
 
-event camera data 稀缺且稀疏，大规模 pretraining 容易 overfit；直接套用 RGB SSL/pretraining 难以保留 event spatiotemporal structure。
+Applying pretraining-finetuning paradigm to event cameras presents significant challenges due to the scarcity of large-scale event datasets and the inherently sparse nature of event data, which increases the risk of overfitting during extensive pretraining.In this paper, we explore the transfer of pretrained image knowledge to the domain of event cameras to address this challenge. The key to our approach lies in adapting event data representations to align with image pretrained models while simultaneously integrating spatiotemporal information and mitigating data sparsity.
+
+这对本项目的意义在于：它提供了 event-camera 任务、表示或 benchmark 背景，可用于后续 survey 中建立问题边界和比较基线。
 
 ## 3. Background and Motivation
 
-image pretrained models 含有强视觉先验。event-camera pretraining 的关键是把 sparse temporal signals 映射到 image-model compatible representation，同时保留 event 的 temporal dynamics。
+The key to our approach lies in adapting event data representations to align with image pretrained models while simultaneously integrating spatiotemporal information and mitigating data sparsity. To achieve this, we propose a lightweight SpatioTemporal information fusion Prompting (STP) method, which progressively fuses the spatiotemporal characteristics of event data through a dynamic perception module with multi-scale spatiotemporal receptive fields, enabling compatibility with image pretrained models.STP enhances event data representation by capturing local information within a large receptive field and performing global information exchange along the temporal dimension.
+
+从 survey 角度看，需要关注它是否真正利用 event data 的 asynchronous / sparse / high-temporal-resolution 特性，或是否主要是把已有视觉/SNN 模型迁移到相关任务上。
 
 ## 4. Method Overview
 
-STP (SpatioTemporal information fusion Prompting) 使用 dynamic perception module 和 multi-scale spatiotemporal receptive fields，逐步融合 event data 的时空特征，减少 sparse regions，并沿 temporal dimension 做 global information exchange。输出 prompt-enhanced event representation 用于分类、语义分割和 optical flow fine-tuning。
+To achieve this, we propose a lightweight SpatioTemporal information fusion Prompting (STP) method, which progressively fuses the spatiotemporal characteristics of event data through a dynamic perception module with multi-scale spatiotemporal receptive fields, enabling compatibility with image pretrained models.STP enhances event data representation by capturing local information within a large receptive field and performing global information exchange along the temporal dimension. This strategy effectively reduces sparse regions in event data while refining fine-grained details, all while preserving its inherent spatiotemporal structure.
+
+整体 pipeline、输入输出和模块边界已经在 PDF 中出现；本 V1 先记录高层结构，V2 阶段应逐图核对 architecture figure 和 method equations。
 
 ## 5. Technical Details
 
-### 1. Event Representation
+### Event Representation / Input
 
-把 event data representation 与 image pretrained models 对齐，同时保留 spatiotemporal structure。
-### 2. Prompt Module
+论文涉及 event streams / event camera data；具体表示形式请在 V2 阶段核对 PDF method section。
 
-STP 是 lightweight prompt/fusion 方法，不是 SNN。
-### 3. Dynamic Perception
+### Spiking Neuron / SNN Module
 
-multi-scale spatiotemporal receptive fields 捕获局部和全局时序信息。
-### 4. Training Strategy
+未发现明确 SNN/spiking module；该论文主要是 event-camera 或视觉模型背景。
 
-pretraining-finetuning paradigm；官方摘要称仅用 1/10 pretraining parameters 和 1/3 training epochs。
-### 5. Experiments
+### Network Architecture
 
-classification、semantic segmentation、optical flow；N-ImageNet top-1 accuracy 68.87% (+4.04%)。
+To achieve this, we propose a lightweight SpatioTemporal information fusion Prompting (STP) method, which progressively fuses the spatiotemporal characteristics of event data through a dynamic perception module with multi-scale spatiotemporal receptive fields, enabling compatibility with image pretrained models.STP enhances event data representation by capturing local information within a large receptive field and performing global information exchange along the temporal dimension. This strategy effectively reduces sparse regions in event data while refining fine-grained details, all while preserving its inherent spatiotemporal structure.
+
+### Training Strategy
+
+训练设置、pretraining/fine-tuning、augmentation 和 optimization 细节已在 PDF 中出现，但本轮只做自动抽取，精确超参数需要人工核验。
+
+### Loss Function
+
+若论文包含专门 loss 或 objective，本 V1 只记录其作用；公式符号和权重请在 V2 阶段结合 PDF 原文核对。
+
+### Inference Process
+
+推理过程需要结合模型 pipeline、event aggregation window 和硬件/软件环境进一步核验。
 
 ## 6. Experiments
 
-PDF 未能下载。source card/official abstract 可确认任务包括 classification、semantic segmentation、optical flow estimation；N-ImageNet top-1 accuracy 为 68.87%，提升 +4.04%，且使用 1/10 pretraining parameters 和 1/3 training epochs。其余数据集和表格需人工核验。
+PDF 自动抽取到以下实验相关证据线索：
+
+- scale event datasets and the inherently sparse nature of event
+- of the pretraining parameters and 1/3 of the training epochs.
+- transfer learning approaches on the N-ImageNet dataset [32].
+- trained models based on large-scale event camera datasets.
+- (e.g., ImageNet-21k [13], JFT-300M [59]) and the develop-
+- datasets, researchers have attempted to use transfer learning
+- ImageNet dataset [ 32]. They have demonstrated that the
+- over, the largest available event camera dataset is derived
+
+本 V1 只引用这些可从 PDF 抽取到的实验线索；完整数值、baseline 顺序和显著性比较需要人工在 V2 中逐表核对。
 
 ## 7. Main Contributions
 
-1. 提出面向 event camera data 的 efficient pretraining/fine-tuning framework。
-2. 提出 lightweight STP prompt fusion。
-3. 展示从 image pretrained models transfer 到 event domain 的有效性。
-4. 在多个 downstream tasks 报告 SOTA 改善。
+1. 提出或系统化研究了与 `Efficient Event Camera Data Pretraining with Adaptive Prompt Fusion` 对应的核心方法/任务设定。
+2. PDF 摘要和方法部分给出了主要模块设计，涉及 event camera, pretraining。
+3. PDF 实验部分报告了数据集、指标或 ablation 线索，可作为后续人工深读的入口。
+4. 对 survey 的价值在于补充 B: Event Camera side background 这一类证据，而不是直接作为未经核验的最终结论。
 
 ## 8. Limitations and Risks
 
-- PDF 不可用，不能确认实验设置和 baseline fairness。
-- 不是 SNN 方法，主要是 event pretraining background。
-- 依赖 image pretrained models，可能与 neuromorphic/SNN low-power 目标存在距离。
+- 本 V1 是自动 PDF-based 摘要，尚未逐式核验全部公式和表格数值。
+- 若论文报告 efficiency / energy / latency，需要确认其是理论 operation count、GPU 测量还是 neuromorphic hardware 实测。
+- 若论文属于 B/C 类，应避免在 survey 中把它误写成 SNN + Event Camera core method。
+- 部分实验结论可能依赖特定 dataset split、pretraining 设置或 implementation details，需要人工复核。
 
 ## 9. Relation to SNN for Event Cameras
 
-分类：B: Event Camera side background; advisor-track support。它对 survey 的 pretraining/representation 章节有帮助，但不应作为 SNN evidence。
+分类：B: Event Camera side background。
+
+理由：reading plan 将该论文标为 level B；PDF 内容显示其关键词和任务与 `event camera, pretraining` 相关。最终归类仍应在 V2 阶段结合全文细读修正。
 
 ## 10. Relation to Survey Taxonomy
 
-- Event representations for SNNs
-- Datasets and benchmarks
-- Event-based object detection
 - SNN training methods
+- Efficiency, latency, and energy
 - Open challenges
 
 ## 11. Key Terms and Concepts
 
-- STP：SpatioTemporal information fusion Prompting。
-- Adaptive Prompt Fusion：动态融合 event spatiotemporal information 的 prompt 机制。
-- N-ImageNet：event-based classification benchmark。
+- event camera: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
+- Top-1 accuracy: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
+- ImageNet: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
 
 ## 12. Questions for Human Deep Reading
 
-1. STP 插入 image pretrained model 的哪些层？
-2. pretraining 数据集规模和来源是什么？
-3. 68.87% 的 baseline 是哪一个？
-4. segmentation/optical flow 的提升是否同样稳定？
-5. 该 representation 能否喂给 SNN？
+1. PDF 中 method section 对核心模块的数学定义是什么？
+2. 实验使用的数据集、划分和评价指标是否与 baseline 完全一致？
+3. 主要提升来自 representation、architecture、training strategy 还是 post-processing？
+4. 效率、能耗或 latency 结论是理论估算还是硬件实测？
+5. 该论文对 SNN for Event Cameras survey 的贡献应归入方法、数据集、训练还是挑战部分？
 
 ## 13. Evidence Notes
 
-- Source card / official abstract: STP、dynamic perception、N-ImageNet 68.87%。
-- Local PDF: unavailable after repeated download attempts.
+- Local PDF parsed successfully: 2025-ICCV-efficient-event-camera-data-pretraining-with-adaptive-prompt-fusion.pdf, 12 pages.
+- PDF headings observed: 1 School of Computer Science and Engineering, Sun Yat-Sen University; 2 Department of Intelligent Computing, Pengcheng Laboratory; 3 School of Computer Science, Peking University 4 Xpeng Motors Technology Co Ltd; Abstract; 1. Introduction; Transfer learning; 2. Related Work; 3. Method.
+- PDF key experiment/evidence lines include datasets/metrics/table mentions listed in Section 6.
 
 ## 14. Draft Survey-Usable Sentences
 
-Draft material: Adaptive prompt fusion is a non-spiking route for transferring image-model priors into event-camera representations.
+Draft material: `Efficient Event Camera Data Pretraining with Adaptive Prompt Fusion` can be cited cautiously as B: Event Camera side background evidence after its quantitative tables and method details are manually verified.
 
-Draft material: Its efficiency claims should be kept separate from neuromorphic energy efficiency.
+Draft material: The paper is useful for mapping how event camera, pretraining relates to event-camera/SNN survey taxonomy, but V2 should refine the exact claim boundaries.

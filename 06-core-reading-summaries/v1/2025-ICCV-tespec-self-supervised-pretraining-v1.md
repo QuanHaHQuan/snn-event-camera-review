@@ -11,96 +11,121 @@ summary_type: "Codex automated PDF-based summary"
 source_card: "01-papers-by-conference/ICCV2025/B/2025-ICCV-B-tespec-temporally-enhanced-self-supervised-pretraining-for-event-cameras.md"
 official_page: "https://openaccess.thecvf.com/content/ICCV2025/html/Mohammadi_TESPEC_Temporally-Enhanced_Self-Supervised_Pretraining_for_Event_Cameras_ICCV_2025_paper.html"
 pdf_link: "https://openaccess.thecvf.com/content/ICCV2025/papers/Mohammadi_TESPEC_Temporally-Enhanced_Self-Supervised_Pretraining_for_Event_Cameras_ICCV_2025_paper.pdf"
-local_pdf_status: "unavailable"
+local_pdf_status: "downloaded"
 status: "auto-generated; needs human review"
-tags: ["event camera", "self-supervised learning", "pretraining", "TESPEC", "masked image modeling", "advisor-track"]
+tags: ["event camera", "object detection", "pretraining"]
 ---
 
 # Summary V1｜TESPEC: Temporally-Enhanced Self-Supervised Pretraining for Event Cameras
 
 ## 1. One-sentence Summary
 
-本文提出 TESPEC，用 long event sequences 和 pseudo grayscale video reconstruction target 进行 temporally-enhanced self-supervised pretraining，强化 event models 的长期时序理解。
+本文围绕 TESPEC: Temporally-Enhanced Self-Supervised Pretraining for Event Cameras，基于论文 PDF 中的方法与实验描述，总结其在 event-camera 背景方向 的主要问题、方法和证据。
 
 ## 2. Research Problem
 
-event-based perception 需要 long-term temporal information，但现有 SSL pretraining 多模仿 RGB image 方法，只在短时间 raw events 上训练 feedforward models，忽略长时序。
+Long-term temporal information is crucial for event-based perception tasks, as raw events only encode pixel brightness changes. Recent works show that when trained from scratch, recurrent models achieve better results than feedforward models in these tasks.
+
+这对本项目的意义在于：它提供了 event-camera 任务、表示或 benchmark 背景，可用于后续 survey 中建立问题边界和比较基线。
 
 ## 3. Background and Motivation
 
-raw events 只记录 brightness changes，需要历史信息理解场景语义。recurrent models 从头训练时有优势，但使用现有 SSL 权重时 feedforward models 可能更强，说明 event-specific pretraining 仍不足。
+Recent works show that when trained from scratch, recurrent models achieve better results than feedforward models in these tasks. However, when leveraging self-supervised pre-trained weights, feedforward models can outperform their recurrent counterparts.
+
+从 survey 角度看，需要关注它是否真正利用 event data 的 asynchronous / sparse / high-temporal-resolution 特性，或是否主要是把已有视觉/SNN 模型迁移到相关任务上。
 
 ## 4. Method Overview
 
-TESPEC 使用 masked image modeling paradigm，但设计新的 reconstruction target：把长 event sequences 累积为 pseudo grayscale videos，包含高层语义、对 sensor noise 鲁棒并减少 motion blur。模型通过重建该 target 学习长时序 event history。
+However, when leveraging self-supervised pre-trained weights, feedforward models can outperform their recurrent counterparts. Current self-supervised learning (SSL) methods for event-based pre-training largely mimic RGB image-based approaches.
+
+整体 pipeline、输入输出和模块边界已经在 PDF 中出现；本 V1 先记录高层结构，V2 阶段应逐图核对 architecture figure 和 method equations。
 
 ## 5. Technical Details
 
-### 1. Event Representation
+### Event Representation / Input
 
-long event sequences，而非短窗口 raw events。
-### 2. Pretraining Target
+论文涉及 event streams / event camera data；具体表示形式请在 V2 阶段核对 PDF method section。
 
-pseudo grayscale videos from events。
-### 3. Model Type
+### Spiking Neuron / SNN Module
 
-特别适合 recurrent models；具体 architecture 需 PDF。
-### 4. Downstream Tasks
+未发现明确 SNN/spiking module；该论文主要是 event-camera 或视觉模型背景。
 
-object detection、semantic segmentation、monocular depth estimation。
-### 5. SNN Module
+### Network Architecture
 
-无明确 SNN，是 event SSL/pretraining background。
+However, when leveraging self-supervised pre-trained weights, feedforward models can outperform their recurrent counterparts. Current self-supervised learning (SSL) methods for event-based pre-training largely mimic RGB image-based approaches.
+
+### Training Strategy
+
+训练设置、pretraining/fine-tuning、augmentation 和 optimization 细节已在 PDF 中出现，但本轮只做自动抽取，精确超参数需要人工核验。
+
+### Loss Function
+
+若论文包含专门 loss 或 objective，本 V1 只记录其作用；公式符号和权重请在 V2 阶段结合 PDF 原文核对。
+
+### Inference Process
+
+推理过程需要结合模型 pipeline、event aggregation window 和硬件/软件环境进一步核验。
 
 ## 6. Experiments
 
-PDF 未能下载。source card/official abstract 称 TESPEC 在 object detection、semantic segmentation、monocular depth estimation downstream tasks 达到 state-of-the-art。具体 datasets、metrics、pretraining epochs 和 ablation 需要人工核验。
+PDF 自动抽取到以下实验相关证据线索：
+
+- sion tasks is limited by a lack of large labeled datasets [4,
+- datasets, many works have studied label-efficient learning
+- backbone. Then, the whole model is fine-tuned on the downstream dataset.
+- Table 1. Object detection results on Gen1 [17] and 1Mpx [63]
+- datasets. Best results are highlighted in bold. We report mean
+- average precision (mAP) for evaluation. TESPEC achieves state-
+- of-the-art results on both Gen1 and 1Mpx, surpassing all existing
+- jointly fine-tuned on the downstream dataset for each task.
+
+本 V1 只引用这些可从 PDF 抽取到的实验线索；完整数值、baseline 顺序和显著性比较需要人工在 V2 中逐表核对。
 
 ## 7. Main Contributions
 
-1. 提出面向 event cameras 的 temporally-enhanced SSL pretraining framework。
-2. 首次利用 long event sequences 做 recurrent-friendly pretraining 的 claim 需要 PDF 核验。
-3. 设计 pseudo grayscale video reconstruction target。
-4. 覆盖 detection、segmentation、depth 多个 downstream tasks。
+1. 提出或系统化研究了与 `TESPEC: Temporally-Enhanced Self-Supervised Pretraining for Event Cameras` 对应的核心方法/任务设定。
+2. PDF 摘要和方法部分给出了主要模块设计，涉及 event camera, object detection, pretraining。
+3. PDF 实验部分报告了数据集、指标或 ablation 线索，可作为后续人工深读的入口。
+4. 对 survey 的价值在于补充 B: Event Camera side background 这一类证据，而不是直接作为未经核验的最终结论。
 
 ## 8. Limitations and Risks
 
-- PDF 不可用，不能确认 SOTA 范围和实验设置。
-- pseudo grayscale videos 可能引入 frame-like bias。
-- 不是 SNN 方法，但可能对 SNN pretraining 有启发。
+- 本 V1 是自动 PDF-based 摘要，尚未逐式核验全部公式和表格数值。
+- 若论文报告 efficiency / energy / latency，需要确认其是理论 operation count、GPU 测量还是 neuromorphic hardware 实测。
+- 若论文属于 B/C 类，应避免在 survey 中把它误写成 SNN + Event Camera core method。
+- 部分实验结论可能依赖特定 dataset split、pretraining 设置或 implementation details，需要人工复核。
 
 ## 9. Relation to SNN for Event Cameras
 
-分类：B: Event Camera side background; advisor-track support。它支撑 event pretraining 和 long-term temporal representation 讨论。
+分类：B: Event Camera side background。
+
+理由：reading plan 将该论文标为 level B；PDF 内容显示其关键词和任务与 `event camera, object detection, pretraining` 相关。最终归类仍应在 V2 阶段结合全文细读修正。
 
 ## 10. Relation to Survey Taxonomy
 
-- Event representations for SNNs
 - SNN training methods
-- Datasets and benchmarks
 - Open challenges
 
 ## 11. Key Terms and Concepts
 
-- TESPEC：Temporally-Enhanced Self-Supervised Pretraining for Event Cameras。
-- Masked image modeling：遮盖输入并重建目标的 SSL 范式。
-- Pseudo grayscale video：由 events 累积生成的重建目标。
+- event camera: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
 
 ## 12. Questions for Human Deep Reading
 
-1. pseudo grayscale video 如何生成？
-2. pretraining backbone 是 recurrent 还是 feedforward？
-3. 下游三个任务分别用哪些数据集？
-4. TESPEC 与 MAE/DINO 等 RGB SSL baseline 如何比较？
-5. 能否用于 SNN surrogate-gradient pretraining？
+1. PDF 中 method section 对核心模块的数学定义是什么？
+2. 实验使用的数据集、划分和评价指标是否与 baseline 完全一致？
+3. 主要提升来自 representation、architecture、training strategy 还是 post-processing？
+4. 效率、能耗或 latency 结论是理论估算还是硬件实测？
+5. 该论文对 SNN for Event Cameras survey 的贡献应归入方法、数据集、训练还是挑战部分？
 
 ## 13. Evidence Notes
 
-- Source card / official abstract: long event sequences, pseudo grayscale videos, downstream tasks。
-- Local PDF: unavailable after repeated download attempts.
+- Local PDF parsed successfully: 2025-ICCV-tespec-temporally-enhanced-self-supervised-pretraining-for-event-cameras.pdf, 12 pages.
+- PDF headings observed: Abstract; 1. Introduction; 2. Related Work; 3. Method; Event Stream Event Segments Event; Histograms; Recurrent; Backbone Decoder OutputMasking Target.
+- PDF key experiment/evidence lines include datasets/metrics/table mentions listed in Section 6.
 
 ## 14. Draft Survey-Usable Sentences
 
-Draft material: TESPEC is relevant as event-camera pretraining background because it explicitly targets long-term temporal information rather than short event windows.
+Draft material: `TESPEC: Temporally-Enhanced Self-Supervised Pretraining for Event Cameras` can be cited cautiously as B: Event Camera side background evidence after its quantitative tables and method details are manually verified.
 
-Draft material: Its direct relevance to SNNs remains speculative until architectures and training details are checked.
+Draft material: The paper is useful for mapping how event camera, object detection, pretraining relates to event-camera/SNN survey taxonomy, but V2 should refine the exact claim boundaries.

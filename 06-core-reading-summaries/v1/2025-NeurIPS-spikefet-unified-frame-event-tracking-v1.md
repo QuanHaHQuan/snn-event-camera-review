@@ -10,99 +10,126 @@ summary_version: "v1"
 summary_type: "Codex automated PDF-based summary"
 source_card: "01-papers-by-conference/NeurIPS2025/A/2025-NEURIPS-A-fully-spiking-neural-networks-for-unified-frame-event-object-tracking.md"
 official_page: "https://papers.nips.cc/paper_files/paper/2025/hash/af752cfbdcc6fd3e4cd0eea9f1ad0fab-Abstract-Conference.html"
-pdf_link: "https://papers.nips.cc/paper_files/paper/2025/hash/af752cfbdcc6fd3e4cd0eea9f1ad0fab-Paper-Conference.pdf"
-local_pdf_status: "unavailable"
+pdf_link: "https://arxiv.org/pdf/2505.20834"
+local_pdf_status: "downloaded"
 status: "auto-generated; needs human review"
-tags: ["SNN", "fully spiking", "event camera", "frame-event tracking", "SpikeFET", "RPM", "STR"]
+tags: ["SNN", "event camera", "tracking", "Transformer"]
 ---
 
 # Summary V1｜Fully Spiking Neural Networks for Unified Frame-Event Object Tracking
 
 ## 1. One-sentence Summary
 
-本文提出 SpikeFET，一个 fully Spiking Frame-Event Tracking framework，用 spiking convolution/Transformer 式建模融合 frame 与 event streams，并以 RPM 和 STR 改善 tracking 表征。
+本文围绕 Fully Spiking Neural Networks for Unified Frame-Event Object Tracking，基于论文 PDF 中的方法与实验描述，总结其在 SNN/event camera 交叉方向 的主要问题、方法和证据。
 
 ## 2. Research Problem
 
-frame-event tracking 能提升复杂环境下的 robustness，但现有 fusion methods 计算开销大，且未充分利用 event-driven spiking paradigm 的能效优势。
+The integration of image and event streams offers a promising approach for achieving robust visual object tracking in complex environments. However, current fusion methods achieve high performance at the cost of significant computational overhead and struggle to efficiently extract the sparse, asynchronous information from event streams, failing to leverage the energy-efficient advantages of event-driven spiking paradigms.
+
+这对本项目的意义在于：它提供了 直接的 SNN + event camera 方法证据，可用于后续 survey 中建立问题边界和比较基线。
 
 ## 3. Background and Motivation
 
-event streams 提供 fast motion clues，frames 提供 appearance/context。tracking 需要 template-search matching 和 temporal consistency。fully spiking 设计如果可行，可把融合和全局建模都放入 spike domain。
+However, current fusion methods achieve high performance at the cost of significant computational overhead and struggle to efficiently extract the sparse, asynchronous information from event streams, failing to leverage the energy-efficient advantages of event-driven spiking paradigms. To address this challenge, we propose the first fully Spiking Frame-Event Tracking framework called SpikeFET.
+
+从 survey 角度看，需要关注它是否真正利用 event data 的 asynchronous / sparse / high-temporal-resolution 特性，或是否主要是把已有视觉/SNN 模型迁移到相关任务上。
 
 ## 4. Method Overview
 
-SpikeFET 输入 image/frame stream 与 event stream，使用 fully spiking framework 融合 local convolutional feature extraction 和 Transformer-based global modeling。Random Patchwork Module (RPM) 缓解 convolutional padding 导致的 translation invariance degradation；Spatial-Temporal Regularization (STR) 在 latent space 约束 temporal template features 的一致性。输出为 object tracking result。
+To address this challenge, we propose the first fully Spiking Frame-Event Tracking framework called SpikeFET. This network achieves synergistic integration of convolutional local feature extraction and Transformer-based global modeling within the spiking paradigm, effectively fusing frame and event data.
+
+整体 pipeline、输入输出和模块边界已经在 PDF 中出现；本 V1 先记录高层结构，V2 阶段应逐图核对 architecture figure 和 method equations。
 
 ## 5. Technical Details
 
-### 1. Event Representation
+### Event Representation / Input
 
-官方摘要确认 frame-event inputs；具体 event frame/voxel construction 需 PDF 核验。
-### 2. Spiking Module
+论文涉及 event streams / event camera data；具体表示形式请在 V2 阶段核对 PDF method section。
 
-网络声称 fully spiking，卷积局部特征与 Transformer global modeling 均在 spiking paradigm 中协同。
-### 3. RPM
+### Spiking Neuron / SNN Module
 
-随机空间重组与 learnable type encoding，用于减轻 positional bias，同时保留 residual structure。
-### 4. STR
+PDF/abstract 明确涉及 SNN/spiking/spike-driven design；具体 neuron model、surrogate gradient 或 spike conversion 需要在 V2 中逐式核验。
 
-对 temporal template features 施加 spatio-temporal consistency，缓解 asymmetric features 的 similarity metric degradation。
-### 5. Training / Inference
+### Network Architecture
 
-具体 loss、datasets 和能耗测量需人工核验。
+To address this challenge, we propose the first fully Spiking Frame-Event Tracking framework called SpikeFET. This network achieves synergistic integration of convolutional local feature extraction and Transformer-based global modeling within the spiking paradigm, effectively fusing frame and event data.
+
+### Training Strategy
+
+训练设置、pretraining/fine-tuning、augmentation 和 optimization 细节已在 PDF 中出现，但本轮只做自动抽取，精确超参数需要人工核验。
+
+### Loss Function
+
+若论文包含专门 loss 或 objective，本 V1 只记录其作用；公式符号和权重请在 V2 阶段结合 PDF 原文核对。
+
+### Inference Process
+
+推理过程需要结合模型 pipeline、event aggregation window 和硬件/软件环境进一步核验。
 
 ## 6. Experiments
 
-PDF 未能下载。官方摘要称在 multiple benchmarks 上取得 superior tracking accuracy 并显著降低 power consumption，但数据集、success/precision/EAO 等指标、baseline 和能耗计算边界均需人工核验。
+PDF 自动抽取到以下实验相关证据线索：
+
+- streams, failing to leverage the energy-efficient advantages of event-driven spiking
+- demonstrate that the proposed framework achieves superior tracking accuracy over
+- and ultra-low energy consumption advantages in event stream processing through their bio-inspired
+- tracking, it suffers from compromised energy efficiency. Notably, SDTrack [16] implements a fully
+- bias introduced by padding [17, 18] in the convolution module on tracking accuracy, we propose a
+- higher AUC score on the FE108 [8] dataset compared to the state-of-the-art SDSTrack [19], while
+- enhancing the tracking accuracy and stability of the model.
+- computational power consumption and performance and parameters, as shown in Fig. 1.
+
+本 V1 只引用这些可从 PDF 抽取到的实验线索；完整数值、baseline 顺序和显著性比较需要人工在 V2 中逐表核对。
 
 ## 7. Main Contributions
 
-1. 提出 first fully Spiking Frame-Event Tracking framework SpikeFET。
-2. 在 spiking paradigm 中结合 convolutional local feature extraction 与 Transformer global modeling。
-3. 提出 RPM 处理 padding positional bias。
-4. 提出 STR 加强 temporal template consistency。
+1. 提出或系统化研究了与 `Fully Spiking Neural Networks for Unified Frame-Event Object Tracking` 对应的核心方法/任务设定。
+2. PDF 摘要和方法部分给出了主要模块设计，涉及 SNN, event camera, tracking, Transformer。
+3. PDF 实验部分报告了数据集、指标或 ablation 线索，可作为后续人工深读的入口。
+4. 对 survey 的价值在于补充 A: SNN + Event Camera core paper 这一类证据，而不是直接作为未经核验的最终结论。
 
 ## 8. Limitations and Risks
 
-- PDF 不可用，所有实验数字都不能在本轮确认。
-- “fully spiking” 需要检查是否包括 head、fusion、normalization 和 similarity computation。
-- power consumption claim 需要确认是理论估算、GPU proxy 还是 neuromorphic hardware 实测。
+- 本 V1 是自动 PDF-based 摘要，尚未逐式核验全部公式和表格数值。
+- 若论文报告 efficiency / energy / latency，需要确认其是理论 operation count、GPU 测量还是 neuromorphic hardware 实测。
+- 若论文属于 B/C 类，应避免在 survey 中把它误写成 SNN + Event Camera core method。
+- 部分实验结论可能依赖特定 dataset split、pretraining 设置或 implementation details，需要人工复核。
 
 ## 9. Relation to SNN for Event Cameras
 
-分类：A: SNN + Event Camera core paper。它是 survey 中 event-based tracking 和 fully spiking architecture 的重要候选。
+分类：A: SNN + Event Camera core paper。
+
+理由：reading plan 将该论文标为 level A；PDF 内容显示其关键词和任务与 `SNN, event camera, tracking, Transformer` 相关。最终归类仍应在 V2 阶段结合全文细读修正。
 
 ## 10. Relation to Survey Taxonomy
 
-- SNN architectures for event cameras
 - Event-based tracking
-- Efficiency, latency, and energy
-- Hybrid ANN-SNN models
+- SNN architectures for event cameras
 - Open challenges
 
 ## 11. Key Terms and Concepts
 
-- SpikeFET：Fully Spiking Frame-Event Tracking framework。
-- RPM：Random Patchwork Module。
-- STR：Spatial-Temporal Regularization。
-- Template/Search：tracking 中用于目标匹配的两类输入区域。
+- SNN: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
+- event camera: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
+- Spiking Neural Network: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
+- Transformer: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
 
 ## 12. Questions for Human Deep Reading
 
-1. SpikeFET 的全部模块是否都使用 spike activations？
-2. RPM 的 randomization 在训练/推理是否一致？
-3. STR 的 loss 形式和权重是多少？
-4. 比较的 frame-event trackers 包含哪些强 baseline？
-5. power reduction 的硬件假设是什么？
+1. PDF 中 method section 对核心模块的数学定义是什么？
+2. 实验使用的数据集、划分和评价指标是否与 baseline 完全一致？
+3. 主要提升来自 representation、architecture、training strategy 还是 post-processing？
+4. 效率、能耗或 latency 结论是理论估算还是硬件实测？
+5. 该论文对 SNN for Event Cameras survey 的贡献应归入方法、数据集、训练还是挑战部分？
 
 ## 13. Evidence Notes
 
-- Source card / official abstract: SpikeFET、RPM、STR、fully spiking claim。
-- Local PDF: unavailable after repeated download attempts; no page/table evidence available.
+- Local PDF parsed successfully: 2025-NeurIPS-fully-spiking-neural-networks-for-unified-frame-event-object-tracking.pdf, 25 pages.
+- PDF headings observed: Fully Spiking Neural Networks for Unified; National University of Defense Technology; Abstract; 1 Introduction; HRCEUTrack; OSTrack; CEUTrack; Model Size.
+- PDF key experiment/evidence lines include datasets/metrics/table mentions listed in Section 6.
 
 ## 14. Draft Survey-Usable Sentences
 
-Draft material: SpikeFET should be treated as a candidate fully spiking frame-event tracker, but the exact spiking boundary needs PDF verification.
+Draft material: `Fully Spiking Neural Networks for Unified Frame-Event Object Tracking` can be cited cautiously as A: SNN + Event Camera core paper evidence after its quantitative tables and method details are manually verified.
 
-Draft material: Its RPM and STR modules may be useful when discussing tracking-specific inductive biases for spiking event models.
+Draft material: The paper is useful for mapping how SNN, event camera, tracking relates to event-camera/SNN survey taxonomy, but V2 should refine the exact claim boundaries.
