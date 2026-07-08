@@ -16,7 +16,8 @@ Do not broaden the repository into generic event-based systems, event logs, even
 
 The current pre-enrollment reading strategy is maintained as a separate reading-plan layer:
 
-* `00-index/reading-plan-core.md` = `unique(P0 papers + advisor_track papers)`;
+* `00-index/reading-plan-p0.md` = current-corpus papers with `priority=P0`;
+* `00-index/reading-plan-core.md` = `unique(P0 papers + advisor_track papers)` from the current corpus, plus selected SECNet reference-only entries;
 * target size is about 60 papers;
 * if fewer than 60 genuinely strong papers are available, do not pad the list;
 * `P1` is optional reading;
@@ -754,6 +755,7 @@ When a new venue/year is added, do not edit generated reading-plan Markdown file
 
 This script reads existing indexes, reviewed abstracts, cards, and the curated SECNet-reference subset. It generates:
 
+* `00-index/reading-plan-p0.md`
 * `00-index/reading-plan-core.md`
 * `00-index/reading-plan-p1.md`
 * `00-index/auto-summary-p2.md`

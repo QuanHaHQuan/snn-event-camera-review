@@ -1,10 +1,6 @@
-# Core Reading Plan
+# P0 精读 Reading
 
-This file is the actual core reading package: `unique(P0 papers + advisor_track papers)` from the current corpus, plus selected SECNet reference-only entries.
-Use `reading-plan-p0.md` when you want the strict P0-only 精读 list without advisor-track-only or external SECNet references.
-The goal is roughly 60 core readings before enrollment; if the count is lower, do not pad it with weakly related papers.
-
-## Current Corpus: P0 + Advisor Track
+Strict P0-only list from the current corpus. This file excludes advisor-track-only papers and SECNet reference-only entries.
 
 | Title | Year | Venue | Refined Level | Priority | Advisor Track | Source | Reason | Link |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -58,15 +54,3 @@ The goal is roughly 60 core readings before enrollment; if the count is lower, d
 | TTFSFormer: A TTFS-based Lossless Conversion of Spiking Transformer | 2025 | ICML | C | P0 | no | current corpus | Title/abstract indicate SNN, spiking neural networks, spiking transformers, surrogate gradients, ANN-to-SNN, or spike-driven learning without event-camera method. | [card](../01-papers-by-conference/ICML2025/C/2025-ICML-C-ttfsformer-a-ttfs-based-lossless-conversion-of-spiking-transformer.md) |
 | Bipolar Self-attention for Spiking Transformers | 2025 | NeurIPS | C | P0 | no | current corpus | SNN/spiking method with event-camera evidence mainly as benchmark or supporting context; not a clearly event-camera-specific method from title/abstract. | [card](../01-papers-by-conference/NeurIPS2025/C/2025-NEURIPS-C-bipolar-self-attention-for-spiking-transformers.md) |
 | Spiking Neural Networks Need High-Frequency Information | 2025 | NeurIPS | C | P0 | no | current corpus | Title/abstract indicate SNN, spiking neural networks, spiking transformers, surrogate gradients, ANN-to-SNN, or spike-driven learning without event-camera method. | [card](../01-papers-by-conference/NeurIPS2025/C/2025-NEURIPS-C-spiking-neural-networks-need-high-frequency-information.md) |
-| Scaling Dense Event-Stream Pretraining from Visual Foundation Models | 2026 | CVPR | B | P1 | yes | current corpus | Title/abstract indicate event-camera, DVS, visual event stream, or event-camera task background without clear SNN method. | [card](../01-papers-by-conference/CVPR2026/B/2026-CVPR-B-scaling-dense-event-stream-pretraining-from-visual-foundation-models.md) |
-
-## SECNet Reference-Only Entries
-
-| Title | Authors | Year | Venue | Why Read | Relation to SECNet | Source | In Current Corpus |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Rethinking Efficient and Effective Point-based Networks for Event Camera Classification and Regression | Hongwei Ren et al. | 2025 | TPAMI | Direct predecessor from the advisor group and the closest conceptual parent of SECNet. | Point-based event-camera classification/regression and EventMamba-style method chain. | SECNet references | no |
-| TTPOINT: A Tensorized Point Cloud Network for Lightweight Action Recognition with Event Cameras | Hongwei Ren et al. | 2023 | ACM MM | Advisor-group lightweight point/event representation baseline. | Tensorized point-cloud processing for event-camera action recognition. | SECNet references | no |
-| Event Voxel Set Transformer for Spatiotemporal Representation Learning on Event Streams | B. Xie et al. | 2024 | TCSVT | Recent event-stream voxel/set-transformer baseline. | Voxel/set-transformer contrast against SECNet's Event Cloud representation. | SECNet references | no |
-| Voxel-based Multi-Scale Transformer Network for Event Stream Processing | D. Liu, T. Wang, and C. Sun | 2023 | TCSVT | VMST-Net is a direct SECNet comparison target. | Voxel-based transformer baseline for event stream processing. | SECNet references | no |
-| Action Recognition and Benchmark Using Event Cameras | Y. Gao et al. | 2023 | TPAMI | Important event-camera action-recognition benchmark context. | THUE-ACT-50 and recognition benchmark context used around SECNet. | SECNet references | no |
-| Mamba: Linear-Time Sequence Modeling with Selective State Spaces | Albert Gu and Tri Dao | 2023 | arXiv / core architecture | Core sequence-modeling architecture behind Mamba-style event networks. | Background for state-space sequence modeling comparisons. | SECNet references | no |

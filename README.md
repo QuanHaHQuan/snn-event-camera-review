@@ -119,7 +119,9 @@ This step does not replace venue search or A/B/C indexing. It only adds reading 
 - `P2`: automatic-summary queue;
 - `P3`: retained but not active now.
 
-Before enrollment, the main reading file is `00-index/reading-plan-core.md`, defined as `unique(P0 papers + advisor_track papers)`. The target is roughly 60 papers; if the current repository and SECNet references produce fewer than 60 strong candidates, do not pad the list with weakly related papers.
+Before enrollment, the strict P0 精读 list is `00-index/reading-plan-p0.md`, defined as current-corpus papers with `priority=P0`.
+
+The main core reading package is `00-index/reading-plan-core.md`, defined as `unique(P0 papers + advisor_track papers)` from the current corpus plus selected SECNet reference-only entries. The target is roughly 60 papers; if the current repository and SECNet references produce fewer than 60 strong candidates, do not pad the list with weakly related papers.
 
 `advisor_track` is only for understanding the uploaded SECNet / ICML 2026 method chain. It is built from current corpus papers plus selected SECNet references and does not encode future TPAMI extension ideas.
 

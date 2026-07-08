@@ -475,6 +475,36 @@ def reference_to_md(ref: SecnetReference) -> str:
     )
 
 
+def write_core_plan(path: Path, current_rows: list[dict[str, str]], overrides: ReadingOverrides) -> None:
+    lines = [
+        "# Core Reading Plan",
+        "",
+        "This file is the actual core reading package: `unique(P0 papers + advisor_track papers)` from the current corpus, plus selected SECNet reference-only entries.",
+        "Use `reading-plan-p0.md` when you want the strict P0-only 精读 list without advisor-track-only or external SECNet references.",
+        "The goal is roughly 60 core readings before enrollment; if the count is lower, do not pad it with weakly related papers.",
+        "",
+        "## Current Corpus: P0 + Advisor Track",
+        "",
+        "| Title | Year | Venue | Refined Level | Priority | Advisor Track | Source | Reason | Link |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+    ]
+    if current_rows:
+        lines.extend(current_row_to_md(row) for row in current_rows)
+    else:
+        lines.append("| None |  |  |  |  |  |  |  |  |")
+    lines.extend(
+        [
+            "",
+            "## SECNet Reference-Only Entries",
+            "",
+            "| Title | Authors | Year | Venue | Why Read | Relation to SECNet | Source | In Current Corpus |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- |",
+        ]
+    )
+    lines.extend(reference_to_md(ref) for ref in overrides.secnet_references)
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def write_advisor_track(path: Path, current_rows: list[dict[str, str]], overrides: ReadingOverrides) -> None:
     lines = [
         "# Advisor Track",
@@ -592,18 +622,19 @@ def main() -> int:
 
     current_advisor_rows = [row for row in rows if row["advisor_track"] == "yes"]
     core_current = [row for row in rows if row["priority"] == "P0" or row["advisor_track"] == "yes"]
+    p0_rows = [row for row in rows if row["priority"] == "P0"]
     p1_rows = [row for row in rows if row["priority"] == "P1"]
     p2_rows = [row for row in rows if row["priority"] == "P2"]
     x_rows = [row for row in rows if row["refined_level"] == "X" or row["priority"] == "P3"]
 
+    write_core_plan(index_dir / "reading-plan-core.md", core_current, overrides)
     write_plan(
-        index_dir / "reading-plan-core.md",
-        "Core Reading Plan",
+        index_dir / "reading-plan-p0.md",
+        "P0 精读 Reading",
         [
-            "This file lists `unique(P0 papers + advisor_track papers)` from the current corpus, followed by compact SECNet reference-only entries in `advisor-track.md`.",
-            "The goal is roughly 60 core readings before enrollment; if the count is lower, do not pad it with weakly related papers.",
+            "Strict P0-only list from the current corpus. This file excludes advisor-track-only papers and SECNet reference-only entries.",
         ],
-        core_current,
+        p0_rows,
     )
     write_plan(index_dir / "reading-plan-p1.md", "P1 Optional Reading", ["Important papers to read if time allows."], p1_rows)
     write_plan(index_dir / "auto-summary-p2.md", "P2 Auto-Summary Queue", ["Keep these papers for later LLM/Codex summaries rather than human精读."], p2_rows)
@@ -621,6 +652,8 @@ def main() -> int:
     print(f"Total papers: {len(rows)}")
     print("Refined levels: " + ", ".join(f"{key}={counts.get(key, 0)}" for key in ["A", "B", "C", "X"]))
     print("Priorities: " + ", ".join(f"{key}={priorities.get(key, 0)}" for key in ["P0", "P1", "P2", "P3"]))
+    print(f"P0 current corpus: {len(p0_rows)}")
+    print(f"core current corpus (P0 + advisor_track): {len(current_core_ids)}")
     print(f"advisor_track current corpus: {len(current_advisor_rows)}")
     print(f"advisor_track SECNet references: {len(overrides.secnet_references)}")
     print(f"unique(P0 current + advisor_track current + SECNet references): {total_core_unique}")
