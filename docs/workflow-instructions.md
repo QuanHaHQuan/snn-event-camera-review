@@ -24,6 +24,8 @@ The current pre-enrollment reading strategy is maintained as a separate reading-
 * `P2` is for automatic summaries;
 * `P3` is retained but inactive;
 * `advisor_track` is only for understanding the uploaded SECNet / ICML 2026 method chain and selected SECNet references;
+* selected SECNet reference-only entries must still be directly related to event cameras, visual event streams, or SNNs;
+* generic architecture background papers should be learned separately and should not be added to the core reading package;
 * do not encode or speculate about future TPAMI extension ideas.
 
 ## Part 1: Repository Initialization Instruction

@@ -125,6 +125,8 @@ The main core reading package is `00-index/reading-plan-core.md`, defined as `un
 
 `advisor_track` is only for understanding the uploaded SECNet / ICML 2026 method chain. It is built from current corpus papers plus selected SECNet references and does not encode future TPAMI extension ideas.
 
+SECNet reference-only entries should still be directly related to event cameras, visual event streams, or SNNs. Generic architecture background papers should be learned separately rather than added to the core reading package.
+
 ## Automation Limits
 
 Automated literature search is useful for coverage and consistency, but it has limits:

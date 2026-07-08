@@ -5,6 +5,9 @@
 # - p0_extra is only for high-value B/C background papers promoted to P0.
 # - p1_extra is only for B/C papers worth optional reading.
 # - advisor_track marks papers useful for understanding the SECNet / ICML 2026 method chain.
+# - secnet_references should remain event-camera / visual-event-stream / SNN related.
+#   Do not add generic architecture background papers here unless they are directly tied
+#   to the project scope; learn those separately instead of expanding the core list.
 
 advisor_track:
   - ICCV2025-1060
@@ -205,9 +208,3 @@ secnet_references:
     venue: "TPAMI"
     why_read: "Important event-camera action-recognition benchmark context."
     relation_to_secnet: "THUE-ACT-50 and recognition benchmark context used around SECNet."
-  - title: "Mamba: Linear-Time Sequence Modeling with Selective State Spaces"
-    authors: "Albert Gu and Tri Dao"
-    year: "2023"
-    venue: "arXiv / core architecture"
-    why_read: "Core sequence-modeling architecture behind Mamba-style event networks."
-    relation_to_secnet: "Background for state-space sequence modeling comparisons."
