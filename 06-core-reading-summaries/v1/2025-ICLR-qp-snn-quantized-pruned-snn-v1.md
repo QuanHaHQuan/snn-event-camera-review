@@ -13,123 +13,129 @@ official_page: "https://proceedings.iclr.cc/paper_files/paper/2025/hash/f04aef85
 pdf_link: "https://proceedings.iclr.cc/paper_files/paper/2025/file/f04aef8513b788a69229cede8c8cb5a8-Paper-Conference.pdf"
 local_pdf_status: "downloaded"
 status: "auto-generated; needs human review"
-tags: ["SNN", "event camera", "quantization", "pruning"]
+tags: ["SNN", "quantization", "structured pruning", "edge deployment"]
 ---
 
 # Summary V1｜QP-SNN: Quantized and Pruned Spiking Neural Networks
 
 ## 1. One-sentence Summary
 
-本文围绕 QP-SNN: Quantized and Pruned Spiking Neural Networks，基于论文 PDF 中的方法与实验描述，总结其在 SNN 方法背景方向 的主要问题、方法和证据。
+QP-SNN 将 hardware-friendly uniform weight quantization 与 structured kernel pruning 结合，并以 ReScaW 改善低 bit-width 表达、以 SVS 根据 spatiotemporal spike activity 的 singular value 选择待剪 kernel。
 
 ## 2. Research Problem
 
-Brain-inspired Spiking Neural Networks (SNNs) leverage sparse spikes to encode information and operate in an asynchronous event-driven manner, offering a highly energy-efficient paradigm for machine intelligence. However, the current SNN community focuses primarily on performance improvement by developing large-scale models, which limits the applicability of SNNs in resource-limited edge devices.
+SNN 的 binary spike 与 AC operation 有潜在低功耗优势，但高性能 SNN 往往仍有大量 weights、storage 和 memory traffic。已有联合压缩方法会出现 accuracy loss，或依赖 unstructured pruning 而难以在一般 accelerator 上加速。
 
-这对本项目的意义在于：它提供了 通用 SNN 架构/训练/效率背景，可用于后续 survey 中建立问题边界和比较基线。
+本文聚焦资源受限 edge deployment：如何将 quantization 和 pruning 同时用于 directly trained SNN，又维持可部署性与精度。它不是为 event-camera input 专门设计，但在 DVS-CIFAR10 上测试了 neuromorphic data。
 
 ## 3. Background and Motivation
 
-However, the current SNN community focuses primarily on performance improvement by developing large-scale models, which limits the applicability of SNNs in resource-limited edge devices. In this paper, we propose a hardware-friendly and lightweight SNN, aimed at effectively deploying high-performance SNN in resource-limited scenarios.
+uniform quantization 将 continuous weights 映射到等间距 integer grid，易部署却可能只使用少数 levels，因为 trained weights 多集中在 zero 附近。structured pruning 删除 whole convolution kernels，保留 dense regular layout；但已有 SCA score 基于 spike/membrane activity，对 input batch 敏感，可能错误删除重要 kernel。
 
-从 survey 角度看，需要关注它是否真正利用 event data 的 asynchronous / sparse / high-temporal-resolution 特性，或是否主要是把已有视觉/SNN 模型迁移到相关任务上。
+作者以 LIF SNN 为 backbone，认为应从两个失败来源分别修正：用 rescaling 让 assigned bit width 得到有效利用，并用更稳定的 spike-activity singular-value score 排序结构化冗余。
 
 ## 4. Method Overview
 
-In this paper, we propose a hardware-friendly and lightweight SNN, aimed at effectively deploying high-performance SNN in resource-limited scenarios. Specifically, we first develop a baseline model that integrates uniform quantization and structured pruning, called QP-SNN baseline.
+QP-SNN baseline 先对 LIF SNN 做 uniform quantization 和 structured pruning。ReScaW 在 quantization 前按 layer-wise scale 对 weights 重标定，再映射到 `8/4/2-bit` integer grid；SVS 则收集 convolutional channels 的 spatiotemporal spike activities，以 singular value 导出 kernel importance 并按该 score pruning。
 
-整体 pipeline、输入输出和模块边界已经在 PDF 中出现；本 V1 先记录高层结构，V2 阶段应逐图核对 architecture figure 和 method equations。
+训练仍是 directly trained SNN：spike non-differentiability 用 surrogate gradient，quantizer 用 Straight-Through Estimator (STE)。论文在 VGG/ResNet、Spikingformer 和 YOLO-v3-style detector 上验证，输入包括 static image、DVS-CIFAR10 event data 与 remote-sensing image；不是 event-camera tracking pipeline。
 
 ## 5. Technical Details
 
-### Event Representation / Input
+### Spiking Neuron and Training
 
-论文涉及 event streams / event camera data；具体表示形式请在 V2 阶段核对 PDF method section。
+baseline 使用 hard-reset LIF：`U_tilde[l,t] = tau U[l,t-1] + W[l] S[l-1,t]`，过 threshold 后输出 spike 并将 membrane reset 为 zero。训练采用 Spatio-Temporal Backpropagation (STBP) 与 triangular surrogate；classification 使用 time-averaged output membrane potentials 的 cross-entropy。
 
-### Spiking Neuron / SNN Module
+### Uniform Quantization and ReScaW
 
-PDF/abstract 明确涉及 SNN/spiking/spike-driven design；具体 neuron model、surrogate gradient 或 spike conversion 需要在 V2 中逐式核验。
+vanilla quantizer 将 clipped `[-1, 1]` weights 映射到 `2^b` 个 uniform integer levels，再 dequantize 供 forward use。ReScaW 不改变 uniform grid 的 hardware-friendly nature，而是依据 weight distribution 的 scale `gamma` 重新放大/缩小 layer weights，使 1st-99th percentile 的主要 weights 更充分分布于可用 levels。作者的默认 `gamma` 取 layer weight 的 mean L1 magnitude；这是一种范围校正，不是 non-uniform quantization。
 
-### Network Architecture
+### SVS Structured Pruning
 
-In this paper, we propose a hardware-friendly and lightweight SNN, aimed at effectively deploying high-performance SNN in resource-limited scenarios. Specifically, we first develop a baseline model that integrates uniform quantization and structured pruning, called QP-SNN baseline.
+SVS 以 kernel 产生的 spatiotemporal spike activity 构造 activity matrix，并用 singular value 作为 importance criterion。作者的论点是 singular-value statistic 比直接依赖某一 batch membrane/spike magnitude 的 SCA 更 input-insensitive，从而能更稳健地去掉 redundant convolutional kernels。pruning 保持 channel/kernel structure，面向 standard hardware。
 
-### Training Strategy
+### Inference and Loss
 
-训练设置、pretraining/fine-tuning、augmentation 和 optimization 细节已在 PDF 中出现，但本轮只做自动抽取，精确超参数需要人工核验。
-
-### Loss Function
-
-若论文包含专门 loss 或 objective，本 V1 只记录其作用；公式符号和权重请在 V2 阶段结合 PDF 原文核对。
-
-### Inference Process
-
-推理过程需要结合模型 pipeline、event aggregation window 和硬件/软件环境进一步核验。
+forward 中 low-bit weight 与 sparse spike activation 共同降低 model size/SOPs。论文以 theoretical power model 计算，不能等同于 on-device measurement；其中 ANN 的 FLOPs 按 MAC energy，SNN 按 firing-rate-weighted AC energy估算。
 
 ## 6. Experiments
 
-PDF 自动抽取到以下实验相关证据线索：
+### Datasets and Settings
 
-- a highly energy-efficient paradigm for machine intelligence. However, the current
-- energy efficiency potential of SNNs. Despite these advantages, the application scenarios and perfor-
-- the cost of large model parameters, high memory consumption, and increased computational com-
-- plexity (Yan et al. (2024); Liu et al. (2024); Cao et al. (2025)). This undermines the inherent energy
-- Existing methods to improve SNN energy efficiency primarily fall into two categories: (1) reducing
-- the precision of parameter representations and (2) reducing redundant parameters within the model.
-- Pruning is one of the effective methods for reducing redundant parameters in a model, which reduces
-- (2021)) adopt unstructured pruning. Secondly, despite significant energy efficiency, these studies
+分类实验使用 CIFAR-10、CIFAR-100、TinyImageNet、ImageNet-1k 和 DVS-CIFAR10；architectures 包括 VGG-SNN、ResNet20/18 和 SEW-ResNet。额外在 CIFAR-100 上压缩 Spikingformer-4-384，并以 YOLO-v3 + ResNet10 在 SSDD、NWPU VHR-10 测试 detection。指标包括 top-1 accuracy、model size、SOPs 和 theoretical power。
 
-本 V1 只引用这些可从 PDF 抽取到的实验线索；完整数值、baseline 顺序和显著性比较需要人工在 V2 中逐表核对。
+### Main Quantitative Results
+
+Table 1 中，ResNet20 QP-SNN 在 CIFAR-10 的 `8/4/2-bit` accuracy 为 `95.12/95.41/95.06%`，对应 `6.27/3.16/1.61 MB`、`T=2`；CIFAR-100 为 `75.29/75.77/75.13%`，对应 `6.45/3.35/1.79 MB`。DVS-CIFAR10 的 VGGSNN `8/4/2-bit` 结果为 `82.10/81.80/81.30%`，model size `1.61/0.90/0.55 MB`，`T=10`。这些是论文给定 architecture/pruning setting 下的结果。
+
+Table 2 的 Spikingformer experiment 将 connection ratio 降至 `44.74%`、4-bit，model size 从 `18.64` 到 `2.25 MB`，SOPs 从 `292.14` 到 `130.05 M`、theoretical power `0.266` 到 `0.118 mJ`，accuracy 从 `79.09%` 到 `76.94%`。Table 3 中，4-bit detector 在 SSDD 以 `2.15 MB` 得到 `97.10 mAP@0.5`，在 NWPU VHR-10 为 `86.68`，后者低于 full-precision `89.89`。
+
+### Ablations and Efficiency
+
+在 CIFAR-100 ResNet20、约 `1.20 MB` 的 ablation setting，only vanilla quantization 为 `78.53%`，only ReScaW 为 `79.16%`；联合压缩 baseline 为 `69.16%`，仅换 ReScaW 为 `73.40%`、仅换 SVS 为 `73.32%`、两者为 `73.89%`。Table 5 显示 quantize-then-prune 的 QP order 在该实验优于 prune-then-quantize。
+
+Appendix Table 6 对 full-precision VGG-16/CIFAR-10 与极端压缩版比较：connection ratio `9.61%`、4-bit 的 QP-SNN 将 size 从 `58.88` 降至 `0.74 MB`、SOPs `54.60` 降至 `11.63 M`、estimated power `0.204` 降至 `0.046 mJ`，accuracy `93.63%` 降至 `91.19%`。
 
 ## 7. Main Contributions
 
-1. 提出或系统化研究了与 `QP-SNN: Quantized and Pruned Spiking Neural Networks` 对应的核心方法/任务设定。
-2. PDF 摘要和方法部分给出了主要模块设计，涉及 SNN, event camera, quantization, pruning。
-3. PDF 实验部分报告了数据集、指标或 ablation 线索，可作为后续人工深读的入口。
-4. 对 survey 的价值在于补充 C: SNN side background 这一类证据，而不是直接作为未经核验的最终结论。
+1. 建立 uniform quantization + structured pruning 的 hardware-friendly QP-SNN baseline。
+2. 提出 ReScaW，以更充分使用 assigned bit width 的 uniform levels。
+3. 提出 SVS pruning criterion，以 spatiotemporal spike activity 的 singular value 排序 kernel importance。
+4. 在 static、neuromorphic、Spikingformer 与 detection settings 展示 compression-performance trade-off。
 
 ## 8. Limitations and Risks
 
-- 本 V1 是自动 PDF-based 摘要，尚未逐式核验全部公式和表格数值。
-- 若论文报告 efficiency / energy / latency，需要确认其是理论 operation count、GPU 测量还是 neuromorphic hardware 实测。
-- 若论文属于 B/C 类，应避免在 survey 中把它误写成 SNN + Event Camera core method。
-- 部分实验结论可能依赖特定 dataset split、pretraining 设置或 implementation details，需要人工复核。
+paper 的 power numbers 是 analytical estimates，未报告真实 neuromorphic chip、memory traffic、quant/dequant overhead 或 device latency。model-size/SOP gains 也不自动意味着 every accelerator 的 wall-clock gain。
+
+event-camera evidence 只包括 DVS-CIFAR10 classification，不覆盖 raw asynchronous inference、event detection/tracking 或真实 sensor deployment。ReScaW/SVS 的 robustness 也主要来自所给 model/dataset，pruning schedule 与 target sparsity 对结果敏感。
 
 ## 9. Relation to SNN for Event Cameras
 
 分类：C: SNN side background。
 
-理由：reading plan 将该论文标为 level C；PDF 内容显示其关键词和任务与 `SNN, event camera, quantization, pruning` 相关。最终归类仍应在 V2 阶段结合全文细读修正。
+QP-SNN 可为 event-camera SNN 的 model compression、low-bit implementation 和 structured sparsity 提供方法背景，尤其 DVS-CIFAR10 证明其可用于一个 neuromorphic benchmark；但它不是针对 event representation 或 event-camera task 提出的核心方法。
 
 ## 10. Relation to Survey Taxonomy
 
-- SNN training methods
-- Efficiency, latency, and energy
-- Open challenges
+- SNN training methods：STBP、triangular surrogate 和 STE。
+- Efficiency, latency, and energy：quantization、structured pruning、SOP/power estimation。
+- SNN architectures for event cameras：compressed LIF-SNN backbone 的实现背景。
+- Datasets and benchmarks：DVS-CIFAR10 作为小规模 neuromorphic classification benchmark。
+- Open challenges：compression accuracy、hardware-realistic energy、event-stream deployment。
 
 ## 11. Key Terms and Concepts
 
-- SNN: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
-- Spiking Neural Network: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
-- LIF: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
+- QP-SNN：Quantized and Pruned SNN，本文的 jointly compressed SNN。
+- ReScaW：weight rescaling strategy，用于改善 uniform quantizer 的 effective level use。
+- SVS：singular value of spatiotemporal spike activity，本文的 structured pruning score。
+- STBP：Spatio-Temporal Backpropagation，沿 space/time 展开 SNN gradient。
+- STE：Straight-Through Estimator，以 surrogate derivative 训练 quantizer。
+- structured pruning：删除完整 convolution kernels/channels，保持 dense structure。
+- SOPs：synaptic operations，用于估算 SNN inference compute。
 
 ## 12. Questions for Human Deep Reading
 
-1. PDF 中 method section 对核心模块的数学定义是什么？
-2. 实验使用的数据集、划分和评价指标是否与 baseline 完全一致？
-3. 主要提升来自 representation、architecture、training strategy 还是 post-processing？
-4. 效率、能耗或 latency 结论是理论估算还是硬件实测？
-5. 该论文对 SNN for Event Cameras survey 的贡献应归入方法、数据集、训练还是挑战部分？
-6. 该 SNN 方法是否真的在 event-camera dataset 上验证，还是只作为通用 SNN 背景？
+1. SVS activity matrix 的 exact shape、sample/batch aggregation 与 singular-value reduction 如何定义？
+2. pruning 是一次性、iterative 还是 joint training，target connection ratios 由何确定？
+3. ReScaW 的 `gamma` 是否 per-channel、per-layer，outlier clipping 的敏感性如何？
+4. DVS-CIFAR10 的 event bins、input encoding、T=10 和 data augmentation 与 prior work 是否一致？
+5. Table 1 的同一 architecture 两行分别对应何种 pruning ratio，需从 table header/code 核验。
+6. theoretical power 是否计入 first/last layer、residual addition、batch norm 和 quantization operations？
+7. 在 real event-camera detector/tracker 上，structured pruning 是否保持 event sparsity和 latency advantage？
+8. 远程感知 detection 的 SNN timestep/input representation 与 standard RGB YOLO 的比较是否公平？
 
 ## 13. Evidence Notes
 
-- Local PDF parsed successfully: 2025-ICLR-qp-snn-quantized-and-pruned-spiking-neural-networks.pdf, 26 pages.
-- PDF headings observed: NEURAL NETWORKS; ABSTRACT; 1 I NTRODUCTION; Bit width for weight; 2 R ELATED WORK; 3 Q UANTIZED AND PRUNED SNN BASELINE; 4 M ETHOD; Wasted.
-- PDF key experiment/evidence lines include datasets/metrics/table mentions listed in Section 6.
+- Abstract 与 Section 1，第 1-2 页：联合压缩问题、ReScaW、SVS 和 hardware-friendly objective。
+- Section 3，第 3-4 页：LIF update、uniform quantization 和 baseline structured pruning。
+- Section 4.1-4.2，第 5-7 页：ReScaW 的 bit-width utilization 与 SVS criterion。
+- Section 5 / Table 1-4，第 7-10 页：benchmarks、Spikingformer/detection scaling 与 ablation。
+- Appendix C-D，第 17-18 页：power/efficiency comparison、STBP+STE、surrogate 和 cross-entropy。
 
 ## 14. Draft Survey-Usable Sentences
 
-Draft material: `QP-SNN: Quantized and Pruned Spiking Neural Networks` can be cited cautiously as C: SNN side background evidence after its quantitative tables and method details are manually verified.
+Draft material: QP-SNN combines uniform low-bit weights with structured pruning, targeting SNN compression that remains compatible with conventional dense accelerators.
 
-Draft material: The paper is useful for mapping how SNN, event camera, quantization relates to event-camera/SNN survey taxonomy, but V2 should refine the exact claim boundaries.
+Draft material: Its ReScaW and singular-value spike-activity criterion address two distinct sources of compression loss: underused quantization levels and input-sensitive kernel ranking.
+
+Draft material: The reported energy figures are theoretical estimates, so they should be separated from measured end-to-end efficiency claims for event-camera systems.

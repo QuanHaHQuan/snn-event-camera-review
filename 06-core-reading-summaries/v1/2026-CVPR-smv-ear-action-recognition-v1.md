@@ -13,122 +13,134 @@ official_page: "https://openaccess.thecvf.com/content/CVPR2026/html/Fan_SMV-EAR_
 pdf_link: "https://openaccess.thecvf.com/content/CVPR2026/papers/Fan_SMV-EAR_Bring_Spatiotemporal_Multi-View_Representation_Learning_into_Efficient_Event-Based_Action_CVPR_2026_paper.pdf"
 local_pdf_status: "downloaded"
 status: "auto-generated; needs human review"
-tags: ["event camera", "recognition"]
+tags: ["event camera", "action recognition", "multi-view representation", "TISM", "DDCF", "DTW"]
 ---
 
 # Summary V1｜SMV-EAR: Bring Spatiotemporal Multi-View Representation Learning into Efficient Event-Based Action Recognition
 
 ## 1. One-sentence Summary
 
-本文围绕 SMV-EAR: Bring Spatiotemporal Multi-View Representation Learning into Efficient Event-Based Action Recognition，基于论文 PDF 中的方法与实验描述，总结其在 event-camera 背景方向 的主要问题、方法和证据。
+SMV-EAR 是一个 non-spiking event-based action recognition method：它以 Translation-Invariant Spatiotemporal Maps (TISM) 将 sparse events转为 T-H/T-W views，以 Dynamic Dual-branch Cross-view Fusion (DDCF) 做sample-wise weighting，并用 Diverse Temporal Warping (DTW) 模拟real-action speed variation。
 
 ## 2. Research Problem
 
-Event cameras action recognition (EAR) offers compelling privacy-protecting and efficiency advantages, where temporal motion dynamics is of great importance. Existing spatiotemporal multi-view representation learning (SMVRL) methods for event-based object recognition (EOR) offer promising solutions by projecting H-W-T events alone spatial axis H and W, yet are limited by its translation-variant spatial binning representation and naive early concatenation fusion architecture.
+event-based action recognition (EAR) 需同时表示human motion的spatial change和temporal dynamics。已有 Spatiotemporal Multi-View Representation Learning (SMVRL) 把 H-W-T events投影到不同planes，但传统 spatial binning对translation敏感，early concatenation又忽略不同views的dimension mismatch与sample-specific discriminability。
 
-这对本项目的意义在于：它提供了 event-camera 任务、表示或 benchmark 背景，可用于后续 survey 中建立问题边界和比较基线。
+本文不是 SNN paper，而是为 event-camera action recognition 提供representation/architecture/augmentation baseline。它试图用更经济的 multi-view ANN design替代增加transformer scale或直接采用Spiking Transformer的路线。
 
 ## 3. Background and Motivation
 
-Existing spatiotemporal multi-view representation learning (SMVRL) methods for event-based object recognition (EOR) offer promising solutions by projecting H-W-T events alone spatial axis H and W, yet are limited by its translation-variant spatial binning representation and naive early concatenation fusion architecture. This paper reexamines the key SMVRL design stages for EAR and propose: (i) a principled spatiotemporal multi-view representation through translation-invariant dense conversion of sparse events, (ii) a dual-branch, dynamic fusion architecture that models sample-wise complementarity between motion features from different views, and (iii) a bio-inspired temporal warping augmentation that mimics speed variability of real-world human actions.
+raw event `e=(x,y,t,p)` 可看作 H-W-T sparse point set。对动作，T-H或T-W projection可显示某spatial axis随time的motion trace，往往比H-W temporal accumulation更突出body movement；但若absolute spatial bins固定，摄像机或subject translation会改变map appearance。
 
-从 survey 角度看，需要关注它是否真正利用 event data 的 asynchronous / sparse / high-temporal-resolution 特性，或是否主要是把已有视觉/SNN 模型迁移到相关任务上。
+同一action在不同sample/view上可能仅一个temporal map可辨，例如vertical/horizontal motion amplitude不同。因此作者将two views走separate ResNet branches，并以semantic features预测每class、每sample的fusion weights；training augmentation还应模拟speed change但不能像time reversal那样改变动作语义。
 
 ## 4. Method Overview
 
-This paper reexamines the key SMVRL design stages for EAR and propose: (i) a principled spatiotemporal multi-view representation through translation-invariant dense conversion of sparse events, (ii) a dual-branch, dynamic fusion architecture that models sample-wise complementarity between motion features from different views, and (iii) a bio-inspired temporal warping augmentation that mimics speed variability of real-world human actions. On three challenging EAR datasets of HARDVS, DailyDVS-200 and THU-EACT-50-CHL, we show +7.0%, +10.7%, and +10.2% Top-1 accuracy gains over existing SMVRL EOR method with surprising 30.1% reduced parameters and 35.7% lower computations, establishing our framework as a novel and powerful EAR paradigm.
+event stream先经TISM构建 `F_th` 和 `F_tw` two temporal maps。每个map由translation-invariant window、event measurement和temporal/spatial aggregation组成，作者最终选用event count `c`、polarity-aware `p`与sum aggregation。two maps分别进ResNet-18 branches，global pooled semantic features经multi-head attention/linear module生成dynamic weights，再加权two logits。
 
-整体 pipeline、输入输出和模块边界已经在 PDF 中出现；本 V1 先记录高层结构，V2 阶段应逐图核对 architecture figure 和 method equations。
+DTW在training中随机选多个non-overlap time intervals，以identity、linear、power、exponential或cosine monotonic warp改变timestamps，保持temporal order。output是action class；整个network是standard ANN-style ResNet/attention，不包含spiking neuron。
 
 ## 5. Technical Details
 
-### Event Representation / Input
+### Event Representation: TISM
 
-论文涉及 event streams / event camera data；具体表示形式请在 V2 阶段核对 PDF method section。
+TISM以translation-invariant interval/window而不是固定absolute binning组织events，并将H-W-T sparse events转换为T-H与T-W dense maps。论文测试count `c`、polarity `p`、latest timestamp `z`等measurement与sum/max/mean/variance aggregation；最终的two-view map用 `c,p,sum`，以兼顾accuracy与CPU conversion time。
 
-### Spiking Neuron / SNN Module
+TISM并不保留每个event的raw timestamp，仍是dense raster representation；但是相对传统H/W spatial binning，论文在controlled spatial translation test中显示更稳定。
 
-未发现明确 SNN/spiking module；该论文主要是 event-camera 或视觉模型背景。
+### Dynamic Dual-branch Cross-view Fusion
 
-### Network Architecture
+`F_th`、`F_tw` 经independent ResNet-18得到logits `L_th`、`L_tw`。在classification heads之前global-pool的semantic vectors `S_th/S_tw` 被multi-head attention融合，linear layer产生two sets of `C` class-dependent weights `w_th(E), w_tw(E)`，最后`L = w_th L_th + w_tw L_tw`。这不是simple averaging或early concat：权重随sample及class变化。
 
-This paper reexamines the key SMVRL design stages for EAR and propose: (i) a principled spatiotemporal multi-view representation through translation-invariant dense conversion of sparse events, (ii) a dual-branch, dynamic fusion architecture that models sample-wise complementarity between motion features from different views, and (iii) a bio-inspired temporal warping augmentation that mimics speed variability of real-world human actions. On three challenging EAR datasets of HARDVS, DailyDVS-200 and THU-EACT-50-CHL, we show +7.0%, +10.7%, and +10.2% Top-1 accuracy gains over existing SMVRL EOR method with surprising 30.1% reduced parameters and 35.7% lower computations, establishing our framework as a novel and powerful EAR paradigm.
+作者称它为 DDCF；其“dynamic”具体指 sample-wise fusion weights，而不是event-by-event recurrent state。
 
-### Training Strategy
+### Diverse Temporal Warping
 
-训练设置、pretraining/fine-tuning、augmentation 和 optimization 细节已在 PDF 中出现，但本轮只做自动抽取，精确超参数需要人工核验。
+DTW的time-warp function `W` 只调整selected interval内timestamps。instantaneous scale `s(t)=dW/dt`：大于1使action locally slow/ events sparse，小于1使其accelerate/events dense。采用单调functions以避免FlipT式temporal reversal把“sit down”变成“stand up”。default随机interval count为`l=4`。
 
-### Loss Function
+### Training and Inference
 
-若论文包含专门 loss 或 objective，本 V1 只记录其作用；公式符号和权重请在 V2 阶段结合 PDF 原文核对。
-
-### Inference Process
-
-推理过程需要结合模型 pipeline、event aggregation window 和硬件/软件环境进一步核验。
+论文以PyTorch/AdamW训练80 epochs，learning rate `1e-4`、weight decay `1e-5`；time axis discretized为 `T=224`，maps resize至`224 x 224`。inference time含CPU sparse-to-dense conversion和RTX 3090 GPU forward，因此对单一GPU/CPU system有效，非neuromorphic energy/latency statement。
 
 ## 6. Experiments
 
-PDF 自动抽取到以下实验相关证据线索：
+### Datasets and Metrics
 
-- Figure 4. Results on HARDVS dataset. Our SMV-EAR surpasses
-- tively, while dramatically cutting parameters by 30.1% and
-- tently achieves significant accuracy gains over the prior
-- Despite superior in accuracy, aggregating events over dis-
-- these works fall short in accuracy and general hardware
-- Finally, DTW augmentation further enhances test accuracy.
-- focus). Hence we selectF th,Ftw for efficiency. Ablations
-- also show that includingFhw increases compute/parameters
+HARDVS含`107,646` sequences/`300` action types/5 subjects；DailyDVS-200含`22,046` sequences/`200` actions/47 subjects；THU-EACT-50-CHL含`2,330` samples/50 actions。报告five random seeds的Top-1/Top-5、parameters、MACs/FLOPs、CPU+GPU batch-1 inference time；baselines涵盖spike-input、frame、token和multi-view models。
 
-本 V1 只引用这些可从 PDF 抽取到的实验线索；完整数值、baseline 顺序和显著性比较需要人工在 V2 中逐表核对。
+### Main Results
+
+SMV-EAR在HARDVS为 `59.63 Top-1 / 67.56 Top-5`，DailyDVS-200为 `54.65 / 78.28`，`1.8G MACs`、`23.5M` parameters。THU-EACT-50-CHL为 `66.7 Top-1`、`3.6G FLOPs`、`23.5M` parameters。相比Table中的MVF-Net baseline，top-1 gains为`+7.0`、`+10.7`、`+10.2` points；这三个数字对应specific comparable tables，不宜泛化为all EAR settings。
+
+与SNN inputs的SDT、Spikeformer在HARDVS/DailyDVS-200表内显著较低，而token transformer虽强但cost更高；这提供event action-recognition background，但不表示SNN天生不适用EAR，因为architectures、training budget和input representations不同。
+
+### Ablations and Robustness
+
+THU-EACT-50-CHL Table 3：MVF-Net baseline为`56.5%`、`5.6G`、`33.6M`、`14.0 ms`；加TISM为`59.4%`，加TISM+DDCF为`62.9%`、`3.6G`、`23.5M`、`10.6 ms`，再加DTW为`66.7%`。Table 6显示`F_th/F_tw` dual-branch sample-wise fusion为`66.7%`，triple-view仅`67.0%`却增至`5.35G`/`34.7M`。
+
+controlled z-axis shift下，SMV-EAR从`66.7` (0px)到`64.9` (40px)，MVF-Net从`56.5`到`46.1`。这支持TISM的translation robustness，但仍是synthetic test-time shifts，不能完全代替camera-motion distribution evaluation。
 
 ## 7. Main Contributions
 
-1. 提出或系统化研究了与 `SMV-EAR: Bring Spatiotemporal Multi-View Representation Learning into Efficient Event-Based Action Recognition` 对应的核心方法/任务设定。
-2. PDF 摘要和方法部分给出了主要模块设计，涉及 event camera, recognition。
-3. PDF 实验部分报告了数据集、指标或 ablation 线索，可作为后续人工深读的入口。
-4. 对 survey 的价值在于补充 B: Event Camera side background 这一类证据，而不是直接作为未经核验的最终结论。
+1. 提出TISM，以translation-invariant event conversion构建temporal multi-view maps。
+2. 提出DDCF：two ResNet branches和sample/class-aware dynamic fusion。
+3. 提出DTW，以monotonic local temporal warping模拟action speed variation。
+4. 在HARDVS、DailyDVS-200、THU-EACT-50-CHL上报告accuracy-efficiency与translation robustness结果。
 
 ## 8. Limitations and Risks
 
-- 本 V1 是自动 PDF-based 摘要，尚未逐式核验全部公式和表格数值。
-- 若论文报告 efficiency / energy / latency，需要确认其是理论 operation count、GPU 测量还是 neuromorphic hardware 实测。
-- 若论文属于 B/C 类，应避免在 survey 中把它误写成 SNN + Event Camera core method。
-- 部分实验结论可能依赖特定 dataset split、pretraining 设置或 implementation details，需要人工复核。
+SMV-EAR不含SNN，不能证明spiking computation或event-driven hardware efficiency。TISM依赖CPU sparse-to-dense conversion，所报`T(all)`是specific CPU/GPU environment的batched-1 measurement，且没有energy measurement。
+
+T-H/T-W projection舍弃H-W view与部分3D spatial-temporal structure；paper在camera-motion attribute上承认仍较SlowFast低`2.9` points，background events可淹没temporal maps。DTW只模拟monotonic speed variation，不能代表sensor noise、viewpoint变化或more complex temporal distortion。
 
 ## 9. Relation to SNN for Event Cameras
 
-分类：B: Event Camera side background。
+分类：B: Event Camera side background；advisor-track support。
 
-理由：reading plan 将该论文标为 level B；PDF 内容显示其关键词和任务与 `event camera, recognition` 相关。最终归类仍应在 V2 阶段结合全文细读修正。
+它提供event action-recognition中dense multi-view representation、input conversion cost、translation/camera-motion问题的强对照。对SNN survey，它可用来说明SNN需要与何种non-spiking event representation/ANN baseline比较；它本身不是SNN architecture evidence。
 
 ## 10. Relation to Survey Taxonomy
 
-- Datasets and benchmarks
-- Efficiency, latency, and energy
-- Open challenges
+- Event representations for SNNs：T-H/T-W multi-view maps可作non-spiking comparator。
+- Event-based action recognition：EAR datasets、metrics、multi-view fusion与speed augmentation。
+- Datasets and benchmarks：HARDVS、DailyDVS-200、THU-EACT-50-CHL。
+- Efficiency, latency, and energy：CPU conversion + GPU forward的end-to-end time分解。
+- Open challenges：translation、camera motion、projection information loss、fair SNN/ANN comparison。
 
 ## 11. Key Terms and Concepts
 
-- event camera: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
-- mAP: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
-- Top-1 accuracy: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
+- SMV-EAR：Spatiotemporal Multi-View Event-based Action Recognition。
+- TISM：Translation-Invariant Spatiotemporal Maps。
+- `F_th` / `F_tw`：time-height / time-width event maps。
+- DDCF：Dynamic Dual-branch Cross-view Fusion。
+- DTW：Diverse Temporal Warping，event timestamp augmentation。
+- EAR：Event-based Action Recognition。
+- MACs/FLOPs：ANN compute metrics，不是SNN AC operation count。
 
 ## 12. Questions for Human Deep Reading
 
-1. PDF 中 method section 对核心模块的数学定义是什么？
-2. 实验使用的数据集、划分和评价指标是否与 baseline 完全一致？
-3. 主要提升来自 representation、architecture、training strategy 还是 post-processing？
-4. 效率、能耗或 latency 结论是理论估算还是硬件实测？
-5. 该论文对 SNN for Event Cameras survey 的贡献应归入方法、数据集、训练还是挑战部分？
+1. TISM translation-invariant window的exact coordinate definition、boundary behavior和normalization是什么？
+2. `c,p,sum` maps的channel ranges如何standardize，是否保留polarity sign或two channels？
+3. DDCF weights是否softmax-normalized，为什么dimension是`2C`而不是per-view scalar？
+4. twoResNet branches是否shareweights，pretraining和input channels是否一致？
+5. DTW interval/warp magnitude range以及monotonicity implementation是什么？
+6. data splits、subject overlap和five-seed protocol与all baselines是否可比？
+7. `T(cpu)`是否含disk I/O、event decoding与data transfer，10.6ms的variance如何？
+8. camera motion attribute上的failure是否可借助foreground/background event separation修复？
 
 ## 13. Evidence Notes
 
-- Local PDF parsed successfully: 2026-CVPR-smv-ear-bring-spatiotemporal-multi-view-representation-learning-into-efficient-event-based.pdf, 11 pages.
-- PDF headings observed: Abstract; 1. Introduction; Motion cues; Rigid object events; Events; TISM DDCF; Bin border; MVFNet.
-- PDF key experiment/evidence lines include datasets/metrics/table mentions listed in Section 6.
+- Abstract与Section 1，第1-2页：SMVRL limitations、TISM/DDCF/DTW和overall claims。
+- Section 3.2-3.3，第3-5页：TISM representation和dynamic dual-branch fusion。
+- Section 3.4 / Algorithm 1，第5页：DTW time-warp procedure和monotonic functions。
+- Section 4.1，第5页：datasets、metrics、training/inference environment。
+- Tables 1-3，第6页：SOTA comparison、THU-EACT result和contribution ablation。
+- Tables 4-6与Section 4.3-4.4，第6-7页：TISM/DDCF/shift ablations、camera-motion limitation。
 
 ## 14. Draft Survey-Usable Sentences
 
-Draft material: `SMV-EAR: Bring Spatiotemporal Multi-View Representation Learning into Efficient Event-Based Action Recognition` can be cited cautiously as B: Event Camera side background evidence after its quantitative tables and method details are manually verified.
+Draft material: SMV-EAR is a non-spiking multi-view event-action baseline that converts event streams into translation-invariant T-H and T-W maps before dual-branch recognition.
 
-Draft material: The paper is useful for mapping how event camera, recognition relates to event-camera/SNN survey taxonomy, but V2 should refine the exact claim boundaries.
+Draft material: Its dynamic cross-view fusion shows that the relative usefulness of temporal projections can vary by action instance, rather than being well served by fixed early concatenation.
+
+Draft material: The reported 10.6ms inference includes sparse-to-dense CPU conversion and GPU forward processing, making it a useful end-to-end ANN reference but not a neuromorphic energy result.

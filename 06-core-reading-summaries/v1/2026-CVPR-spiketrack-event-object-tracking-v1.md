@@ -13,124 +13,134 @@ official_page: "https://openaccess.thecvf.com/content/CVPR2026/html/Wang_SpikeTr
 pdf_link: "https://openaccess.thecvf.com/content/CVPR2026/papers/Wang_SpikeTrack_High-performance_and_Energy-efficient_Event-Based_Object_Tracking_with_Spiking_Neural_CVPR_2026_paper.pdf"
 local_pdf_status: "downloaded"
 status: "auto-generated; needs human review"
-tags: ["SNN", "event camera", "tracking"]
+tags: ["SNN", "event camera", "event-based tracking", "SpikeTrack", "DI-LIF", "MSST"]
 ---
 
 # Summary V1｜SpikeTrack: High-performance and Energy-efficient Event-Based Object Tracking with Spiking Neural Network
 
 ## 1. One-sentence Summary
 
-本文围绕 SpikeTrack: High-performance and Energy-efficient Event-Based Object Tracking with Spiking Neural Network，基于论文 PDF 中的方法与实验描述，总结其在 SNN/event camera 交叉方向 的主要问题、方法和证据。
+SpikeTrack 是一个 pure spike-driven event-based single-object tracker：以 Multi-Search-sequence-and-Single-Template (MSST) 将多个 event search frames 作为 temporally ordered spike trains，并以 Dynamic Integer LIF (DI-LIF) 在训练时自适应 integer activation、推理时进行 spike-driven firing。
 
 ## 2. Research Problem
 
-Event cameras have attracted considerable attention for object tracking due to their microsecond-level temporal resolution and wide dynamic range, yet effectively harnessing spiking neural networks (SNNs) in this domain remains challenging. In this paper, we introduce SpikeTrack, a purely spike-driven framework for single-object tracking that addresses the shortcomings of RGB-based approaches in fast-motion or target appearance change.
+event-camera SOT 在 fast motion、occlusion 和 target appearance change 下需要连续的 temporal cue，但许多 RGB tracker 单帧 template-search formulation 缺少 event temporal structure。既有 SNN tracking 要么使用 fixed-threshold binary/LIF representation，造成 quantization error/under-capacity，要么将 temporal modeling 交给额外 ANN/temporal modules。
 
-这对本项目的意义在于：它提供了 直接的 SNN + event camera 方法证据，可用于后续 survey 中建立问题边界和比较基线。
+本文将 tracking 的 multi-frame relation 与 SNN membrane accumulation 对齐：同一 template 配多个 search frames 应被视为 spike sequence；而 event density 随运动变化，fixed maximum firing level 可能在 dense input saturation 或 sparse input redundancy之间失衡。
 
 ## 3. Background and Motivation
 
-In this paper, we introduce SpikeTrack, a purely spike-driven framework for single-object tracking that addresses the shortcomings of RGB-based approaches in fast-motion or target appearance change. Central to SpikeTrack is the Multi-Search-sequence-and-Single-Template (MSST) training paradigm, which captures rich temporal dependencies, alongside a Dynamic Integer Leaky Integrate-and-Fire (DI-LIF) neuron that adaptively predicts integer-valued activations based on the input features during training and converts them into spikes during inference.
+event camera 以 threshold-crossing events 记录 brightness change，拥有 microsecond temporal resolution与wide dynamic range。将 events voxelize 后，positive/negative polarity 的 frames 可送入 regular vision layers，但时序分箱会产生不同 event density；tracker需要从连续 target state change中抽取 temporal coherence。
 
-从 survey 角度看，需要关注它是否真正利用 event data 的 asynchronous / sparse / high-temporal-resolution 特性，或是否主要是把已有视觉/SNN 模型迁移到相关任务上。
+LIF 将 membrane potential quantize为 binary spike，I-LIF以固定 integer maximum `D` 增大表示能力。作者认为固定 `D` 不适合 dense/sparse event conditions，因此提出对每个 input sample动适应 firing capacity的 DI-LIF。
 
 ## 4. Method Overview
 
-Central to SpikeTrack is the Multi-Search-sequence-and-Single-Template (MSST) training paradigm, which captures rich temporal dependencies, alongside a Dynamic Integer Leaky Integrate-and-Fire (DI-LIF) neuron that adaptively predicts integer-valued activations based on the input features during training and converts them into spikes during inference. Our design preserves the intrinsic sparsity and fine-grained spatiotemporal acuity of event data, resulting in efficient energy consumption without sacrificing performance.
+给定一段 event stream，SpikeTrack 在 `n` bins 建 voxel grid；每一 bin 内的 events 累积为一个有 positive/negative channels 的 event frame。MSST 在 training 时输入 one template 和 multiple temporally ordered search frames，模板/搜索 frames 经 I-LIF SNN Conv Module，membrane potential跨 time intervals 更新。
 
-整体 pipeline、输入输出和模块边界已经在 PDF 中出现；本 V1 先记录高层结构，V2 阶段应逐图核对 architecture figure 和 method equations。
+features 送进由多个 DI-LIF SNN Transformer blocks 组成的 interaction module。template/search cross-correlation features 经 I-LIF SNN center tracking head，输出 classification score、bounding-box size和offset。inference是 end-to-end、无 data augmentation/post-processing的模型（作者声明）。
 
 ## 5. Technical Details
 
-### Event Representation / Input
+### Event Representation and MSST
 
-论文涉及 event streams / event camera data；具体表示形式请在 V2 阶段核对 PDF method section。
+event frame是每个 voxel bin的 polarity accumulation。MSST 不把多个 search frames 在 channel维早期堆叠，而是在 SNN temporal dimension sequentially feed；single template与多个 search sequence共享。论文实验令 search sequence length最多为 10，意图让 membrane potential及spike trains编码trajectory/appearance evolution。
 
-### Spiking Neuron / SNN Module
+### I-LIF and DI-LIF
 
-PDF/abstract 明确涉及 SNN/spiking/spike-driven design；具体 neuron model、surrogate gradient 或 spike conversion 需要在 V2 中逐式核验。
+I-LIF 在训练中以 integer-valued firing level近似 membrane potential，`D` 控制 maximum emitted integer；推理转换到 spikes。DI-LIF先对 input feature的 global statistic `mu(X)` 做 learnable linear transform和sigmoid，取得 adjustment factor `alpha`，进而adaptive设置每 sample 的 integer firing capacity。dense input会提高 capacity以保留 cues；sparse input降低capacity以抑制冗余。
+
+作者将 DI-LIF 主要放入 Transformer，因为 template-search interaction具有较高 entropy/global information；SNN Conv module与tracking head使用 I-LIF。这个“adaptive quantization”是sample-dependent firing range，不是权重量化。
 
 ### Network Architecture
 
-Central to SpikeTrack is the Multi-Search-sequence-and-Single-Template (MSST) training paradigm, which captures rich temporal dependencies, alongside a Dynamic Integer Leaky Integrate-and-Fire (DI-LIF) neuron that adaptively predicts integer-valued activations based on the input features during training and converts them into spikes during inference. Our design preserves the intrinsic sparsity and fine-grained spatiotemporal acuity of event data, resulting in efficient energy consumption without sacrificing performance.
+SNN Conv Block 包含 pointwise/depthwise separable convolution、BatchNorm、I-LIF和residual refinement。DI-LIF SNN Transformer Block为 spike self-attention加SNN MLP，论文使用 eight blocks。tracking head由classification、size and offset prediction组成，以center-based localization输出 box。
 
-### Training Strategy
+### Training and Loss
 
-训练设置、pretraining/fine-tuning、augmentation 和 optimization 细节已在 PDF 中出现，但本轮只做自动抽取，精确超参数需要人工核验。
+训练用 weighted focal loss做classification、GIoU与L1做box regression：`L = L_cls + 2 L_iou + 5 L_L1`。模型训练60 epochs，每epoch 20K samples；search/template size为 `256 x 256`/`128 x 128`，default `D_init=6`。MSST 10 search frames提高training memory/time（论文报告 `5.8 -> 18.8 GB`, `2.5 -> 8 h`），是性能换取训练成本。
 
-### Loss Function
+### Energy
 
-若论文包含专门 loss 或 objective，本 V1 只记录其作用；公式符号和权重请在 V2 阶段结合 PDF 原文核对。
-
-### Inference Process
-
-推理过程需要结合模型 pipeline、event aggregation window 和硬件/软件环境进一步核验。
+paper将SNN energy归于sparse firing并报告theoretical power；具体processor、memory access和event voxelization cost不在model-level power中完整体现，不能直接等价为device energy。
 
 ## 6. Experiments
 
-PDF 自动抽取到以下实验相关证据线索：
+### Datasets and Metrics
 
-- resulting in efﬁcient energy consumption without sacriﬁcing
-- mance of state-of-the-art trackers in both accuracy and efﬁ-
-- ciency. Furthermore, ablation studies validate each mod-
-- nication between neurons in SNNs offers low energy con-
-- and VisEvent [20] datasets validate the effectiveness of the
-- ergy consumption, and accuracy. Ablation experiments ev-
-- tracking, which fully exploits the low energy consumption
-- teraction. Consequently, the potential for energy-efﬁcient
+在 FE108、FELT、VisEvent 三个 event-based tracking benchmarks评估。table使用 success rate (SR)、precision rate (PR)、parameters和theoretical power；和ANN、SNNTrack、HDETrack等作比较。作者还测DI-LIF、Transformer depth、MSST length和`D_init`。
 
-本 V1 只引用这些可从 PDF 抽取到的实验线索；完整数值、baseline 顺序和显著性比较需要人工在 V2 中逐表核对。
+### Main Results
+
+Table 1：SpikeTrack有 `25.26M` parameters、estimated `7.92 mJ`，在 FE108为 `60.3 SR / 92.7 PR`，FELT为 `41.0 / 52.3`，VisEvent为 `38.9 / 54.3`。论文称其在三个dataset达到table内strong results；例如VisEvent相对runner-up提升 `1.6 SR` 和 `1.8 PR`，但应以论文的comparison set和energy model为限。
+
+### Ablations
+
+VisEvent Table 2：Ours为 `38.9/54.3`；DI-LIF换I-LIF为 `38.1/53.0`、换learnable fixed-D的 LI-LIF为 `38.4/52.8`。8 Transformer blocks改为4/12时为 `37.4/52.0`、`38.0/52.2`；center head换corner/linear head为 `37.0/51.9`、`35.3/49.1`。
+
+Table 3显示MSST search length从1到10时VisEvent SR/PR由 `34.6/48.1` 上升到 `38.9/54.3`，length 12又降至 `37.1/51.8`。Table 4中不同 `D_init` 下SR变化约0.9、PR约1.5 points，作者以此说明DI-LIF对初始range不敏感。Table 5的long sequence comparison称在2000 frames时相对HDETrack高 `1.5 SR`、`1.9 PR`。
 
 ## 7. Main Contributions
 
-1. 提出或系统化研究了与 `SpikeTrack: High-performance and Energy-efficient Event-Based Object Tracking with Spiking Neural Network` 对应的核心方法/任务设定。
-2. PDF 摘要和方法部分给出了主要模块设计，涉及 SNN, event camera, tracking。
-3. PDF 实验部分报告了数据集、指标或 ablation 线索，可作为后续人工深读的入口。
-4. 对 survey 的价值在于补充 A: SNN + Event Camera core paper 这一类证据，而不是直接作为未经核验的最终结论。
+1. 提出 pure spike-SNN event tracker，将多search temporal context显式组织为MSST spike sequence。
+2. 提出DI-LIF，以input-adaptive integer firing range减少fixed-I-LIF quantization的限制。
+3. 以I-LIF conv/head与DI-LIF Transformer构造template-search interaction和center tracking。
+4. 在三个event tracking benchmarks上报告accuracy、sequence-length、neuron/depth和power trade-offs。
 
 ## 8. Limitations and Risks
 
-- 本 V1 是自动 PDF-based 摘要，尚未逐式核验全部公式和表格数值。
-- 若论文报告 efficiency / energy / latency，需要确认其是理论 operation count、GPU 测量还是 neuromorphic hardware 实测。
-- 若论文属于 B/C 类，应避免在 survey 中把它误写成 SNN + Event Camera core method。
-- 部分实验结论可能依赖特定 dataset split、pretraining 设置或 implementation details，需要人工复核。
+尽管推理是spike-driven，输入仍先以voxel grid/event frames离散化；它不是逐event asynchronous tracker。MSST主要在training使用multiple search frames，实际online inference如何维护membrane state、template refresh和frame scheduling需要从code核验。
+
+DI-LIF增加per-sample statistic/threshold control，其floating-point/control overhead和hardwaremapping未完全报告。theoretical power也没有包括event voxelization、memory traffic或latency；10-frame训练成本显著，且long-sequence分析只有有限benchmarks。
 
 ## 9. Relation to SNN for Event Cameras
 
 分类：A: SNN + Event Camera core paper。
 
-理由：reading plan 将该论文标为 level A；PDF 内容显示其关键词和任务与 `SNN, event camera, tracking` 相关。最终归类仍应在 V2 阶段结合全文细读修正。
+SpikeTrack直接以event representation、I-LIF/DI-LIF、spike attention和event SOT组成核心方法。它特别支持survey中“temporal credit/memory design”与“adaptive spiking neuron for event density variation”两条讨论线。
 
 ## 10. Relation to Survey Taxonomy
 
-- Event-based tracking
-- SNN architectures for event cameras
-- Efficiency, latency, and energy
-- Open challenges
+- Event representations for SNNs：n-bin voxel grid和two-polarity event frames。
+- SNN architectures for event cameras：I-LIF conv/head、DI-LIF Transformer。
+- Event-based tracking：MSST、template-search cross-correlation和center head。
+- SNN training methods：integer firing training、spike inference、multi-frame temporal supervision。
+- Efficiency, latency, and energy：adaptive firing capacity、theoretical power与MSST cost。
+- Open challenges：voxelization、online state/sequence management、hardware adaptive thresholds。
 
 ## 11. Key Terms and Concepts
 
-- SNN: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
-- event camera: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
-- Spiking Neural Network: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
-- LIF: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
+- SpikeTrack：本文的pure spike-driven event SOT framework。
+- MSST：Multi-Search-sequence-and-Single-Template training paradigm。
+- I-LIF：Integer Leaky Integrate-and-Fire neuron，固定max integer firing level。
+- DI-LIF：Dynamic Integer LIF，按input feature调整firing capacity。
+- `D_init`：DI-LIF的initial maximum integer parameter。
+- SR/PR：tracking success rate和precision rate。
+- GIoU：Generalized Intersection over Union regression loss。
 
 ## 12. Questions for Human Deep Reading
 
-1. PDF 中 method section 对核心模块的数学定义是什么？
-2. 实验使用的数据集、划分和评价指标是否与 baseline 完全一致？
-3. 主要提升来自 representation、architecture、training strategy 还是 post-processing？
-4. 效率、能耗或 latency 结论是理论估算还是硬件实测？
-5. 该论文对 SNN for Event Cameras survey 的贡献应归入方法、数据集、训练还是挑战部分？
+1. `n` bins、event window和MSST sequence time axis在不同datasets的exact setting是什么？
+2. DI-LIF 的`alpha`如何map到integer `D`，rounding/clipping与surrogate gradient是什么？
+3. DI-LIF inference是否完全由integer/spike operations实现，threshold adaptation有无floating point control？
+4. template在10 search frames之间是否reusedwith membrane state，online inference和training是否一致？
+5. “no data augmentation”是否也包括event-specific spatial/temporal augmentation？
+6. 7.92mJ power的operation constants、firing-rate和first/last layer accounting为何？
+7. MSST performance gain是否可由更多training samples/compute而不是temporal model本身解释？
+8. Table 5 的long sequenceprotocol、target update策略和HDETrack comparison是否完全对齐？
 
 ## 13. Evidence Notes
 
-- Local PDF parsed successfully: 2026-CVPR-spiketrack-high-performance-and-energy-efficient-event-based-object-tracking-with-spiking.pdf, 10 pages.
-- PDF headings observed: Tracking with Spiking Neural Network; Abstract; 1. Introduction; SNNTrack; HDETrack; ODTrack; HIPTrack; ARTrack.
-- PDF key experiment/evidence lines include datasets/metrics/table mentions listed in Section 6.
+- Abstract与Section 1，第1-2页：MSST、DI-LIF、pure spike-SNN和任务动机。
+- Section 3.1 / Eq. (1)-(4)，第3页：event voxel/event-frame representation与MSST。
+- Section 3.2-3.3 / Eq. (5)-(12)，第4-5页：I-LIF conv、DI-LIF mechanism和Transformer。
+- Section 3.4 / Eq. (16)，第5-6页：center head和focal/GIoU/L1 loss。
+- Section 4 / Tables 1-5，第6-8页：benchmarks、main results、ablation和long-term tracking。
 
 ## 14. Draft Survey-Usable Sentences
 
-Draft material: `SpikeTrack: High-performance and Energy-efficient Event-Based Object Tracking with Spiking Neural Network` can be cited cautiously as A: SNN + Event Camera core paper evidence after its quantitative tables and method details are manually verified.
+Draft material: SpikeTrack aligns an event-tracking training protocol with SNN temporal dynamics by feeding a sequence of search frames against one template rather than treating each search frame independently.
 
-Draft material: The paper is useful for mapping how SNN, event camera, tracking relates to event-camera/SNN survey taxonomy, but V2 should refine the exact claim boundaries.
+Draft material: Its DI-LIF neuron adaptively selects an integer firing range from the input features, aiming to preserve dense-event cues while limiting sparse-event redundancy.
+
+Draft material: The tracker reports strong benchmark results with low estimated power, but its voxelized input and unmeasured hardware costs should remain explicit in survey comparisons.

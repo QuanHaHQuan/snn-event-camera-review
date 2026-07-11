@@ -3,129 +3,178 @@ title: "EventGait: Towards Robust Gait Recognition with Event Streams"
 authors: ["Senyan Xu", "Shuai Chen", "Chuanfu Shen", "Kean Liu", "Zhijing Sun", "Chengzhi Cao", "Xueyang Fu"]
 year: 2026
 venue: "CVPR"
-level: "B"
+level: "A"
 priority: "P0"
 advisor_track: "yes"
 summary_version: "v1"
 summary_type: "Codex automated PDF-based summary"
-source_card: "01-papers-by-conference/CVPR2026/B/2026-CVPR-B-eventgait-towards-robust-gait-recognition-with-event-streams.md"
+source_card: "01-papers-by-conference/CVPR2026/A/2026-CVPR-A-eventgait-towards-robust-gait-recognition-with-event-streams.md"
 official_page: "https://openaccess.thecvf.com/content/CVPR2026/html/Xu_EventGait_Towards_Robust_Gait_Recognition_with_Event_Streams_CVPR_2026_paper.html"
 pdf_link: "https://openaccess.thecvf.com/content/CVPR2026/papers/Xu_EventGait_Towards_Robust_Gait_Recognition_with_Event_Streams_CVPR_2026_paper.pdf"
 local_pdf_status: "downloaded"
 status: "auto-generated; needs human review"
-tags: ["SNN", "event camera", "recognition"]
+tags: ["SNN", "event camera", "EventGait", "gait recognition", "LIF", "Mixture of Spiking Experts", "CroSA", "SUSTech1K-E", "CCGR-Mini-E"]
 ---
 
 # Summary V1｜EventGait: Towards Robust Gait Recognition with Event Streams
 
 ## 1. One-sentence Summary
 
-本文围绕 EventGait: Towards Robust Gait Recognition with Event Streams，基于论文 PDF 中的方法与实验描述，总结其在 event-camera 背景方向 的主要问题、方法和证据。
+EventGait 是一个 SNN + event-camera dual-stream gait recognition framework：Dynamic Motion Stream 用 LIF-based Mixture of Spiking Experts 建模短时事件运动，Static Shape Stream 以 DINOv2 teacher 的 Cross-modal Structure Alignment 学习长时事件形状，并在新建 event gait benchmarks 上评估。
 
 ## 2. Research Problem
 
-Gait recognition enables non-intrusive, privacy-preserving identification but suffers in uncontrolled environments due to illumination and motion sensitivity in conventional cameras. In this work, we explore gait recognition using event cameras, which offer microsecond temporal resolution and high dynamic range, naturally capturing robust dynamic cues and suppressing static noise.
+本文解决 event-based gait recognition 在复杂 illumination、快速运动和空间稀疏条件下的表示问题。RGB gait methods 在 low-light、motion blur 与背景干扰下不稳定；早期 event gait methods 又往往把长时间 event streams 累积为 event images，牺牲了 event camera 的 fine-grained temporal dynamics。
 
-这对本项目的意义在于：它提供了 event-camera 任务、表示或 benchmark 背景，可用于后续 survey 中建立问题边界和比较基线。
+作者认为 gait simultaneously depends on stable body shape and high-frequency motion pattern。只用长窗口的 grid/event image 会压缩运动时间信息，而只处理短时 sparse events 又可能缺少 dense structural cue。本文因此将 temporal scale 分开，并把 spiking dynamics 用作短时运动建模的主方法成分。
 
 ## 3. Background and Motivation
 
-In this work, we explore gait recognition using event cameras, which offer microsecond temporal resolution and high dynamic range, naturally capturing robust dynamic cues and suppressing static noise. Existing event-based approaches typically aggregate event streams into event images over long time windows, thereby discarding fine-grained motion dynamics critical for gait recognition.
+event camera 在每像素 log brightness change 超过 threshold 时异步输出 `(x, y, t, p)`，具有小于 3 microseconds 的 temporal resolution 和超过 120dB 的 dynamic range。对 gait recognition，这使其在低照度下可以记录 motion-relevant changes，同时弱化 static texture、color 与部分背景干扰。
 
-从 survey 角度看，需要关注它是否真正利用 event data 的 asynchronous / sparse / high-temporal-resolution 特性，或是否主要是把已有视觉/SNN 模型迁移到相关任务上。
+已有 EVGait/GaitBasee 等 event-based baselines 将 events 转成长期 aggregated event images，再用 CNN 或 GNN。作者认为这种 voxelization 既削弱 high-frequency dynamics，也会得到 spatially sparse representation，普通 deep network 难从中恢复 dense human structure。因此 EventGait 同时建立 short-term dynamic stream 和 long-term static stream。
 
 ## 4. Method Overview
 
-Existing event-based approaches typically aggregate event streams into event images over long time windows, thereby discarding fine-grained motion dynamics critical for gait recognition. Therefore, we propose EventGait, an end-to-end dual-stream framework that separately models motion and shape while preserving the advantages of events.
+原始 event stream 先 voxelize 为 `E in R^(2 x K x H x W)`，positive/negative polarity 分开编码。一个 long exposure window `T` 被分成 `K` 个 short temporal slices `Delta T = T/K`。Dynamic Motion Stream 输入 short-term slices `E_d`，通过 Mixture of Spiking Experts (MoSE) 提取 high-frequency dynamic feature `F_d`；Static Shape Stream 将 long-term slice `E_s` 输入 CNN encoder，并在训练时由 frozen DINOv2 teacher 的 Cross-modal Structure Alignment (CroSA) 提供 dense shape prior，得到 `F_s`。
 
-整体 pipeline、输入输出和模块边界已经在 PDF 中出现；本 V1 先记录高层结构，V2 阶段应逐图核对 architecture figure 和 method equations。
+两个 feature concat 后由 fusion module 形成 gait descriptor，再通过 downstream recognition module 分类。模型是 hybrid design：dynamic stream 是 SNN-based，static stream 是 CNN-based，CroSA 使用 RGB-derived grayscale image 仅在训练时提供 teacher supervision。
 
 ## 5. Technical Details
 
-### Event Representation / Input
+### Event Representation
 
-论文涉及 event streams / event camera data；具体表示形式请在 V2 阶段核对 PDF method section。
+事件 `e_i = (x_i, y_i, t_i, p_i)` 以 bilinear temporal kernel 累积到 `K` bins；`p` 的两个 polarity 形成 separate channels。论文在一个 `T` 内同时使用 two scales：short slice `E_d` 保持高时间精度供 motion stream 使用，long slice `E_s` 聚合更多 events 供 shape stream 提取稳定空间结构。
+
+这种 two-scale design 不是逐 event asynchronous inference，而是将 events 组织为两种 voxelized tensors。其价值在于针对不同任务分工保留快运动和完整 body shape。
 
 ### Spiking Neuron / SNN Module
 
-PDF/abstract 明确涉及 SNN/spiking/spike-driven design；具体 neuron model、surrogate gradient 或 spike conversion 需要在 V2 中逐式核验。
+Dynamic Motion Stream 以 Leaky Integrate-and-Fire (LIF) neuron 为基本单元。LIF membrane potential 的 decay/integration 由 membrane time constant `tau` 控制：较小 `tau` 更适合 high-frequency spike trains，较大 `tau` 更有利于整合 sparse, low-frequency events。
+
+MoSE 包含 `N` 个 time constants 不同的 spiking experts `E_i`。lightweight spiking gating network `G(.)` 根据 event dynamic pattern 生成 adaptive mixture weights `alpha_i`，输出 `E_hat_t = sum_i alpha_i E_i(E_t)`。默认选择 3 experts，以平衡 normal-light、low-light 与不同 motion regimes 的 performance/complexity。
+
+论文没有在主文明确给出 surrogate gradient 的具体函数、time steps、neuron reset 或 full backpropagation implementation；这些是 V2 应核对 code/appendix 的关键点。
 
 ### Network Architecture
 
-Existing event-based approaches typically aggregate event streams into event images over long time windows, thereby discarding fine-grained motion dynamics critical for gait recognition. Therefore, we propose EventGait, an end-to-end dual-stream framework that separately models motion and shape while preserving the advantages of events.
+Static Shape Stream 使用 CNN-based student encoder 处理 long-term event slice。训练时，synchronized RGB frame 先转 grayscale，再输入 frozen DINOv2 teacher；student event feature 经 alignment convolution 投影到 teacher feature space。CroSA 以 feature alignment 迫使 sparse event input 学到更 dense 的 human structural prior。
+
+最终 descriptor 为 `F_gait = Phi([F_s; F_d])`。Static Shape Stream 负责 dense structure，Dynamic Motion Stream 负责 multi-timescale motion，两者均不可完全替代。
 
 ### Training Strategy
 
-训练设置、pretraining/fine-tuning、augmentation 和 optimization 细节已在 PDF 中出现，但本轮只做自动抽取，精确超参数需要人工核验。
+论文在 8 RTX 3090 GPUs 上训练，使用 SGD，initial learning rate `0.1`，weight decay `0.0005`。输入经过 Pad-and-Resize 以保持 body proportion，并 resize 到 `64 x 64`。更多 schedule、batch size、augmentation 与 temporal-bin details 被放在 appendix，需 V2 核验。
 
 ### Loss Function
 
-若论文包含专门 loss 或 objective，本 V1 只记录其作用；公式符号和权重请在 V2 阶段结合 PDF 原文核对。
+总目标为 `L_total = L_ce + L_tri + lambda_d L_align`。`L_ce` 是 identification cross-entropy，`L_tri` 拉近同一 identity / 拉远不同 identity，`L_align` 是 CroSA 中 student/teacher feature 的 L2 distance。Table 7 显示 `lambda_d = 0.2` 的 L2 alignment 在所报告设置下最佳；过大权重可能把 identity-irrelevant teacher cues 引入 event representation。
 
 ### Inference Process
 
-推理过程需要结合模型 pipeline、event aggregation window 和硬件/软件环境进一步核验。
+推理时不需要 RGB teacher 或 CroSA teacher path；event stream 经 short/long slice 后由 two streams、fusion 和 classifier 产生 identity prediction。论文未在主文报告完整 event-sensor-to-output latency、energy 或 neuromorphic hardware measurement，因此不能将 SNN component 直接等同于实测低功耗。
 
 ## 6. Experiments
 
-PDF 自动抽取到以下实验相关证据线索：
+### Datasets and Tasks
 
-- scale event-based gait datasets, we introduce a synthesis
-- driven gait analysis. The code and datasets are released at
-- ness, but its high cost and energy consumption hinder de-
-- Due to a lack of large-scale datasets for evaluating event-
-- based gait recognition, we establish a synthetic dataset
-- low latency, and a strong suppression of motion blur, mak-
-- only validated on small-scale datasets (∼100 identities). We
-- Existing gait recognition datasets are predominantly cap-
+作者用 synthesis pipeline 将 RGB gait videos 转成 events：先 frame interpolation，再用 v2e 模拟不同 illumination/noise settings，之后按 temporal windows 累积 events，并用 RGB human detector boxes 裁剪 event slices。由此构建两个 synthetic datasets：CCGR-Mini-E 含 970 subjects、47,884 sequences、53 covariates、33 views；SUSTech1K-E 含 1,050 identities、25,239 sequences，并提供 RGB/silhouette/skeleton/point-cloud/event modalities。
 
-本 V1 只引用这些可从 PDF 抽取到的实验线索；完整数值、baseline 顺序和显著性比较需要人工在 V2 中逐表核对。
+real-world evaluation 包括 DVS128-Gait（DVS128 采集、20 subjects、4,000 event streams）和 playback-based EV-CASIA-B（124 subjects、11 views）。任务指标包括 Rank-1、mAP 与 mINP。
+
+### Main Results
+
+Table 1 在 SUSTech1K-E 报告 EventGait overall Rank-1 为 92.8，参数量为 4.6M；在 night condition 为 84.8。作为 event baseline，EVGait overall 为 65.4，GaitBasee 为 63.1。论文还将其与 silhouette 和 LiDAR methods 比较，结论是 EventGait 在 many conditions 下接近或超过强 camera/LiDAR baselines，尤其在 low-light。
+
+Table 2 报告 EventGait 在 CCGR-Mini-E 上取得 Rank-1 40.3、mAP 38.7、mINP 25.5；在 EV-CASIA-B 的 NM metric 为 96.7。Table 5 在 realistic DVS128-Gait 上报告 Rank-1 87.4，优于 EV-Gait 的 81.8 与 GaitBasee 的 74.4。
+
+Table 3 的 cross-domain setting 中，CCGR-Mini to SUSTech1K 的 event-based EventGait 在 night condition 达到 51.4；CCGR-Mini to low-light SUSTech1K 的 overall 为 20.7。论文强调其在 night 的优势，但也承认部分 normal cross-domain settings 仍不如 strongest silhouette method。
+
+Table 4 的 cross-illumination experiment 中，EventGait 在 normal-light overall 为 92.8、low-light overall 为 83.2，drop 为 9.6。该结果是本文关于 event modality illumination robustness 的主要实验证据。
+
+### Ablations and Efficiency
+
+Table 6 显示只用 Static Shape Stream 时 SUSTech1K-E overall 为 82.0，只用 Dynamic Motion Stream 为 72.4，同时使用两者为 92.8。Table 7 显示 L2 CroSA、`lambda_d = 0.2` 时达到 92.8 overall，而 no alignment 为 87.4。
+
+Table 8 比较 MoSE experts 数目：1/2/3/4 experts 在 normal-light overall 分别为 88.4/89.8/92.8/92.7，在 low-light overall 为 72.5/78.6/83.2/83.4。作者因 3 与 4 的增益很小而采用 3 experts。
+
+论文报告 4.6M parameters，但没有给出 FLOPs、spike rate、energy、latency 或 neuromorphic hardware measurement。它的 efficiency claim 应仅限于模型较小及 spiking dynamics 的设计动机。
 
 ## 7. Main Contributions
 
-1. 提出或系统化研究了与 `EventGait: Towards Robust Gait Recognition with Event Streams` 对应的核心方法/任务设定。
-2. PDF 摘要和方法部分给出了主要模块设计，涉及 SNN, event camera, recognition。
-3. PDF 实验部分报告了数据集、指标或 ablation 线索，可作为后续人工深读的入口。
-4. 对 survey 的价值在于补充 B: Event Camera side background 这一类证据，而不是直接作为未经核验的最终结论。
+1. 提出 EventGait，将 event gait recognition 分解为 SNN-based dynamic motion stream 和 CNN-based static shape stream。
+2. 提出 MoSE，以不同 LIF membrane time constants 的 spiking experts 和 adaptive spiking gating 应对 varied motion/illumination dynamics。
+3. 提出 CroSA，以 frozen DINOv2 teacher 向 event static encoder transfer dense structure prior。
+4. 构建 event synthesis pipeline，并发布 SUSTech1K-E 和 CCGR-Mini-E 两个 large-scale synthetic event gait benchmarks。
+5. 在 synthetic、cross-domain、cross-illumination 与 real DVS128-Gait settings 上报告 event gait results。
 
 ## 8. Limitations and Risks
 
-- 本 V1 是自动 PDF-based 摘要，尚未逐式核验全部公式和表格数值。
-- 若论文报告 efficiency / energy / latency，需要确认其是理论 operation count、GPU 测量还是 neuromorphic hardware 实测。
-- 若论文属于 B/C 类，应避免在 survey 中把它误写成 SNN + Event Camera core method。
-- 部分实验结论可能依赖特定 dataset split、pretraining 设置或 implementation details，需要人工复核。
+两项 largest benchmarks 是 synthetic events，而不是直接由 physical event camera 大规模采集；sim-to-real gap 是论文自己在 future work 中指出的限制。DVS128-Gait 的 real-world evaluation 只有 20 subjects，规模仍有限。
+
+CroSA 在训练时依赖 synchronized RGB frame 和 frozen DINOv2 teacher。它并非只用 event data 训练，因此与纯 event-only/SNN method 的公平比较需要注明这个 extra supervision。
+
+EventGait 是 hybrid SNN-CNN model，而非 fully spiking system；static stream、fusion 和 classifier 的 spiking implementation 未被声明。论文也没有完整 energy/latency/hardware evidence。
+
+MoSE 的 gains 在 3 到 4 experts 间很小，且具体 surrogate-gradient training、spike sparsity 与 gating cost 在主文未充分展开。survey 中不应仅凭 LIF/MoSE 推断系统层面的能效。
 
 ## 9. Relation to SNN for Event Cameras
 
-分类：B: Event Camera side background。
+分类：A: SNN + Event Camera core paper；advisor-track support。
 
-理由：reading plan 将该论文标为 level B；PDF 内容显示其关键词和任务与 `SNN, event camera, recognition` 相关。最终归类仍应在 V2 阶段结合全文细读修正。
+EventGait 的 dynamic stream 直接将 voxelized event slices 输入 LIF-based MoSE，并用 spiking gating 选择 time-constant experts，SNN 是主要方法模块而非仅作为 baseline。它同时展示一种 practical hybrid route：用 SNN 建模 event-native fast motion，用 CNN/VFM distillation 恢复 sparse event 的 static structure。
 
 ## 10. Relation to Survey Taxonomy
 
-- Datasets and benchmarks
-- Open challenges
+- Event representations for SNNs：two-scale voxelized event slices。
+- SNN architectures for event cameras：LIF-based MoSE 和 spiking gating。
+- Hybrid ANN-SNN models：SNN dynamic stream + CNN static stream + VFM distillation。
+- Event-based action recognition：event-based gait identification。
+- Datasets and benchmarks：SUSTech1K-E、CCGR-Mini-E、DVS128-Gait、EV-CASIA-B。
+- SNN training methods：surrogate-gradient details需要进一步核验。
+- Efficiency, latency, and energy：parameter count 有报告，但无 end-to-end hardware evidence。
+- Open challenges：sim-to-real transfer、illumination robustness、teacher dependence。
 
 ## 11. Key Terms and Concepts
 
-- event camera: 论文中相关的关键概念，V2 阶段需要结合原文定义进一步精读。
+- EventGait：本文的 dual-stream event gait recognition framework。
+- MoSE：Mixture of Spiking Experts，用多种 LIF time constants 的 experts 建模不同 temporal regimes。
+- LIF neuron：Leaky Integrate-and-Fire neuron，以 membrane integration/decay 处理 temporal spike signal。
+- spiking gating network：根据 event dynamic pattern 生成 expert mixture weights。
+- CroSA：Cross-modal Structure Alignment，从 RGB-based VFM teacher 向 event encoder transfer structure prior。
+- SUSTech1K-E：25,239 sequences、1,050 identities 的 synthetic event gait dataset。
+- CCGR-Mini-E：47,884 sequences、970 subjects、53 covariates、33 views 的 synthetic event gait dataset。
+- EV-CASIA-B：由 CASIA-B playback/re-recording 构建的 event gait dataset。
 
 ## 12. Questions for Human Deep Reading
 
-1. PDF 中 method section 对核心模块的数学定义是什么？
-2. 实验使用的数据集、划分和评价指标是否与 baseline 完全一致？
-3. 主要提升来自 representation、architecture、training strategy 还是 post-processing？
-4. 效率、能耗或 latency 结论是理论估算还是硬件实测？
-5. 该论文对 SNN for Event Cameras survey 的贡献应归入方法、数据集、训练还是挑战部分？
+1. MoSE 中 LIF neuron 的 exact update/reset equation、surrogate gradient 和 number of time steps 是什么？
+2. spiking gating network 自身是否也由 LIF neurons 构成，参数和 computational overhead 如何？
+3. short/long exposure windows 的 `T`、`K` 与 dataset-specific settings 分别是多少？
+4. CroSA 训练是否要求每段 event 都有严格同步 RGB frame，real DVS128-Gait 如何处理？
+5. DINOv2 teacher 的 model size、frozen layers 与 alignment convolution 的细节是什么？
+6. synthetic SUSTech1K-E/CCGR-Mini-E 使用 v2e 的参数范围是否覆盖真实 sensor noise、threshold 与 HDR behavior？
+7. Table 1 中各 modality 的 input、pretraining、detector/cropping protocol 是否真正可比？
+8. 4.6M parameter count 是否包括 DINOv2 teacher，推理是否完全排除 teacher？
+9. EventGait 在 DVS128-Gait 的 20-subject scale 上如何处理 cross-subject split？
+10. 论文没有能耗测量，未来 survey 能否补充 spike rate、FLOPs 或 device-side runtime 证据？
 
 ## 13. Evidence Notes
 
-- Local PDF parsed successfully: 2026-CVPR-eventgait-towards-robust-gait-recognition-with-event-streams.pdf, 12 pages.
-- PDF headings observed: Abstract; 1. Introduction; 2. Related Work; Event Streams; Dynamic MotionStream; Static Shape Stream; Only for training; 3. EventGait.
-- PDF key experiment/evidence lines include datasets/metrics/table mentions listed in Section 6.
+- Abstract，第 1 页：说明 EventGait、MoSE、CroSA、SUSTech1K-E、CCGR-Mini-E 与 low-light claim。
+- Section 1，第 2 页：列出 dual-stream、MoSE、CroSA、synthetic datasets 四项 contributions。
+- Section 3.1，第 3 页 / Eq. (2)：event voxel representation 与 two-scale temporal design。
+- Section 3.2，第 3-4 页 / Eq. (3)-(5)：LIF motivation、MoSE experts 与 spiking gating mixture。
+- Section 3.3-3.4，第 5 页 / Eq. (6)-(9)：DINOv2-based CroSA、fusion 和 total loss。
+- Section 4，第 5-6 页：event synthesis pipeline、CCGR-Mini-E、SUSTech1K-E 与 real datasets。
+- Table 1-2，第 6 页：within-domain SUSTech1K-E、CCGR-Mini-E、EV-CASIA-B results。
+- Table 3-5，第 7 页：cross-domain、cross-illumination 与 DVS128-Gait results。
+- Table 6-8，第 8 页：two streams、CroSA weight、MoSE expert-number ablations。
 
 ## 14. Draft Survey-Usable Sentences
 
-Draft material: `EventGait: Towards Robust Gait Recognition with Event Streams` can be cited cautiously as B: Event Camera side background evidence after its quantitative tables and method details are manually verified.
+Draft material: EventGait is a hybrid event-camera architecture in which a LIF-based Mixture of Spiking Experts models high-frequency motion while a CNN static stream receives cross-modal structural supervision during training.
 
-Draft material: The paper is useful for mapping how SNN, event camera, recognition relates to event-camera/SNN survey taxonomy, but V2 should refine the exact claim boundaries.
+Draft material: Its two-scale event representation separates short-term dynamic evidence from long-term shape evidence, providing a concrete design pattern for SNN-event models that must balance temporal fidelity and spatial density.
+
+Draft material: EventGait reports strong low-light gait-recognition results and introduces large synthetic event benchmarks, but its teacher dependence and synthetic-to-real gap should be made explicit in any survey comparison.
