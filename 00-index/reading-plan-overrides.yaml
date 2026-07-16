@@ -4,7 +4,8 @@
 # - Do not add A papers here just to make them P0; refined_level=A is P0 automatically.
 # - p0_extra is only for high-value B/C background papers promoted to P0.
 # - p1_extra is only for B/C papers worth optional reading.
-# - advisor_track marks papers useful for understanding the SECNet / ICML 2026 method chain.
+# - advisor_track marks papers with a direct, documented role in the SECNet / ICML 2026
+#   method chain. Broad thematic similarity alone is not enough.
 # - secnet_references should remain event-camera / visual-event-stream / SNN related.
 #   Do not add generic architecture background papers here unless they are directly tied
 #   to the project scope; learn those separately instead of expanding the core list.
@@ -13,28 +14,33 @@ advisor_track:
   - ICCV2025-1060
   - ICCV2025-1983
   - NeurIPS2025-5608
-  - ICML2025-0323
   - NeurIPS2025-2692
-  - NeurIPS2025-4086
-  - CVPR2026-1228
   - CVPR2026-2918
   - CVPR2026-1312
   - ECCV2024-1631
-  - ICCV2025-1879
-  - ICCV2025-1798
-  - ICLR2025-1232
   - NeurIPS2025-0641
   - ICML2025-2762
   - CVPR2025-0513
   - ICLR2024-1097
   - CVPR2024-1053
+  - CVPR2024-1880
 
 p0_extra:
   # High-value event-camera representation/background papers.
+  - ECCV2024-1591
+  # High-value SNN background papers.
+  - ICLR2025-0872
+  - ICLR2025-2660
+  - ICLR2025-3479
+  - ICML2025-3117
+  - NeurIPS2025-3455
+
+p1_extra:
+  # Core-audit demotions: useful background, but not a direct intersection or
+  # documented SECNet/advisor-method-chain paper.
   - ICCV2025-0082
   - ICCV2025-1538
   - CVPR2026-0479
-  - ECCV2024-1591
   - NeurIPS2025-4822
   - CVPR2026-3561
   - CVPR2026-2514
@@ -42,17 +48,15 @@ p0_extra:
   - CVPR2026-0881
   - NeurIPS2025-2978
   - NeurIPS2025-2173
-  # High-value SNN background papers.
-  - ICLR2025-0872
   - ICLR2025-0522
-  - ICLR2025-2660
-  - ICLR2025-3479
-  - ICML2025-3117
   - ICML2025-3251
   - NeurIPS2025-3401
-  - NeurIPS2025-3455
-
-p1_extra:
+  - ICML2025-0323
+  - NeurIPS2025-4086
+  - CVPR2026-1228
+  - ICCV2025-1879
+  - ICCV2025-1798
+  - ICLR2025-1232
   # Representative event-camera background to read only if time allows.
   - ECCV2024-0732
   - ECCV2024-0945
@@ -127,7 +131,6 @@ p1_extra:
   - CVPR2024-1146
   - CVPR2024-1232
   - CVPR2024-1586
-  - CVPR2024-1880
   - CVPR2024-1902
   - CVPR2024-2406
   - CVPR2024-2506

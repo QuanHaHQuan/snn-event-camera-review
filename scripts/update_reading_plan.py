@@ -212,6 +212,7 @@ SNN_PATTERNS = [
     r"\bann2snn\b",
     r"\bspiking transformers?\b",
     r"\bspiking vision transformer\b",
+    r"\bspiking experts?\b",
     r"\bspike-based neural networks?\b",
     r"\bspike-driven\b",
 ]
