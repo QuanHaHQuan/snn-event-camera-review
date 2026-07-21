@@ -87,7 +87,7 @@ def collect_reviewed_rows(repo_root: Path) -> list[dict[str, str]]:
         for row in read_csv(csv_path):
             if row.get("level", "").upper() in {"A", "B", "C"}:
                 rows.append(normalize_row(repo_root, conference_dir, row))
-    rows.sort(key=lambda row: (row.get("year", ""), row.get("conference", ""), row.get("level", ""), row.get("title", "")))
+    rows.sort(key=lambda row: (-int(row.get("year", "0") or 0), row.get("conference", ""), row.get("title", "")))
     return rows
 
 
@@ -107,7 +107,14 @@ def markdown_link(label: str, path_or_url: str) -> str:
 def write_level_indexes(index_dir: Path, rows: list[dict[str, str]]) -> None:
     for level, filename in LEVEL_FILES.items():
         level_rows = [row for row in rows if row.get("level", "").upper() == level]
-        lines = [f"# {LEVEL_TITLES[level]}", "", LEVEL_DESCRIPTIONS[level], ""]
+        lines = [
+            f"# {LEVEL_TITLES[level]}",
+            "",
+            "> Legacy conference-screening provenance. Do not use this level as an active reading role; use `paper-selection.csv`.",
+            "",
+            LEVEL_DESCRIPTIONS[level],
+            "",
+        ]
         if not level_rows:
             lines.append("No papers indexed yet.")
         else:
