@@ -15,14 +15,14 @@
 
 ## Active Dual-Track Counts
 
-- Survey: anchor=1, included=1, background=14, exclude=1.
-- Advisor: method_chain=0, discussion=8, watch=8, exclude=1.
+- Survey: anchor=1, included=0, background=15, exclude=1.
+- Advisor: method_chain=1, discussion=8, watch=7, exclude=1.
 
 ## Active Entries
 
 | ID | Title | Survey role | Advisor role |
 | --- | --- | --- | --- |
-| ICML2025-0323 | A Chaotic Dynamics Framework Inspired by Dorsal Stream for Event Signal Processing | included | discussion |
+| ICML2025-0323 | A Chaotic Dynamics Framework Inspired by Dorsal Stream for Event Signal Processing | background | discussion |
 | ICML2025-1484 | BSO: Binary Spiking Online Optimization Algorithm | background | watch |
 | ICML2025-0988 | Differential Coding for Training-Free ANN-to-SNN Conversion | background | discussion |
 | ICML2025-1579 | Efficient ANN-SNN Conversion with Error Compensation Learning | background | watch |
@@ -32,7 +32,7 @@
 | ICML2025-2762 | Hybrid Spiking Vision Transformer for Object Detection with Event Cameras | anchor | discussion |
 | ICML2025-0826 | ReverB-SNN: Reversing Bit of the Weight and Activation for Spiking Neural Networks | background | watch |
 | ICML2025-3251 | SpikeVideoFormer: An Efficient Spike-Driven Video Transformer with Hamming Attention and $\mathcalO(T)$ Complexity | background | discussion |
-| ICML2025-2680 | SpikF: Spiking Fourier Network for Efficient Long-term Prediction | exclude | watch |
+| ICML2025-2680 | SpikF: Spiking Fourier Network for Efficient Long-term Prediction | exclude | method_chain |
 | ICML2025-0181 | Temporal Misalignment in ANN-SNN Conversion and its Mitigation via Probabilistic Spiking Neurons | background | watch |
 | ICML2025-1843 | Time to Spike? Understanding the Representational Power of Spiking Neural Networks in Discrete Time | background | exclude |
 | ICML2025-2813 | Training High Performance Spiking Neural Network by Temporal Model Calibration | background | watch |
@@ -42,5 +42,5 @@
 
 ## Audit
 
-Dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-07-20-dual-track-reselection.md`.
+Current dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-08-12-dual-exclude-audit.md`.
 Complete official proceedings remain available in this venue's `mother-list.csv`.

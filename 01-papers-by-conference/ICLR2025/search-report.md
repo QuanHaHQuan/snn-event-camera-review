@@ -16,7 +16,7 @@
 ## Active Dual-Track Counts
 
 - Survey: anchor=0, included=0, background=9, exclude=1.
-- Advisor: method_chain=1, discussion=3, watch=5, exclude=1.
+- Advisor: method_chain=0, discussion=3, watch=6, exclude=1.
 
 ## Active Entries
 
@@ -25,7 +25,7 @@
 | ICLR2025-1551 | DeepTAGE: Deep Temporal-Aligned Gradient Enhancement for Optimizing Spiking Neural Networks | background | watch |
 | ICLR2025-2782 | Improving Generalization and Robustness in SNNs Through Signed Rate Encoding and Sparse Encoding Attacks | background | exclude |
 | ICLR2025-3346 | Improving the Sparse Structure Learning of Spiking Neural Networks from the View of Compression Efficiency | background | watch |
-| ICLR2025-2660 | P-SPIKESSM: HARNESSING PROBABILISTIC SPIKING STATE SPACE MODELS FOR LONG-RANGE DEPENDENCY TASKS | background | method_chain |
+| ICLR2025-2660 | P-SPIKESSM: HARNESSING PROBABILISTIC SPIKING STATE SPACE MODELS FOR LONG-RANGE DEPENDENCY TASKS | background | watch |
 | ICLR2025-3479 | QP-SNN: Quantized and Pruned Spiking Neural Networks | background | watch |
 | ICLR2025-0522 | Quantized Spike-driven Transformer | background | discussion |
 | ICLR2025-1232 | Rethinking Spiking Neural Networks from an Ensemble Learning Perspective | background | watch |
@@ -35,5 +35,5 @@
 
 ## Audit
 
-Dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-07-20-dual-track-reselection.md`.
+Current dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-08-12-dual-exclude-audit.md`.
 Complete official proceedings remain available in this venue's `mother-list.csv`.

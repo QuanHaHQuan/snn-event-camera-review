@@ -3,8 +3,8 @@
 ## Current Status
 
 - Official mother list: 4068 papers (preserved in full).
-- Active title-candidate records: 61.
-- Active retained reviewed papers: 40.
+- Active title-candidate records: 62.
+- Active retained reviewed papers: 41.
 - Every active semantic role was reassessed from the complete official title and abstract.
 - Legacy A/B/C values in venue CSVs are search-stage provenance only.
 
@@ -15,15 +15,15 @@
 
 ## Active Dual-Track Counts
 
-- Survey: anchor=4, included=0, background=32, exclude=4.
-- Advisor: method_chain=6, discussion=20, watch=11, exclude=3.
+- Survey: anchor=4, included=0, background=32, exclude=5.
+- Advisor: method_chain=1, discussion=25, watch=11, exclude=4.
 
 ## Active Entries
 
 | ID | Title | Survey role | Advisor role |
 | --- | --- | --- | --- |
-| CVPR2026-1573 | Adaptive Spatial-Temporal Window: Unlocking the Potential of Event Cameras in Heterogeneous Velocity Scenarios | background | method_chain |
-| CVPR2026-3465 | AIMDepth: Asymmetric Image-Event Mamba for Monocular Depth Estimation | background | method_chain |
+| CVPR2026-1573 | Adaptive Spatial-Temporal Window: Unlocking the Potential of Event Cameras in Heterogeneous Velocity Scenarios | background | discussion |
+| CVPR2026-3465 | AIMDepth: Asymmetric Image-Event Mamba for Monocular Depth Estimation | background | discussion |
 | CVPR2026-4013 | ARES: Unifying Asymmetric RGB-Event Stereo for Probabilistic Scene Flow Estimation | background | watch |
 | CVPR2026-2514 | Beyond Duality: A Hybrid Framework of Leveraging Shared and Private Features for RGB-Event Object Detection | background | method_chain |
 | CVPR2026-1217 | Bidirectional Cross-Modal Prompting for Event-Frame Asymmetric Stereo | background | watch |
@@ -33,6 +33,7 @@
 | CVPR2026-2053 | E-3DPSM: A State Machine for Event-based Egocentric 3D Human Pose Estimation | background | discussion |
 | CVPR2026-0881 | Event Stream Filtering via Probability Flux Estimation | background | discussion |
 | CVPR2026-3419 | Event-Based Motion Deblurring Using Task-Oriented 3D Gaussian Event Representations | background | discussion |
+| CVPR2026-3680 | Event-based Motion Deblurring with Unpaired Data | exclude | discussion |
 | CVPR2026-2084 | Event6D: Event-based Novel Object 6D Pose Tracking | background | discussion |
 | CVPR2026-3694 | EventDrive: Event Cameras for Vision-Language Driving Intelligence | exclude | watch |
 | CVPR2026-2918 | EventGait: Towards Robust Gait Recognition with Event Streams | anchor | discussion |
@@ -47,11 +48,11 @@
 | CVPR2026-2929 | Rethinking SNN Online Training and Deployment: Gradient-Coherent Learning via Hybrid-Driven LIF Model | background | discussion |
 | CVPR2026-0789 | RGB-Event based Pedestrian Attribute Recognition: A Benchmark Dataset and An Asymmetric RWKV Fusion Framework | background | discussion |
 | CVPR2026-0897 | Robust Spiking Neural Networks by Temporal Mutual Information | background | exclude |
-| CVPR2026-1228 | Scaling Dense Event-Stream Pretraining from Visual Foundation Models | background | method_chain |
+| CVPR2026-1228 | Scaling Dense Event-Stream Pretraining from Visual Foundation Models | background | exclude |
 | CVPR2026-3630 | SDTrack: A Baseline for Event-based Tracking via Spiking Neural Networks | anchor | discussion |
-| CVPR2026-3162 | Seeing Motion Through Polarity for Event-based Action Recognition | background | method_chain |
+| CVPR2026-3162 | Seeing Motion Through Polarity for Event-based Action Recognition | background | discussion |
 | CVPR2026-1312 | SMV-EAR: Bring Spatiotemporal Multi-View Representation Learning into Efficient Event-Based Action Recognition | background | discussion |
-| CVPR2026-1873 | Spike-driven Discrete Aggregation for Event-based Object Detection | anchor | method_chain |
+| CVPR2026-1873 | Spike-driven Discrete Aggregation for Event-based Object Detection | anchor | discussion |
 | CVPR2026-1935 | SpikeTrack: A Spike-driven Framework for Efficient Visual Tracking | exclude | watch |
 | CVPR2026-1798 | SpikeTrack: High-performance and Energy-efficient Event-Based Object Tracking with Spiking Neural Network | anchor | discussion |
 | CVPR2026-2519 | Stable Spike: Dual Consistency Optimization via Bitwise AND Operations for Spiking Neural Networks | background | watch |
@@ -65,5 +66,5 @@
 
 ## Audit
 
-Dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-07-20-dual-track-reselection.md`.
+Current dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-08-12-dual-exclude-audit.md`.
 Complete official proceedings remain available in this venue's `mother-list.csv`.

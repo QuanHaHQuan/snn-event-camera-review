@@ -1,0 +1,25 @@
+---
+title: "Event-Based Motion Magnification"
+authors: ["Yutian Chen", "Shi Guo", "Yu Fangzheng", "Feng Zhang", "Jinwei Gu", "Tianfan Xue"]
+conference: "ECCV"
+year: 2024
+level: "B"
+category: "Event Camera"
+pdf_link: "https://www.ecva.net/papers/eccv_2024/papers_ECCV/papers/07601.pdf"
+official_page: "https://eccv.ecva.net/virtual/2024/poster/1002"
+tags: ["event-camera", "advisor-frequency", "fourier"]
+abstract: "Detecting and magnifying imperceptible high-frequency motions in real-world scenarios has substantial implications for industrial and medical applications. These motions are characterized by small amplitudes and high frequencies. Traditional motion magnification methods rely on costly high-speed cameras or active light sources, which limit the scope of their applications. In this work, we propose a dual-camera system consisting of an event camera and a conventional RGB camera for video motion magnification, providing temporally-dense information from the event stream and spatially-dense data from the RGB images. This innovative combination enables a broad and cost-effective amplification of high-frequency motions. By revisiting the physical camera model, we observe that estimating motion direction and magnitude necessitates the integration of event streams with additional image features. On this basis, we propose a novel deep network tailored for event-based motion magnification. Our approach utilizes the Second-order Recurrent Propagation module to proficiently interpolate multiple frames while addressing artifacts and distortions induced by magnified motions. Additionally, we employ a temporal filter to distinguish between noise and useful signals, thus minimizing the impact of noise. We also introduced the first event-based motion magnification dataset, which includes a synthetic subset and a real-captured subset for training and benchmarking. Through extensive experiments in magnifying small-amplitude, high-frequency motions, we demonstrate the effectiveness and accuracy of our dual-camera system and network, offering a cost-effective and flexible solution for motion detection and magnification. Both the code and dataset will be released upon publication."
+status: "official abstract reviewed; PDF boundary checked"
+---
+
+## Scope
+
+This is a non-spiking event-camera paper. It is not Survey Core evidence.
+
+## Advisor-Frequency Evidence
+
+The inference manipulator applies a pixel-wise Fourier transform along time, a fixed 1D temporal band-pass filter, and inverse Fourier transform to motion representations.
+
+## Classification Boundary
+
+Retained as an Advisor-frequency reference. This card is screening provenance, not a Summary V1/V2.

@@ -15,8 +15,8 @@
 
 ## Active Dual-Track Counts
 
-- Survey: anchor=2, included=1, background=21, exclude=2.
-- Advisor: method_chain=1, discussion=17, watch=6, exclude=2.
+- Survey: anchor=1, included=1, background=22, exclude=2.
+- Advisor: method_chain=0, discussion=16, watch=7, exclude=3.
 
 ## Active Entries
 
@@ -24,14 +24,14 @@
 | --- | --- | --- | --- |
 | CVPR2025-1060 | Active Event-based Stereo Vision | background | watch |
 | CVPR2025-2322 | Asynchronous Collaborative Graph Representation for Frames and Events | background | discussion |
-| CVPR2025-0065 | Brain-Inspired Spiking Neural Networks for Energy-Efficient Object Detection | anchor | discussion |
+| CVPR2025-0065 | Brain-Inspired Spiking Neural Networks for Energy-Efficient Object Detection | background | watch |
 | CVPR2025-1513 | Bridge Frame and Event: Common Spatiotemporal Fusion for High-Dynamic Scene Optical Flow | background | watch |
 | CVPR2025-0470 | EDCFlow: Exploring Temporally Dense Difference Maps for Event-based Optical Flow Estimation | background | discussion |
 | CVPR2025-2020 | Efficient ANN-Guided Distillation: Aligning Rate-based Features of Spiking Neural Networks through Hybrid Block-wise Replacement | background | discussion |
 | CVPR2025-2047 | Efficient Event-Based Object Detection: A Hybrid Neural Network with Spatial and Temporal Attention | anchor | discussion |
 | CVPR2025-1620 | ETAP: Event-based Tracking of Any Point | background | discussion |
 | CVPR2025-1096 | Ev-3DOD: Pushing the Temporal Boundaries of 3D Object Detection with Event Cameras | background | discussion |
-| CVPR2025-0513 | Event-based Video Super-Resolution via State Space Models | background | method_chain |
+| CVPR2025-0513 | Event-based Video Super-Resolution via State Space Models | background | exclude |
 | CVPR2025-2400 | EventFly: Event Camera Perception from Ground to the Sky | background | discussion |
 | CVPR2025-0640 | EventGPT: Event Stream Understanding with Multimodal Large Language Models | exclude | watch |
 | CVPR2025-1878 | EZSR: Event-based Zero-Shot Recognition | background | discussion |
@@ -51,5 +51,5 @@
 
 ## Audit
 
-Dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-07-20-dual-track-reselection.md`.
+Current dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-08-12-dual-exclude-audit.md`.
 Complete official proceedings remain available in this venue's `mother-list.csv`.

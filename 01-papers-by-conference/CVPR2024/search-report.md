@@ -16,7 +16,7 @@
 ## Active Dual-Track Counts
 
 - Survey: anchor=1, included=0, background=22, exclude=0.
-- Advisor: method_chain=2, discussion=4, watch=15, exclude=2.
+- Advisor: method_chain=2, discussion=3, watch=15, exclude=3.
 
 ## Active Entries
 
@@ -31,7 +31,7 @@
 | CVPR2024-0094 | EventDance: Unsupervised Source-free Cross-modal Adaptation for Event-based Object Recognition | background | watch |
 | CVPR2024-0588 | EventEgo3D: 3D Human Motion Capture from Egocentric Event Streams | background | watch |
 | CVPR2024-0112 | ExACT: Language-guided Conceptual Reasoning and Uncertainty Estimation for Event-based Action Recognition and More | background | discussion |
-| CVPR2024-2446 | Frequency-aware Event-based Video Deblurring for Real-World Motion Blur | background | discussion |
+| CVPR2024-2446 | Frequency-aware Event-based Video Deblurring for Real-World Motion Blur | background | method_chain |
 | CVPR2024-2039 | Generalized Event Cameras | background | watch |
 | CVPR2024-1586 | HPL-ESS: Hybrid Pseudo-Labeling for Unsupervised Event-based Semantic Segmentation | background | watch |
 | CVPR2024-2319 | Latency Correction for Event-guided Deblurring and Frame Interpolation | background | watch |
@@ -43,10 +43,10 @@
 | CVPR2024-2406 | Segment Any Event Streams via Weighted Adaptation of Pivotal Tokens | background | watch |
 | CVPR2024-2179 | SFOD: Spiking Fusion Object Detector | anchor | discussion |
 | CVPR2024-1901 | SpikingResformer: Bridging ResNet and Vision Transformer in Spiking Neural Networks | background | watch |
-| CVPR2024-1053 | State Space Models for Event Cameras | background | method_chain |
+| CVPR2024-1053 | State Space Models for Event Cameras | background | exclude |
 | CVPR2024-1718 | TTA-EVF: Test-Time Adaptation for Event-based Video Frame Interpolation via Reliable Pixel and Sample Estimation | background | watch |
 
 ## Audit
 
-Dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-07-20-dual-track-reselection.md`.
+Current dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-08-12-dual-exclude-audit.md`.
 Complete official proceedings remain available in this venue's `mother-list.csv`.

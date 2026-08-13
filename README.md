@@ -11,8 +11,10 @@ The two goals share one proceedings corpus but have separate semantic roles and 
 
 - `00-index/paper-selection.csv`: active dual-track paper index and source of truth;
 - `00-index/reading-plan-survey-core.md`: focused survey reading plan;
+- `00-index/survey-reference-pool.csv`: survey-relevant non-Core papers for automated summaries and section-level retrieval;
 - `00-index/reading-plan-advisor-core.md`: SECNet/advisor method-chain reading plan;
-- `05-logs/codex-runs/2026-07-20-dual-track-reselection.md`: audit of papers removed from both tracks;
+- `00-index/core-screening-audit.csv`: 351-paper title/abstract evidence and both Core decisions;
+- `05-logs/codex-runs/2026-08-12-dual-exclude-audit.md`: current audit of papers removed from both tracks;
 - `00-index/all-papers.csv`: retained conference metadata, not a reading-priority index.
 
 ## Selection Roles
@@ -37,16 +39,19 @@ Only papers with `survey_role=exclude` and `advisor_role=exclude` are removed fr
 
 ## Evidence Rule
 
-Every semantic decision must inspect the complete official title and abstract. Title keywords are retrieval triggers only. Regex or keyword scripts must not assign survey/advisor roles. PDF review is reserved for genuine abstract-level boundary cases and is recorded in `needs_pdf_check`.
+Every semantic decision must inspect the complete official title and abstract. Title keywords are retrieval triggers only. Regex or keyword scripts must not assign survey/advisor roles. PDF review is reserved for genuine abstract-level boundary cases and is recorded in `needs_pdf_check`. The 2026-08-12 Core audit records all 351 title/abstract decisions, abstract hashes, and PDF boundary findings in `00-index/core-screening-audit.csv`.
 
 Important boundaries:
 
 - a generic SNN paper using CIFAR10-DVS, N-MNIST, DVS-Gesture, or N-Caltech101 only as a benchmark is SNN-side background, not direct intersection work;
 - an event-camera-only paper is not automatically survey core;
 - `event-driven`, generic asynchronous systems, spike cameras, biological spike processing, and event logs do not automatically qualify;
-- advisor relevance must be tied to SECNet's Event Cloud, grouping/sampling, polarity, frequency, SSM/Mamba memory, scalability, hardware, or concrete task generalization.
+- advisor relevance must be tied to SECNet's Event Cloud lineage or the confirmed Event Camera + frequency/Fourier + SNN extension direction;
+- Mamba/SSM is outside the confirmed Advisor extension and is not an Advisor taxonomy topic. A directly relevant hybrid such as FLAME may still support the Survey boundary analysis; that does not make it Advisor reading.
 
 ## Conference Workflow
+
+The conference allowlist is limited to CVPR, ICCV, ECCV, NeurIPS, ICML, and ICLR. Do not add AAAI, IJCAI, ACM MM, or another venue unless the user explicitly changes this scope.
 
 1. Process one official venue/year proceedings at a time.
 2. Preserve the complete official `mother-list.csv`.
@@ -54,8 +59,8 @@ Important boundaries:
 4. Verify candidates using official pages and complete abstracts.
 5. Generate `candidates.csv`, `abc-reviewed.csv`, cards, and the conference report as search provenance.
 6. Run `python3 scripts/update_index.py`.
-7. Add title-and-abstract decisions to `work/selection-decisions.jsonl`.
-8. Run `python3 scripts/update_selection.py`.
+7. Record the complete title, official abstract, abstract hash, dual-track decision, and reason in `00-index/core-screening-audit.csv`. Local `work/` files may stage the review but are not repository inputs.
+8. Update `00-index/paper-selection.csv`, then run `python3 scripts/update_selection.py`; the generator rejects drift from the committed audit evidence.
 9. Inspect both reading plans, the PDF-check queue, and Git status.
 10. Report before any push. Never force-push.
 
@@ -70,10 +75,22 @@ NeurIPS is the only venue where all official long-paper tracks are admitted into
 03-review-draft/           Survey outline and manuscript drafts
 04-templates/              Search/card templates
 05-logs/                   Search and reselection audits
-06-core-reading-summaries/ Existing V1/V2 reading artifacts
+06-core-reading-summaries/ Existing automated V1 artifacts and V2 redirect
+06-reading-summaries/v2/  Canonical V2 papers plus Survey/Advisor views
 docs/                      Formal workflow instructions
 scripts/                   Deterministic index generation
-work/                      Local working data and semantic decision source
+work/                      Local scratch data; not required by committed generators
 ```
 
 Downloaded PDFs and temporary parser outputs must remain local and must not be committed.
+
+## V2 Reading Notes
+
+Every human-guided V2 summary has one canonical file in `06-reading-summaries/v2/papers/`.
+Do not copy a V2 when one paper belongs to both tracks. Maintain the two reading views instead:
+
+- `06-reading-summaries/v2/survey/index.md`: Survey Core progress and survey-specific purpose;
+- `06-reading-summaries/v2/advisor/index.md`: Advisor Core progress and advisor-specific purpose;
+- `06-reading-summaries/v2/index.md`: all canonical V2 files, including retained historical reading results.
+
+After adding or renaming a V2 file, run `python3 scripts/update_v2_indexes.py`.

@@ -13,6 +13,7 @@ GLOBAL_COLUMNS = [
     "authors",
     "conference",
     "year",
+    "official_track",
     "level",
     "category",
     "pdf_link",
@@ -60,7 +61,16 @@ def find_card_path(repo_root: Path, row: dict[str, str], conference_dir: Path) -
     return ""
 
 
-def normalize_row(repo_root: Path, conference_dir: Path, row: dict[str, str]) -> dict[str, str]:
+def normalize_track(value: str) -> str:
+    return value.strip().removeprefix("Track: ")
+
+
+def normalize_row(
+    repo_root: Path,
+    conference_dir: Path,
+    row: dict[str, str],
+    official_track: str,
+) -> dict[str, str]:
     notes = row.get("notes", "").strip()
     reason = row.get("classification_reason", row.get("classification_notes", "")).strip()
     combined_notes = "; ".join(part for part in (notes, reason) if part)
@@ -70,6 +80,7 @@ def normalize_row(repo_root: Path, conference_dir: Path, row: dict[str, str]) ->
         "authors": row.get("authors", ""),
         "conference": row.get("conference", ""),
         "year": row.get("year", ""),
+        "official_track": official_track,
         "level": row.get("level", ""),
         "category": row.get("category", ""),
         "pdf_link": row.get("pdf_link", ""),
@@ -84,9 +95,23 @@ def collect_reviewed_rows(repo_root: Path) -> list[dict[str, str]]:
     conference_root = repo_root / "01-papers-by-conference"
     for csv_path in sorted(conference_root.glob("*/abc-reviewed.csv")):
         conference_dir = csv_path.parent
+        mother_path = conference_dir / "mother-list.csv"
+        mother_by_id = {
+            mother_row.get("id", ""): mother_row
+            for mother_row in read_csv(mother_path)
+        } if mother_path.exists() else {}
         for row in read_csv(csv_path):
             if row.get("level", "").upper() in {"A", "B", "C"}:
-                rows.append(normalize_row(repo_root, conference_dir, row))
+                mother_row = mother_by_id.get(row.get("id", ""), {})
+                official_track = ""
+                if row.get("conference", "") == "NeurIPS":
+                    official_track = normalize_track(
+                        mother_row.get("track", "")
+                        or mother_row.get("status_or_award", "")
+                    )
+                rows.append(
+                    normalize_row(repo_root, conference_dir, row, official_track)
+                )
     rows.sort(key=lambda row: (-int(row.get("year", "0") or 0), row.get("conference", ""), row.get("title", "")))
     return rows
 

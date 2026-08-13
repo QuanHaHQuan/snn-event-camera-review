@@ -1,5 +1,9 @@
 # Dual-Exclude Audit
 
+> Historical snapshot from the 2026-07-20 reselection. For current decisions, use
+> [`2026-08-12-dual-exclude-audit.md`](2026-08-12-dual-exclude-audit.md). The later
+> title/abstract and PDF-boundary audit restored two entries from this snapshot.
+
 These papers were reviewed from their complete official title and abstract and have no retained role in either active track.
 Complete venue `mother-list.csv` files remain untouched.
 

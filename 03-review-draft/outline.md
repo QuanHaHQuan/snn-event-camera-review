@@ -1,5 +1,9 @@
 # Survey Outline
 
+Status: **provisional after Checkpoint 01; current audited Core progress is 10/25 V2 papers**.
+
+This is a working structure, not the final V1.0 outline. Checkpoint 01 is recorded in [outline-checkpoints/checkpoint-01-11-v2.md](outline-checkpoints/checkpoint-01-11-v2.md). That historical checkpoint used 11 V2 papers from the pre-audit 31-paper Core. After the 2026-08-12 title/abstract audit, three of those papers became reference-only and two already-read representation papers entered Core, leaving 10/25 current Core papers complete. The evidence read so far is entirely from 2023/2024, so decisions that depend on 2025/2026 architectures, tracking, ANN-SNN conversion, or hardware evaluation remain open.
+
 ## Working Title
 
 Spiking Neural Networks for Event Cameras
@@ -15,38 +19,49 @@ The chapter order is therefore not a nested taxonomy. Chapters 2 and 3 define th
    - State the survey question: how do event representations and SNN computation interact?
    - Explain the two-axis taxonomy and prevent broad event-based-vision drift.
 
-2. Event-camera representations: the sensor-side axis
+2. Event-camera data organization and representations: the sensor-side axis
    - Raw asynchronous event stream and event tuple semantics.
+   - Temporal organization before representation: fixed-duration slicing, fixed-event-count slicing, packetization, and adaptive sampling/slicing.
    - Dense representations: event frames, accumulation, voxel grids, stacked histograms.
    - Sparse representations: point/Event Cloud, time surfaces, graphs, event-by-event processing.
-   - Learned/adaptive representations: slicing, sampling, polarity-aware and, where the transformation is applied to the event signal itself, frequency-aware representations.
-   - Comparison dimensions: sparsity, temporal precision, spatial completeness, memory, latency, and information loss.
+   - Learned/adaptive representations after the temporal boundary has been chosen, including task-aware aggregation, polarity-aware encoding and, where the transformation is applied to the event signal itself, frequency-aware representations.
+   - Keep slicing and representation distinct: slicing chooses which events belong together; representation determines how that group is encoded.
+   - Comparison dimensions: sparsity, temporal precision, spatial completeness, polarity retention, preprocessing cost, memory, latency, and information loss.
 
 3. Spiking neural networks: the computation-side axis
    - Spike coding, neuron state, membrane dynamics, reset, and temporal simulation.
-   - Efficiency axis: sparse activation, addition-only computation, conversion, hybrid ANN-SNN, latency, energy, and hardware evidence.
+   - Architectural boundary: directly trained SNN, converted SNN, fully spiking network, hybrid ANN-SNN, and non-spiking comparator.
    - Temporal axis: short-term dynamics, long-range state/memory, delay, temporal credit assignment, and timestep flexibility.
    - Training axis: surrogate gradient, BPTT/online learning, distillation, and stability.
+   - Efficiency axis: sparse activation, addition-only computation, state and memory overhead, latency, energy, and hardware mapping.
+   - Apply `fully spiking` at an explicit boundary: a spiking backbone, a fully spiking task network, and an end-to-end event-processing pipeline are not equivalent claims.
 
 4. SNN for Event Cameras: the intersection axis
-   - Event-to-spike interfaces: raw events, event tuples, time surfaces, and discretized event tensors.
-   - Dense representation x SNN mechanism: voxel/frame inputs with fully spiking, hybrid, or converted networks.
-   - Sparse representation x SNN mechanism: point/Event Cloud, event-by-event, and graph inputs with spiking processing.
-   - SNN-controlled event sampling, slicing, aggregation, or memory updates.
-   - For each family, ask the same questions: what is represented, what is spiking, where is temporal state kept, and what evidence supports the efficiency claim.
-   - Keep frequency, wavelet, and SSM/Mamba methods as mechanisms that may cross both axes; do not create a separate representation chapter for every mechanism.
+   - Event-to-spike interfaces: distinguish sensor events, event groups, encoded event tensors/points, model input spikes, internal spikes, and decoded continuous outputs.
+   - Integration topology I, task network: the SNN is the main feature extractor, backbone, decoder, or predictor.
+   - Integration topology II, hybrid module: the SNN supplies temporal filtering or spiking features while ANN modules perform registration, fusion, decoding, or prediction.
+   - Integration topology III, event-interface controller: spike timing or membrane state controls sampling, slicing, aggregation, or routing before a downstream model.
+   - Integration topology IV, inference/optimization engine: spiking dynamics implement latent coding, Bayesian competition, local learning, or an unfolded algorithm.
+   - Compare each topology across dense and sparse event representations rather than treating dense/sparse as the only method taxonomy.
+   - Event-stream-specific learning: spike-aware objectives, task-guided slicing, relevance-guided augmentation, local plasticity, and representation-dynamics coupling.
+   - For each family, ask the same questions: what is represented, what is spiking, what role the SNN plays, where temporal state is kept, how it is trained, and what evidence supports the efficiency claim.
+   - Keep frequency and wavelet as cross-cutting mechanisms. Use SSM/Mamba only when a specific non-spiking temporal comparator is needed; do not turn it into a survey axis or infer SNN relevance from long-memory modeling alone.
 
 5. Tasks and empirical evidence across the intersection
    - Recognition and action classification.
    - Object detection.
    - Tracking.
    - Reconstruction/restoration.
-   - Pose, depth, flow, and segmentation.
-   - Cross-task comparison of accuracy, timestep, latency, energy, and hardware measurement.
+   - Pose, depth, optical flow, motion estimation, and segmentation.
+   - Datasets and evaluation protocols: temporal granularity, cross-subject/generalization settings, camera motion, noise, and distribution shift.
+   - Robustness and security at the event-SNN interface.
+   - Evidence hierarchy: task accuracy/quality; timesteps and firing rate; operation-count energy proxy; GPU/CPU runtime; neuromorphic or device-level latency and energy.
    - Treat tasks as an evidence-organizing axis, not as a replacement for the representation/SNN taxonomy.
 
 6. Two-axis synthesis and open problems
    - A matrix with event representation on one axis and SNN mechanism on the other.
+   - A second view mapping task to integration topology, because the same representation can place the SNN at different points in the pipeline.
    - Empty, weak, and well-supported cells in the matrix.
-   - Representation–dynamics mismatch, event sparsity versus spatial completeness, long-term memory, frequency modeling, and reproducible efficiency claims.
+   - Representation-dynamics mismatch, temporal slicing sensitivity, event sparsity versus spatial completeness, long-term memory, frequency modeling, robustness, and reproducible efficiency claims.
+   - Separate estimated arithmetic savings from software runtime and measured hardware efficiency; do not infer one from another.
    - Open problems for event representation, SNN computation, and their intersection separately.

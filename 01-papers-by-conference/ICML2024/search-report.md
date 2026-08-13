@@ -16,14 +16,14 @@
 ## Active Dual-Track Counts
 
 - Survey: anchor=0, included=0, background=13, exclude=0.
-- Advisor: method_chain=1, discussion=3, watch=5, exclude=4.
+- Advisor: method_chain=0, discussion=4, watch=5, exclude=4.
 
 ## Active Entries
 
 | ID | Title | Survey role | Advisor role |
 | --- | --- | --- | --- |
 | ICML2024-2133 | Autaptic Synaptic Circuit Enhances Spatio-temporal Predictive Learning of Spiking Neural Networks | background | discussion |
-| ICML2024-0803 | CLIF: Complementary Leaky Integrate-and-Fire Neuron for Spiking Neural Networks | background | method_chain |
+| ICML2024-0803 | CLIF: Complementary Leaky Integrate-and-Fire Neuron for Spiking Neural Networks | background | discussion |
 | ICML2024-1239 | Enhancing Adversarial Robustness in SNNs with Sparse Gradients | background | exclude |
 | ICML2024-2069 | EvGGS: A Collaborative Learning Framework for Event-based Generalizable Gaussian Splatting | background | watch |
 | ICML2024-0917 | EvTexture: Event-driven Texture Enhancement for Video Super-Resolution | background | exclude |
@@ -38,5 +38,5 @@
 
 ## Audit
 
-Dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-07-20-dual-track-reselection.md`.
+Current dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-08-12-dual-exclude-audit.md`.
 Complete official proceedings remain available in this venue's `mother-list.csv`.
