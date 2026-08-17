@@ -6,7 +6,7 @@
 - Rechecked all **101** papers previously excluded from both tracks for missed direct SNN-event or Advisor-frequency relevance; two were restored after PDF review, leaving 99 current dual-excludes.
 - Reverse-searched the corpus for direct event-camera + SNN evidence, Fourier/FFT/frequency methods, and Event Cloud/point processing.
 - Used conference PDFs for twelve material boundary/mechanism checks and official abstracts for two additional boundary resolutions.
-- Stored the complete evidence, abstract hashes, decisions, and boundary findings in `00-index/core-screening-audit.csv`.
+- Stored the complete evidence, abstract hashes, decisions, and boundary findings in the audit now named `00-index/candidate-screening-audit.csv`.
 
 The audit establishes an evidence-backed current decision, not a claim that abstracts reveal every implementation detail. A later PDF correction must cite the contradictory evidence.
 

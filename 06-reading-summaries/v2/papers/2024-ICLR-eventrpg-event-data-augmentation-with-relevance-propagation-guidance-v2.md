@@ -209,6 +209,14 @@ Figure 5 报告 augmentation time per event stream。relevance propagation 可�
 
 与 EventDrop、EventMix 相比，EventRPG 的区别是增强位置由模型 relevance 决定；与 SAM 相比，它强调 prediction-conditioned contribution，而不是仅根据 activation 强度；与 Grad-CAM 类方法相比，它专门处理 spiking layer 的 temporal state。它不属于新型 event representation、dense prediction architecture 或 neuromorphic hardware efficiency 工作。
 
+### PDF-verified relation backfill
+
+主要路线是将 LRP 扩展为 SNN layer-time relevance propagation，再以 saliency 引导 event dropping/mixing。
+
+- **On Pixel-Wise Explanations for Non-Linear Classifier Decisions by Layer-Wise Relevance Propagation (Sebastian Bach et al., PLOS ONE 2015)** — `foundation`。该工作提供 relevance conservation and saliency 的基础机制；当前论文将其用于自身的 event/SNN pipeline，而不是把该前驱本身作为新贡献。 对应 Sections 3 and 4: SNN interpretability and training。证据：Introduction and Preliminary, PDF pp.1-2, Bach et al. 2015 bibliography entry。 当前 active corpus 未覆盖。 值得 backward search。
+- **Visual Explanations from Spiking Neural Networks Using Inter-Spike Intervals (Youngeun Kim et al., Scientific Reports 2021)** — `extends`。当前论文沿用该工作的 SNN saliency maps，并针对当前任务增加新的结构或训练约束。对应 Section 3: SNN interpretability。证据：Introduction and Experiments 5.1, PDF pp.2 and 9-10, Kim and Panda 2021b bibliography entry。当前 active corpus 未覆盖。
+- **EventMix: An Efficient Data Augmentation Strategy for Event-Based Learning (Guobin Shen et al., Information Sciences 2023)** — `baseline`。该工作是 event-stream mixing augmentation 的实验 comparator；当前论文与其主要区别在于本文第 3–4 节所述的核心机制。 对应 Section 4: event-SNN training。证据：Introduction and Experiments Table 3, PDF pp.2 and 11, Shen et al. 2023 bibliography entry。 当前 active corpus 未覆盖。
+
 ## 8. Survey-Usable Takeaways
 
 1. EventRPG 展示了一种两阶段的 model-aware event augmentation：先解释 SNN 的预测依据，再据此构造更有针对性的 event dropping 和 mixing。

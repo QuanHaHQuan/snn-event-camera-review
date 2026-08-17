@@ -2,23 +2,24 @@
 
 ## Current Status
 
-- Official mother list: 3703 papers (preserved in full).
-- Active title-candidate records: 24.
-- Active retained reviewed papers: 10.
-- Every active semantic role was reassessed from the complete official title and abstract.
-- Legacy A/B/C values in venue CSVs are search-stage provenance only.
+- Official mother list: 3703 papers.
+- High-recall title/abstract candidates: 26.
+- Candidates with complete official-title/abstract audit: 26.
+- Retained A/B/C provenance records: 10.
+- Dual-track exclusions among current candidates: 16.
+- A/B/C is conference-search provenance only; active reading assignments come from the dual-track audit.
 
-## Official Source
+## Scope And Evidence
 
-- URL: https://proceedings.iclr.cc/paper_files/paper/2025
+- Every title candidate is represented in `00-index/candidate-screening-audit.csv` with its complete official abstract and SHA256.
 - Full-PDF search over the complete mother list was not performed.
 
-## Active Dual-Track Counts
+## Retained Dual-Track Counts
 
 - Survey: anchor=0, included=0, background=9, exclude=1.
 - Advisor: method_chain=0, discussion=3, watch=6, exclude=1.
 
-## Active Entries
+## Retained Entries
 
 | ID | Title | Survey role | Advisor role |
 | --- | --- | --- | --- |
@@ -33,7 +34,6 @@
 | ICLR2025-2158 | Temporal Flexibility in Spiking Neural Networks: Towards Generalization Across Time Steps and Deployment Friendliness | background | discussion |
 | ICLR2025-1006 | TS-LIF: A Temporal Segment Spiking Neuron Network for Time Series Forecasting | exclude | watch |
 
-## Audit
+## Audit Source
 
-Current dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-08-12-dual-exclude-audit.md`.
-Complete official proceedings remain available in this venue's `mother-list.csv`.
+Use `00-index/candidate-screening-audit.csv` for every retained or excluded candidate decision and its official abstract evidence.

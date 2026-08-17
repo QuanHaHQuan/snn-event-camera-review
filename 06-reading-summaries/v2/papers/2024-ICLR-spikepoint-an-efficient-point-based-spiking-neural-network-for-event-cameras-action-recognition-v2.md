@@ -6,9 +6,31 @@ tags: [event-camera, spiking-neural-network, point-cloud, action-recognition, IC
 
 ## 1. Core Understanding
 
-SpikePoint 面向 event-based action recognition，核心目标是不把异步事件堆叠为 conventional frames，而是将其表示为稀疏的三维时空 pseudo-point cloud，再用直接训练的 point-based SNN 分类。其主要贡献是：以 $(x,y,t)$ points 保留稀疏结构和窗口内相对时间；设计适配非负 rate coding 的坐标表示；用 singular-stage local/global feature extractor 避免传统 Point Cloud ANN 的多阶段层次结构；将 residual connection 放到 LIF 之后以改善 surrogate-gradient propagation。
+SpikePoint 面向 event-based action recognition，目标是在不生成 event frames/voxels 的情况下，将 event stream 表示为稀疏 $(x,y,t)$ pseudo-Point Cloud，再用直接训练的 point-based SNN 分类。它的核心不是单纯“把 PointNet 换成 SNN”，而是同时改造输入编码、point architecture 和 residual training：
 
-网络主体是使用 Parametric LIF、binary spikes、BPTT 和 ATan surrogate gradient 的直接训练 SNN，不是 ANN-to-SNN conversion。但完整 pipeline 还包含 sliding window、random sampling、FPS、KNN、normalization 和 Poisson encoding 等常规预处理，因此只能将神经网络主体称为 spiking，不能把整个系统无条件归类为 fully event-driven neuromorphic pipeline。
+1. 在固定时间窗口中随机采样 events，将 $x,y$ 与 relative timestamp $z$ 归一化为 point coordinates；
+2. 用 FPS 和 KNN 构造一次局部 grouping，而不是重复多层 set abstraction；
+3. 将带符号 relative coordinates 改造成适合 Bernoulli/Poisson rate coding 的非负 features，并用 centroid branch 补偿方向信息损失；
+4. 以 local extractor 建模 group 内结构，以 global extractor 建模 groups 之间的动作结构；
+5. 将 residual connection 移到 LIF 之后，为 BPTT 提供不经过 surrogate derivative 的 identity gradient path。
+
+完整路径是：
+
+$$
+\text{raw events}
+\rightarrow
+\text{windowed }(x,y,z)\text{ points}
+\rightarrow
+\text{FPS/KNN groups}
+\rightarrow
+\text{rate-coded coordinate spikes}
+\rightarrow
+\text{local/global spiking extractor}
+\rightarrow
+\text{spiking classifier and voting}.
+$$
+
+网络使用 SpikingJelly ParametricLIF、$T=16$、ATan surrogate gradient 和 BPTT，从头直接训练，不是 ANN-to-SNN conversion。但 preprocessing 中的 windowing、random sampling、FPS、KNN、normalization 和 random rate encoding 都是同步的非神经计算；post-LIF residual addition 还可能产生值 2。因此本文的“full spike/end-to-end”应限定为 feature extractor 与 classifier 的 SNN 主体，不能等同于逐 raw event、完全异步、全程 binary 的 neuromorphic implementation。
 
 ## 2. Problem and Motivation
 
@@ -18,65 +40,385 @@ SpikePoint 因此试图解决两个耦合问题：一是直接在 point represen
 
 ## 3. Method Overview
 
-原始事件为 $e_m=(x_m,y_m,t_m,p_m)$。模型用长度为 $L$ 的 sliding window 截取 event clip，将 $x_m,y_m$ 归一化到 $[0,1]$，并将窗口内时间转换为：
+### 3.1 Event clip 与 pseudo-Point Cloud
+
+单个 raw event 为：
+
+$$
+e_m=(x_m,y_m,t_m,p_m).
+$$
+
+每段 recording 被切成长度为 $L$ 的 clips：
+
+$$
+AR_{\mathrm{clip}}
+=
+\operatorname{clip}_i\{e_k,\ldots,e_l\},
+\qquad
+t_l-t_k=L.
+$$
+
+窗口长度并不统一：DVS128 Gesture 与 DVS Action 为 $0.5\ \mathrm{s}$，Daily DVS 为 $1.5\ \mathrm{s}$，HMDB51-DVS 为 $0.5\ \mathrm{s}$，UCF101-DVS 为 $1\ \mathrm{s}$；相邻窗口 overlap 分别为 $0.25/0.25/0.5/0.5/0.5\ \mathrm{s}$。Daily DVS 用 $0.5\ \mathrm{s}$ 时只有约 $80\%$，调至接近平均动作长度的 $1.5\ \mathrm{s}$ 后才取得最终结果，说明性能明显依赖人工 window selection。
+
+窗口内 timestamp 被变成 relative coordinate：
 
 $$
 z_m
 =
-\frac{t_m-t_k}{t_l-t_k}
+\frac{t_m-t_k}{t_l-t_k},
 $$
 
-随后丢弃 polarity $p_m$，得到 $(x_m,y_m,z_m)$ pseudo-point cloud。Random sampling 统一 point 数量；FPS 选择中心，KNN 为每个中心构建局部邻域。Figure 8 给出的实际 local input 为 $[1024,24,6]$：1024 个保留中心/邻域、每个邻域 24 个 points、每个 point 6 个特征。论文对 $N$、$N'$、$M$ 的文字定义与图中轴含义不一致，正式符号对应为 `Needs further check`。
+同时 $x_m,y_m$ 按 sensor resolution 归一化到 $[0,1]$。模型丢弃 polarity $p_m$，得到：
 
-连续 coordinates 通过 stateless Poisson rate encoder 转为 $T=16$ 的 binary spike sequence。对 $v\in[0,1]$，每个 timestep 独立采样 $s[t]\sim\operatorname{Bernoulli}(v)$，以 firing rate 表示数值。标准化 relative coordinates 包含负值，不能直接作为该 encoder 的发放概率，因此作者取 $[\Delta|x|,\Delta|y|,\Delta|z|]$，并用 group minimum coordinates 与独立 centroid branch 补偿方向和分布信息。标准化值可能超过 1 时如何进入 Poisson encoder，论文未说明：`Needs further check`。
+$$
+AR_{\mathrm{point}}
+=
+\{(x_m,y_m,z_m)\mid m=k,\ldots,l\}.
+$$
 
-这一转换需要持续区分三类对象：raw event 是传感器输出的 $(x,y,t,p)$；pseudo-point 是预处理后的 $(x,y,z)$；input spike 则是 coordinates 经 Poisson sampling 重新生成的 binary sequence。SpikePoint 的“直接处理 event data”是指避免 frame/voxel conversion，不是逐个 raw event 直接驱动网络。
+Random sampling 将 variable event count 变成固定 point set。Appendix 给出 `Number of Points = 1024`，但正文没有说明 event 数少于 1024 时如何补齐，也没有说明采样是否在 recording-level train/test split 之后执行。由于 windows 高度重叠且 test clips 是总 samples 中随机抽取的 20%，若先生成 clips 再随机划分，相邻重叠内容可能跨 split；实际顺序需要代码确认。
+
+### 3.2 FPS/KNN grouping 与符号冲突
+
+对 sampled point set $P^N$，FPS 选择 centroids，KNN 构造 neighborhoods：
+
+$$
+\mathrm{Centroid}=\operatorname{FPS}(P^N),
+$$
+
+$$
+G=\operatorname{KNN}(P^N,\mathrm{Centroid},N').
+$$
+
+正文称输入从 $[N,3]$ 变为 $[N',M,3]$，并定义 $M$ 为 group 数、$N'$ 为每组 points；Appendix A.3 又把实际 input 写成 $[N',M,6]=[1024,24,6]$；Figure 8 则清楚显示 1024 个 group-level branches、每组 24 points。可确认的实际运算是 **1024 个 neighborhoods，每个 neighborhood 含 24 个 points**，但 $N,N',M$ 的正式符号在正文、附录和 figure legend 中互换，不能可靠沿用。
+
+每个 neighbor 相对 centroid 标准化：
+
+$$
+[\Delta x,\Delta y,\Delta z]
+=
+\frac{G-\mathrm{Centroid}}{\operatorname{SD}(G)},
+$$
+
+$$
+\operatorname{SD}(G)
+=
+\sqrt{
+\frac{\sum_{i=1}^{n}(g_i-\bar g)^2}{n-1}
+}.
+$$
+
+作者将标准化后分布近似为 $\mathcal N(0,1)$，但 Appendix A.1 也承认 FPS/KNN 产生的几何 points 不一定服从 Gaussian，standardization 只保证中心和尺度，不保证正态性。
+
+### 3.3 从 signed coordinates 到可 rate-code 的双分支输入
+
+Bernoulli rate encoder 要求输入可解释为 $[0,1]$ probability，而 $\Delta x,\Delta y,\Delta z$ 有正有负。直接 min-max normalization 会让距 centroid 相同但方向相反的 points 获得不对称编码，因此作者改用 absolute values：
+
+$$
+[\Delta|x|,\Delta|y|,\Delta|z|].
+$$
+
+若标准化 coordinate 近似 $\mathcal N(0,1)$，取绝对值后成为 folded normal，其均值从 0 移到：
+
+$$
+\mathbb E[|\Delta|]
+=
+\sqrt{\frac{2}{\pi}}
+\approx0.798.
+$$
+
+Absolute value 解决负 probability，却丢失方向，并使 relative part 整体变大。作者不采用精确的 expectation correction $c-\sqrt{2/\pi}\operatorname{SD}$，而是构造两个 branches：
+
+$$
+X_1
+=
+[\Delta|x|,\Delta|y|,\Delta|z|,x_{\min},y_{\min},z_{\min}],
+$$
+
+$$
+X_2
+=
+[x_c,y_c,z_c].
+$$
+
+$X_1$ 用 group minimum coordinates 在数值上补偿 absolute relative coordinates 的正向偏移；$X_2$ 独立保留真实 centroid，弥补 $x_{\min},y_{\min},z_{\min}$ 不能代表中心的问题。两条 branch 的 features 在 local extractor 中相加。这里的补偿只恢复 group-level boundary/center 信息，无法恢复每个 neighbor 原来的正负方向。
+
+所有连续 coordinate channels 随后由 stateless Poisson encoder 转成 $T=16$ 的 spike sequence：
+
+$$
+s_v[t]\sim\operatorname{Bernoulli}(v),
+\qquad
+t=1,\ldots,T.
+$$
+
+因此 network input 的时间轴不是 raw event timestamp 轴，而是对同一 point coordinates 重复 16 次随机采样得到的 simulation axis。标准化后的 $\Delta|d|$ 可能大于 1，论文未说明 clipping 或 renormalization；这对合法 Bernoulli probability 至关重要。
+
+### 3.4 Singular-stage local/global extractor 的完整 shape flow
+
+SpikePoint 只做一次 FPS/KNN grouping，随后保持 1024 个 group-level features，用 shared Conv1D 和 spiking residual blocks 升维。省略代码中未知的 axis order 后，加入 batch 和 SNN timestep 的概念 shapes 如下：
+
+| Step | Small model | Large model | 作用 |
+| --- | --- | --- | --- |
+| Main rate-coded input $X_1$ | $[B,T,1024,24,6]$ | 相同 | 24 个 neighbors 的 absolute-relative + minimum coordinates |
+| Centroid input $X_2$ | $[B,T,1024,3]$ | 相同 | 每个 neighborhood 的真实 centroid |
+| Main Conv1D + $\operatorname{ResF}_B$ | $[B,T,1024,24,32]$ | $[B,T,1024,24,64]$ | point-level local features |
+| Neighbor MaxPool | $[B,T,1024,32]$ | $[B,T,1024,64]$ | 消去 24-point axis |
+| Centroid Conv1D + $\operatorname{ResF}_B$ | $[B,T,1024,32]$ | $[B,T,1024,64]$ | centroid feature |
+| Add fusion | $[B,T,1024,32]$ | $[B,T,1024,64]$ | local group descriptors |
+| Global block 1 | $32\rightarrow64$ | $64\rightarrow128$ | group-to-group feature abstraction |
+| Global block 2 | $64\rightarrow128$ | $128\rightarrow256$ | further abstraction |
+| Final Conv1D | $128\rightarrow256$ | $256\rightarrow512$ | classifier width |
+| Global MaxPool over 1024 groups | $[B,T,256]$ | $[B,T,512]$ | one descriptor per SNN timestep |
+| Spike MLP | $256\rightarrow256\rightarrow10C$ | $512\rightarrow512\rightarrow10C$ | class voting neurons |
+
+Small model 用于 Daily DVS、DVS Action；large model 用于 DVS128 Gesture、HMDB51-DVS、UCF101-DVS。每个 Conv1D 后接 BatchNorm。$\operatorname{ResF}_B$ 的 bottleneck width 是输入的一半，并保持 block 外部 channels 不变；global $\operatorname{ResF}$ 不使用 bottleneck。Figure 8 画出 dropout 0.5，而 Appendix A.7.1 又称 extractor 与 classifier 之间的 dropout 被省略，具体 placement 存在文字/图示不一致。
+
+### 3.5 PLIF dynamics、post-LIF residual 与训练
+
+正文先用带 synaptic-current state 的 generic LIF 描述：
+
+$$
+I[n]
+=
+e^{-\Delta t/\tau_{\mathrm{syn}}}I[n-1]
++
+\sum_jW_jS_j[n],
+$$
+
+$$
+U[n+1]
+=
+e^{-\Delta t/\tau_{\mathrm{mem}}}U[n]
++I[n]-S[n].
+$$
+
+实际实现使用 SpikingJelly ParametricLIF，learnable $\tau$ 初始为 2.0，`no decay input`，binary threshold 的 backward derivative 使用 ATan surrogate：
+
+$$
+\sigma(x)
+=
+\frac{1}{\pi}\arctan(\pi x)+\frac12,
+\qquad
+\sigma'(x)
+=
+\frac{1}{1+(\pi x)^2}.
+$$
+
+Residual 从 pre-LIF：
+
+$$
+S^l=\operatorname{LIF}(I+S^{l-1})
+$$
+
+改成 post-LIF：
+
+$$
+S^l=\operatorname{LIF}(I)+S^{l-1}.
+$$
+
+原 residual path 必须乘 $\sigma'(\cdot)$；新 identity branch 对 $S^{l-1}$ 的 derivative 为 1，因而缓解 surrogate-gradient vanishing。主分支依然需要 surrogate gradient，网络整体也没有由此获得“不消失梯度”的保证。更重要的是，若两项都是 binary，则相加结果属于 $\{0,1,2\}$；论文没有说明后续 Conv1D 将它视为 multi-bit spike count、integer activation 还是其他 state。因此“binary spike throughout”并不成立。
+
+训练使用 Adam、initial learning rate $10^{-3}$、cosine scheduler、最多 300 epochs，batch size 为 6 或 12，$T=16$。论文未列明各数据集具体 batch size、weight decay、augmentation 和 early stopping。
+
+### 3.6 Voting classifier 与 loss
+
+每个类别不是对应一个 neuron，而是对应 10 个 output neurons，所以最后一层宽度为 $10C$。Voting layer 将每组 10 个 outputs 汇成一个 class score；论文没有给出该汇聚是 sum、mean 还是 spike count normalization。
+
+Appendix 给出的 loss 为：
+
+$$
+\mathcal L
+=
+\frac1T
+\sum_{t=0}^{T-1}
+\frac1C
+\sum_{c=0}^{C-1}
+\left(Y_{t,c}-y_c\right)^2.
+$$
+
+它在 class 和 simulation timestep 上平均 MSE。Algorithm 1 的 classifier 顺序是 `fc1 -> bn1 -> lif1 -> fc2 -> bn2 -> lif2 -> voting`。最终 inference 如何再跨 $T$ 聚合 class scores，正文没有单独给出公式。
 
 ## 4. Key Components and Mechanisms
 
-Local main branch 的输入为 $X_1=[\Delta|x|,\Delta|y|,\Delta|z|,x_{\min},y_{\min},z_{\min}]$，centroid branch 为 $X_2=[x_c,y_c,z_c]$。小模型将 $[1024,24,6]$ 映射为 $[1024,24,32]$，在 24-point neighborhood 上 max pooling 得到 $[1024,32]$，再与 centroid feature 相加。Global extractor 依次升维 $32 \rightarrow 64 \rightarrow 128 \rightarrow 256$，对 1024 个 features 做 global max pooling，得到 $[1,256]$；大模型对应 $64 \rightarrow 128 \rightarrow 256 \rightarrow 512$。
+### 4.1 三种“event/spike”不能混为一谈
 
-带 bottleneck 的 $\operatorname{ResF}_B$ 用于 point-level local extraction，其中间 channel 为输入的一半；不带 bottleneck 的 $\operatorname{ResF}$ 用于 global extraction，以保留较宽表示。每个 Conv1D 后接 BatchNorm。
+SpikePoint pipeline 中有三种不同对象：
 
-短 rate coding 会严重量化小坐标。Daily DVS 中原始平均距离约为 $|d|=0.039$，16 steps 的 expected spike count 仅为 $0.624$；除以 group standard deviation $0.052$ 后得到 $\Delta|d|\approx0.75$，expected count 变为 12。论文报告 MRE 从 1.07 降至 0.26，即 relative encoding error 约下降 76%。A.3 用 CV 说明编码概率增大后相对随机波动下降，但其公式混合了单个 Bernoulli spike 与 firing-rate estimator，并遗漏或消去了 $nT$ 因子，严格推导为 `Needs further check`。
+- raw event：sensor 输出的 $(x,y,t,p)$；
+- pseudo-point：窗口化、丢弃 polarity、归一化后的 $(x,y,z)$；
+- neuronal spike：point coordinates 经 Bernoulli sampling 重新生成的 $s_v[t]\in\{0,1\}$。
 
-关键 residual modification 是：
+因此 SpikePoint 避免的是 frame/voxel conversion，但没有保持“一条 sensor event 对应一条 neuronal spike”。Raw timestamp 被压成 $z\in[0,1]$ 后，再以 firing rate 表达；精确 event timing 被转换为有限 $T=16$ 下的随机 spike-count estimate。
+
+### 4.2 为什么 singular-stage 更适合本文的 SNN
+
+PointNet++-style hierarchy 会重复 FPS/KNN、减少 point count、增加 feature depth。作者认为对 SNN 来说，多 stage 会使 binary features 随深度变得更 sparse/indistinguishable，并使 BPTT 梯度更难传播。SpikePoint 因而只 grouping 一次：local extractor 负责 neighborhood 内关系，global extractor 在不再次采样的情况下处理 1024 个 group descriptors。
+
+Local branches 为：
 
 $$
-S^l
+F_{l1}
 =
-\operatorname{LIF}(I+S^{l-1})
-\quad \longrightarrow \quad
-\operatorname{LIF}(I)+S^{l-1}
+\operatorname{ResF}_B(\operatorname{Conv1D}(X_1)),
 $$
 
-修改后，identity branch 绕过不可微 spike function，其反向导数为 1，不再连续乘以通常小于 1 的 surrogate derivative，从而缓解 residual path 的 gradient vanishing。论文公式（29）仍保留声称已消除的系数，推导书写不完整，但 Figure 3 的消融支持该 ResF 在当前配置下具有更快收敛和更高稳定准确率。
+$$
+F_{l2}
+=
+\operatorname{ResF}_B(\operatorname{Conv1D}(X_2)),
+$$
 
-Classifier 是 spike-based MLP。每个类别对应 10 个 output neurons，通过 voting 形成类别输出，并在类别和 16 个 timesteps 上计算 MSE。论文没有明确给出 10-neuron voting 与跨 timestep aggregation 的完整公式：`Needs further check`。
+$$
+F_{\mathrm{local}}
+=
+\operatorname{MaxPool}_{24}(F_{l1})+F_{l2}.
+$$
 
-小模型 classifier 为 $256 \rightarrow 256 \rightarrow 10C$，大模型为 $512 \rightarrow 512 \rightarrow 10C$，其中 $C$ 是类别数。LIF 在 DVS128 Gesture 上为 98.74%，IF 为 97.78%；作者将 0.96 个百分点差异解释为 leakage 缓解 overfitting，但没有报告多次运行方差、train-test gap 或其他数据集对比，因此该机制仍是 author speculation。
+Global extractor 为：
+
+$$
+\mathcal L(x)
+=
+\operatorname{ResF}(\operatorname{Conv1D}(x)),
+$$
+
+$$
+F_m=\mathcal L_2(\mathcal L_1(F_{\mathrm{local}})),
+$$
+
+$$
+F_{\mathrm{global}}
+=
+\operatorname{MaxPool}_{1024}(\operatorname{Conv1D}(F_m)).
+$$
+
+这里两个 MaxPool 对象不同：第一个消去每组 24 neighbors，第二个消去 1024 groups。所谓 singular-stage 指只进行一次 geometric grouping，并不表示网络只有一层 Conv1D 或一个 spiking block。
+
+### 4.3 Coordinate rescaling 为什么能改善短 rate coding
+
+对 probability $p$ 做 $T$ 次 Bernoulli coding，firing-rate estimate 为：
+
+$$
+\hat p=\frac1T\sum_{t=1}^{T}s_p[t],
+$$
+
+$$
+\mathbb E[\hat p]=p,
+\qquad
+\operatorname{Var}(\hat p)=\frac{p(1-p)}{T}.
+$$
+
+当 $p$ 很小时，expected spike count $Tp$ 小，全零 sequence 的概率 $(1-p)^T$ 很高。Daily DVS 中原始平均 relative distance 为 $|d|\approx0.039$，$T=16$ 时 expected count 仅 $0.624$，全零概率约为 $0.961^{16}\approx0.529$。除以 group standard deviation $0.052$ 后：
+
+$$
+\Delta|d|
+=
+\frac{0.039}{0.052}
+\approx0.75,
+$$
+
+expected count 变为 12。论文测得 MRE 从 1.07 降至 0.26，约下降 76%。这支持“放大小 relative coordinates 可降低短 rate-code 的相对误差”。Appendix 的 CV 公式却缺少标准 firing-rate estimator 应有的 $1/\sqrt T$ 项，并混合 trial count $n$，其定量推导不能直接采用。
+
+### 4.4 ResF 的 gradient path 与 activation 类型
+
+Post-LIF identity branch 的关键价值是：
+
+$$
+\frac{\partial S^l}{\partial S^{l-1}}=1,
+$$
+
+而 pre-LIF branch 近似为：
+
+$$
+\frac{\partial S^l}{\partial S^{l-1}}
+\approx
+\sigma'(I+S^{l-1}).
+$$
+
+当 argument 接近 1 时，ATan surrogate derivative 约为 $1/(1+\pi^2)\approx0.092$，跨多个 blocks 连乘会迅速缩小。新结构提供 gradient highway，但不改变 main branch 的 threshold nonlinearity。Appendix Eq. (29) 声称系数被取消，印刷公式却仍保留该项，因此应以 graph structure 而非该式作为解释依据。
+
+Post-LIF addition 也改变 forward representation：identity sum 可能是多值 integer，而非 binary spike。这对 AC operation accounting、后续 firing rate 和“full spike”定义都有影响，论文没有专门计数或消融。
 
 ## 5. Experiments and Main Evidence
 
-SpikePoint 在 DVS128 Gesture、Daily DVS、DVS Action、HMDB51-DVS 和 UCF101-DVS 上评估。Daily DVS、DVS Action 使用 0.16 M 的小模型；其余使用大模型。DVS Action 额外使用 denoising，并从 event stream 后半段开始采样，因此其 90.6% 结果应限定在该 preprocessing configuration 下。HMDB51-DVS 和 UCF101-DVS 是由 frame videos 转换的 events，不是直接 event-camera recordings。
+### 5.1 Dataset provenance 与主要结果
 
-关键结果如下：DVS128 Gesture 为 98.74%，是表中 SNN SOTA，但低于 TBR+I3D 的 overall 99.6%；Daily DVS 为 97.92%，高于表中最佳 ANN 96.5%；DVS Action 为 90.6%，高于 ST-EVNet 的 88.7%；HMDB51-DVS 为 55.6%，高于 RG-CNN 的 51.5%；UCF101-DVS 为 68.46%，是 SNN SOTA，但低于 ECSNet-SES 的 overall 70.2%。因此论文支持“五个数据集上的 SNN SOTA、其中三个表格内 overall best”，不支持五个数据集均为 overall SOTA。
+SpikePoint 在五个 datasets 上评估。DVS128 Gesture、Daily DVS、DVS Action 是直接 sensor recordings；HMDB51-DVS 和 UCF101-DVS 由 conventional videos 转换为 events，不能用于证明真实 event-camera noise/timing 下的性能。DVS Action 还使用 event-density denoising，并从 recording 后半段开始生成 samples，因为作者观察到动作主要发生在那里；其 $90.6\%$ 必须限定到该 preprocessing configuration。
 
-Timestep ablation 只在 Daily DVS 和 DVS Action 上验证：16 timesteps 分别达到 97.92% 和 90.6%，24/32 timesteps 反而下降，原因未解释。Grouping ablation 中，absolute-value encoding 比 $[0,1]$ normalization 高 1.25 个百分点，Add fusion 比 Concat 高 0.42 个百分点。部分 grouping comparisons 同时改变多个变量，不能作为严格单变量因果证据。论文也未说明 overlapping clips 是在 recording-level split 之后生成，还是生成后随机划分；潜在 train-test leakage 为 `Needs further check`。
+| Dataset | Model | SpikePoint | 结论边界 |
+| --- | --- | ---: | --- |
+| DVS128 Gesture | large, 0.58 M | 98.74% | SNN SOTA，低于 TBR+I3D 的 99.6% overall best |
+| Daily DVS | small, 0.16 M | 97.92% | 表内 overall best，高于 TANet 96.5% |
+| DVS Action | small, 0.16 M | 90.6% | 特定 denoise + half-stream preprocessing 下 overall best |
+| HMDB51-DVS | large, 0.79 M | 55.6% | converted dataset 上表内 overall best |
+| UCF101-DVS | large, 1.05 M | 68.46% | SNN SOTA，低于 ECSNet-SES 70.2% |
 
-Energy 不是硬件实测。作者假设 45 nm、$V_{DD}=0.9$ V，使用 $E_{MAC}=4.6$ pJ、$E_{AC}=0.9$ pJ，并以 firing rate、timesteps 和 FLOPs 估算 SOP。SpikePoint 的 0.82 mJ dynamic energy 与 0.756 mJ static energy 属于 theoretical operation/SRAM model-level proxy，不是 GPU runtime、wall-clock latency 或 neuromorphic hardware result；FPS、KNN、encoding、memory movement 与神经元状态更新等成本未被完整计入。
+因此论文支持“五个数据集上的 SNN SOTA、其中三个表格内 overall best”，不支持五个数据集均为 overall SOTA。不同 class count 使 large model 的 classifier 参数量不同，不代表 backbone 不同。
 
-ResF ablation 比较 conventional pre-LIF residual、no residual 和 post-LIF ResF。训练曲线定性支持 ResF 收敛更快、稳定准确率更高，但没有最终数值表、mean/std 或重复实验。Structural ablation 显示仅 local 或仅 global extractor 在 DVS Action 上约 40%，显著低于完整模型；PointNet-style comparison 同时改变 feature width，不能单独证明 singular-stage 是唯一原因。
+### 5.2 Timestep、grouping 与 structure ablations
+
+Timestep ablation 仅在 Daily DVS/DVS Action 上进行：
+
+| $T$ | 2 | 4 | 8 | 12 | 16 | 24 | 32 |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Daily DVS | 92.75 | 95.17 | 96.53 | 97.22 | **97.92** | 96.70 | 96.01 |
+| DVS Action | 60.93 | 71.88 | 80.09 | 85.65 | **90.60** | 88.39 | 81.03 |
+
+$T=16$ 最佳，说明更多 timesteps 没有单调改善 accuracy。论文没有判断下降来自 optimization、overfitting、firing saturation 还是 stochastic encoding behavior。
+
+Grouping Table 8 的可配对证据包括：absolute + centroid single branch 为 97.78%，$[0,1]$ + centroid 为 96.53%，差 1.25 points；absolute + minimum + double/add 为 97.92%，double/concat 为 97.50%，Add 高 0.42 points；minimum coordinate 在部分配对中有改善，但 centroid 在 single branch 下略强。由于多行同时改变 absolute/minimum/centroid/branch/fusion，不能把所有差异归因于单一变量。
+
+ResF ablation 比较 pre-LIF residual、no residual 和 post-LIF ResF。Figure 3 定性显示 post-LIF ResF 收敛更快且稳定 accuracy 更高，但没有 final numeric table、mean/std 或重复 runs。Structural ablation 中，仅 local 或仅 global extractor 在 DVS Action 上约 40%；PointNet-like configuration 还把 width 扩到 1024，因此不能单独证明 grouping stage 数量是唯一原因。
+
+LIF/IF 只在 DVS128 Gesture 上比较：98.74% vs. 97.78%。作者推测 leak 缓解 overfitting，但没有 train-test gap、多个 datasets 或重复实验支持，属于 author speculation。
+
+### 5.3 Energy evidence 与可复算性
+
+作者使用 45 nm、$V_{DD}=0.9\ \mathrm V$ proxy：
+
+$$
+E_{\mathrm{MAC}}=4.6\ \mathrm{pJ},
+\qquad
+E_{\mathrm{AC}}=0.9\ \mathrm{pJ},
+$$
+
+$$
+\mathrm{SOP}
+=
+f_{\mathrm{rate}}\times T\times\mathrm{FLOPs}.
+$$
+
+SpikePoint 的 0.9 G OPs 乘 $0.9\ \mathrm{pJ}$ 可得到约 $0.81\ \mathrm{mJ}$，与 Table 7 的 0.82 mJ dynamic energy 基本一致。但这一估计没有完整计入 sliding-window storage、random sampling、FPS、KNN、standardization、Poisson random generation、state memory 和 data movement，也没有针对 post-LIF multi-valued residual 调整 AC cost。
+
+Static energy 定义为：
+
+$$
+E_{\mathrm{static}}
+=
+N_{\mathrm{param}}
+\times12.991\ \mathrm{pW}
+\times L_{\mathrm{sample}}.
+$$
+
+对 SpikePoint 的 0.58 M parameters 和 DVS128 $0.5\ \mathrm{s}$ window，该式给出约 $0.00377\ \mathrm{mJ}$；即使代入 6.52 s average recording length 也只有约 $0.049\ \mathrm{mJ}$，无法复现表中的 $0.756\ \mathrm{mJ}$。因此 static-energy table 的 $L_{\mathrm{sample}}$ 或单位存在未报告 scale，不能作为可复算硬件证据。整体 energy comparison 是 operation/SRAM theoretical proxy，不是 measured chip、GPU 或 wall-clock energy。
 
 ## 6. Strengths and Limitations
 
-Strengths：方法将 event stream 组织为稀疏时空 points，避免 frame/voxel representation；point-based SNN 为直接训练而非 conversion；singular-stage local/global design 参数量小；坐标 rescaling 明确针对 16-step rate coding 的高相对误差；五个数据集上的 SNN 结果具有竞争力。
+**Strengths.** 方法将 event stream 组织为稀疏时空 points，避免 frame/voxel representation；point-based SNN 从头直接训练；singular-stage local/global architecture 参数较少；coordinate rescaling 明确针对 16-step rate coding 的高相对误差；post-LIF residual 给出具体的 surrogate-gradient bypass；五个 datasets 上结果具有竞争力。
 
-Limitations：polarity 被直接丢弃；Poisson encoding 重新随机化传感器事件，且只用 16 timesteps；random sampling 易选中 illumination/background noise；window length 需要按数据集调优；DVS Action 使用特定去噪与时间裁剪；论文的 tensor symbols、CV 推导和 residual-gradient 公式存在内部不一致；“full spike”不覆盖完整预处理 pipeline；energy 仅为理论 proxy。
+**Limitations.** Polarity 被丢弃；raw timestamps 被重新编码成随机 rate spikes；absolute coordinates 丢失 per-point direction，且超出 $[0,1]$ 时的 encoder 处理不明；$N,N',M$ 符号冲突；random sampling 易选中 noise；window length 与 DVS Action preprocessing 依赖 dataset-specific tuning；overlapping random split 可能泄漏；post-LIF sum 不保证 binary；CV 与 residual-gradient 推导有错误或印刷不一致；energy 没有覆盖完整 pipeline，static estimate 也无法按公式复现。
 
 ## 7. Relation to Other Papers and Survey Taxonomy
 
 本论文主要属于 event representation、SNN architecture、temporal modeling、training method、action recognition、efficiency and hardware proxy 以及 open challenges。它连接 PointNet/PointNet++ 式 point processing 与 direct-trained SNN：相较 frame-based SNN，它保留 point sparsity 和归一化时间坐标；相较 Point Cloud ANN，它避免多阶段 set abstraction，并用 spike-compatible coordinate encoding 与 post-LIF residual mapping。它不是 dense prediction、tracking、optical flow、detection 或 adversarial robustness 方法。
+
+### PDF-verified relation backfill
+
+主要路线是 sparse Event Cloud grouping/aggregation 与 point-wise spiking computation 的端到端结合。
+
+- **PointNet++: Deep Hierarchical Feature Learning on Point Sets in a Metric Space (Charles Ruizhongtai Qi et al., NeurIPS 2017)** — `foundation`。该工作提供 hierarchical Event Cloud grouping 的基础机制；当前论文将其用于自身的 event/SNN pipeline，而不是把该前驱本身作为新贡献。 对应 Sections 2 and 4: representation and SNN integration。证据：Related Work and Method, PDF pp.2-4, citation and bibliography [24]。 当前 active corpus 未覆盖。
+- **TTPOINT: A Tensorized Point Cloud Network for Lightweight Action Recognition with Event Cameras (Hongwei Ren et al., ACMMM 2023)** — `baseline`。该工作是 point-based event action recognition 的实验 comparator；当前论文与其主要区别在于本文第 3–4 节所述的核心机制。 对应 Sections 4 and 5: ANN-SNN comparison and action recognition。证据：Related Work and Experiments, PDF pp.3 and 8, citation and bibliography [33]。 当前 active corpus 未覆盖。
+- **Modeling Point Clouds with Self-Attention and Gumbel Subset Sampling (Jiancheng Yang et al., CVPR 2019)** — `alternative`。两者都处理 point subset selection and feature modeling，但采用不同 representation、state 或 computation route。 对应 Sections 2 and 4: sparse representation and SNN integration。证据：Related Work, PDF p.3, citation and bibliography [37]。 当前 active corpus 未覆盖。
 
 ## 8. Survey-Usable Takeaways
 

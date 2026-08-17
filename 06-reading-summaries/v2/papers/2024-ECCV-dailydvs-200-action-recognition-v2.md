@@ -196,6 +196,13 @@ $$
 
 二者共同说明：event camera 的高时间分辨率只有在 representation 和 temporal dynamics 中被正确保留和适配，才能转化为性能优势。
 
+### PDF-verified relation backfill
+
+主要路线是大规模真实 event-action benchmark、attribute subgroup analysis 与 ANN/SNN backbone comparison。
+
+- **A Low Power, Fully Event-Based Gesture Recognition System (Arnon Amir et al., CVPR 2017)** — `foundation`。该工作提供 real-world event gesture benchmark 的基础机制；当前论文将其用于自身的 event/SNN pipeline，而不是把该前驱本身作为新贡献。 对应 Sections 5 and 6: action datasets and robustness。证据：Introduction and Related Work, PDF pp.2-3, citation and bibliography [1]。 当前 active corpus 未覆盖。
+- **Event-based Action Recognition Using Motion Information and Spiking Neural Networks (Qianhui Liu et al., IJCAI 2021)** — `baseline`。该工作是 daily event action dataset 的实验 comparator；当前论文与其主要区别在于本文第 3–4 节所述的核心机制。 对应 Section 5: action recognition。证据：Dataset comparison Table 1, PDF p.4, citation and bibliography [35]。 当前 active corpus 未覆盖。
+
 ## 8. Survey-Usable Takeaways
 
 1. 大规模真实 event-action datasets 仍然稀缺，类别数量之外还必须重视 subject、scene 和 attribute diversity。

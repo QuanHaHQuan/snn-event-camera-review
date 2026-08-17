@@ -1,8 +1,10 @@
 # Survey Outline
 
-Status: **provisional after Checkpoint 01; current audited Core progress is 10/25 V2 papers**.
+Status: **provisional after Checkpoint 01 and taxonomy-closure audit; current audited Core progress is 13/26 V2 papers**.
 
-This is a working structure, not the final V1.0 outline. Checkpoint 01 is recorded in [outline-checkpoints/checkpoint-01-11-v2.md](outline-checkpoints/checkpoint-01-11-v2.md). That historical checkpoint used 11 V2 papers from the pre-audit 31-paper Core. After the 2026-08-12 title/abstract audit, three of those papers became reference-only and two already-read representation papers entered Core, leaving 10/25 current Core papers complete. The evidence read so far is entirely from 2023/2024, so decisions that depend on 2025/2026 architectures, tracking, ANN-SNN conversion, or hardware evaluation remain open.
+This is a working structure, not the final V1.0 outline. Checkpoint 01 is recorded in [outline-checkpoints/checkpoint-01-11-v2.md](outline-checkpoints/checkpoint-01-11-v2.md). The external-survey [taxonomy closure audit](taxonomy-closure-audit.md) broadens recall without replacing evidence from paper-level V2 reading. Current progress is 13/26; decisions that depend on the remaining 2025/2026 anchors, tracking, ANN-SNN conversion, or hardware evaluation remain open.
+
+The review-and-reading sequence from 13/26 to completion is maintained in [core-reading-roadmap-13-to-26.md](core-reading-roadmap-13-to-26.md).
 
 ## Working Title
 
@@ -22,8 +24,8 @@ The chapter order is therefore not a nested taxonomy. Chapters 2 and 3 define th
 2. Event-camera data organization and representations: the sensor-side axis
    - Raw asynchronous event stream and event tuple semantics.
    - Temporal organization before representation: fixed-duration slicing, fixed-event-count slicing, packetization, and adaptive sampling/slicing.
-   - Dense representations: event frames, accumulation, voxel grids, stacked histograms.
-   - Sparse representations: point/Event Cloud, time surfaces, graphs, event-by-event processing.
+   - Implementation families: image/event frames, time surfaces, voxel grids, point/Event Cloud, graphs, learned representations, and spike-native inputs.
+   - Cross-cutting storage/processing property: dense versus sparse. Do not force time surfaces, graphs, points, and learned representations into a single mutually exclusive dense/sparse tree.
    - Learned/adaptive representations after the temporal boundary has been chosen, including task-aware aggregation, polarity-aware encoding and, where the transformation is applied to the event signal itself, frequency-aware representations.
    - Keep slicing and representation distinct: slicing chooses which events belong together; representation determines how that group is encoded.
    - Comparison dimensions: sparsity, temporal precision, spatial completeness, polarity retention, preprocessing cost, memory, latency, and information loss.
@@ -31,8 +33,9 @@ The chapter order is therefore not a nested taxonomy. Chapters 2 and 3 define th
 3. Spiking neural networks: the computation-side axis
    - Spike coding, neuron state, membrane dynamics, reset, and temporal simulation.
    - Architectural boundary: directly trained SNN, converted SNN, fully spiking network, hybrid ANN-SNN, and non-spiking comparator.
+   - Architecture families: convolutional/residual SNNs, recurrent/stateful SNNs, Spiking Transformers/attention/mixers, and point/graph SNNs. These are sibling families; `Spiking Transformer` is not a synonym for modern SNNs as a whole.
    - Temporal axis: short-term dynamics, long-range state/memory, delay, temporal credit assignment, and timestep flexibility.
-   - Training axis: surrogate gradient, BPTT/online learning, distillation, and stability.
+   - Training axis: surrogate gradient, BPTT/STBP, online/local learning, STDP, distillation, normalization, and stability.
    - Efficiency axis: sparse activation, addition-only computation, state and memory overhead, latency, energy, and hardware mapping.
    - Apply `fully spiking` at an explicit boundary: a spiking backbone, a fully spiking task network, and an end-to-end event-processing pipeline are not equivalent claims.
 

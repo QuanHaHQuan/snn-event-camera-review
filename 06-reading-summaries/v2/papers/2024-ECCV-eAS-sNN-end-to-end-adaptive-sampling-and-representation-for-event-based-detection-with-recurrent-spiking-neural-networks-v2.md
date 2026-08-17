@@ -146,6 +146,14 @@ EAS-SNN 与传统 SNN detector 的区别在于：后者通常接收预先固定�
 
 它是讨论“从 fixed event slicing 转向 task-driven adaptive representation”的核心 SNN 案例，也适合用于说明：当 spike 承担 sampling、routing 或 boundary decision 等功能时，标准 surrogate-gradient training 可能需要专门的梯度和状态约束。
 
+### PDF-verified relation backfill
+
+主要路线是用 ARSNN 的 threshold crossing 自适应结束局部采样窗口，并以 SAT/RPD 让 detection supervision 可训练该 sampler。
+
+- **From Chaos Comes Order: Ordering Event Representations for Object Recognition and Detection (Nikola Zubić et al., ICCV 2023)** — `contrasts_with`。两者都面向 adaptive event window and representation，但优化方向相反或训练假设不同。 对应 Sections 2 and 4: adaptive slicing and SNN-event interface。证据：Related Work 2, PDF p.4, citation and bibliography [75]。 当前 active corpus 未覆盖。 值得 backward search。
+- **Recurrent Vision Transformers for Object Detection with Event Cameras (Mathias Gehrig et al., CVPR 2023)** — `baseline`。该工作是 stateful event detection 的实验 comparator；当前论文与其主要区别在于本文第 3–4 节所述的核心机制。 对应 Section 5: detection。证据：Experiments Tables 2-3, PDF pp.11-12, citation and bibliography [21]。 当前 active corpus 未覆盖。
+- **Asynchronous Spatio-Temporal Memory Network for Continuous Event-Based Object Detection (Jia Li et al., TIP 2022)** — `baseline`。该工作是 temporal event representation for detection 的实验 comparator；当前论文与其主要区别在于本文第 3–4 节所述的核心机制。 对应 Sections 2 and 5: representation and detection。证据：Related Work and Experiments, PDF pp.3 and 12, citation and bibliography [35]。 当前 active corpus 未覆盖。
+
 ## 8. Survey-Usable Takeaways
 
 - Takeaway 1: EAS-SNN 将 recurrent SNN 用作局部自适应事件采样器，以 spike firing time 定义采样边界，并用膜电位积累构造检测表示。

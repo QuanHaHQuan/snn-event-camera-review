@@ -185,6 +185,15 @@ Output masking 是 hard removal；H2 norm 是 soft suppression。
 
 > Temporal state、streaming inference 和连续时间适应性并非 SNN 独有属性。评估 SNN 时，应与 SSM 这类可并行训练、可递归部署的 non-spiking stateful models 比较，而不应只与无状态 CNN 比较。
 
+### PDF-verified relation backfill
+
+主要路线是 continuous-time SSM + re-discretization，以 parallel training 和 recurrent deployment 处理 event inference-frequency shift。
+
+- **Efficiently Modeling Long Sequences with Structured State Spaces (Albert Gu et al., ICLR 2022)** — `foundation`。该工作提供 continuous-time structured state spaces 的基础机制；当前论文将其用于自身的 event/SNN pipeline，而不是把该前驱本身作为新贡献。 对应 Sections 3 and 6: temporal modeling and comparison。证据：Related Work and Method, PDF pp.2-4, citation and bibliography [16]。 当前 active corpus 未覆盖。
+- **On the Parameterization and Initialization of Diagonal State Space Models (Albert Gu et al., NeurIPS 2022)** — `foundation`。该工作提供 continuous-time structured state spaces 的基础机制；当前论文将其用于自身的 event/SNN pipeline，而不是把该前驱本身作为新贡献。 对应 Sections 3 and 6: temporal modeling and comparison。证据：Related Work and Method, PDF pp.2-4, citation and bibliography [15]。 当前 active corpus 未覆盖。
+- **Simplified State Space Layers for Sequence Modeling (Jimmy T. H. Smith et al., ICLR 2023)** — `extends`。当前论文沿用该工作的 shared MIMO state and parallel scan，并针对当前任务增加新的结构或训练约束。 对应 Sections 3 and 6: temporal modeling and comparison。证据：Method and Experiments, PDF pp.4 and 8, citation and bibliography [36]。 当前 active corpus 未覆盖。
+- **Recurrent Vision Transformers for Object Detection with Event Cameras (Mathias Gehrig et al., CVPR 2023)** — `baseline`。该工作是 stateful event detection 的实验 comparator；当前论文与其主要区别在于本文第 3–4 节所述的核心机制。 对应 Section 5: detection。证据：Related Work and Experiments, PDF pp.3 and 7, citation and bibliography [12]。 当前 active corpus 未覆盖。
+
 ## 8. Survey-Usable Takeaways
 
 1. 固定 event-window training 会造成明显的 inference-frequency distribution shift。
@@ -908,4 +917,3 @@ $$
 
 **跨频率实验的正确解释。**  
 模型在 20 Hz 训练，在 40–200 Hz 下不重新训练，通过缩放有效 $\Delta$ 重新离散化。该机制解决 state dynamics 的时间尺度失配；bandlimiting 与 $H_2$ regularization 则解决低频训练网格对高频 continuous modes 的不可辨识问题。二者针对的是不同问题，缺一不可。
-

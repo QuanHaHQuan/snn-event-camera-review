@@ -2,28 +2,29 @@
 
 ## Current Status
 
-- Official mother list: 4068 papers (preserved in full).
-- Active title-candidate records: 62.
-- Active retained reviewed papers: 41.
-- Every active semantic role was reassessed from the complete official title and abstract.
-- Legacy A/B/C values in venue CSVs are search-stage provenance only.
+- Official mother list: 4068 papers.
+- High-recall title/abstract candidates: 80.
+- Candidates with complete official-title/abstract audit: 80.
+- Retained A/B/C provenance records: 45.
+- Dual-track exclusions among current candidates: 35.
+- A/B/C is conference-search provenance only; active reading assignments come from the dual-track audit.
 
-## Official Source
+## Scope And Evidence
 
-- URL: https://openaccess.thecvf.com/CVPR2026?day=all
+- Every title candidate is represented in `00-index/candidate-screening-audit.csv` with its complete official abstract and SHA256.
 - Full-PDF search over the complete mother list was not performed.
 
-## Active Dual-Track Counts
+## Retained Dual-Track Counts
 
-- Survey: anchor=4, included=0, background=32, exclude=5.
-- Advisor: method_chain=1, discussion=25, watch=11, exclude=4.
+- Survey: anchor=4, included=0, background=36, exclude=5.
+- Advisor: method_chain=1, discussion=25, watch=15, exclude=4.
 
-## Active Entries
+## Retained Entries
 
 | ID | Title | Survey role | Advisor role |
 | --- | --- | --- | --- |
 | CVPR2026-1573 | Adaptive Spatial-Temporal Window: Unlocking the Potential of Event Cameras in Heterogeneous Velocity Scenarios | background | discussion |
-| CVPR2026-3465 | AIMDepth: Asymmetric Image-Event Mamba for Monocular Depth Estimation | background | discussion |
+| CVPR2026-3465 | AIMDepth: Asymmetric Image-Event Mamba for Monocular Depth Estimation | background | watch |
 | CVPR2026-4013 | ARES: Unifying Asymmetric RGB-Event Stereo for Probabilistic Scene Flow Estimation | background | watch |
 | CVPR2026-2514 | Beyond Duality: A Hybrid Framework of Leveraging Shared and Private Features for RGB-Event Object Detection | background | method_chain |
 | CVPR2026-1217 | Bidirectional Cross-Modal Prompting for Event-Frame Asymmetric Stereo | background | watch |
@@ -31,15 +32,18 @@
 | CVPR2026-1239 | Depth Hypothesis Guided Iterative Refinement for Event-Image Monocular Depth Estimation | background | watch |
 | CVPR2026-3157 | DSERT-RoLL: Robust Multi-Modal Perception for Diverse Driving Conditions with Stereo Event-RGB-Thermal Cameras, 4D Radar, and Dual-LiDAR | background | discussion |
 | CVPR2026-2053 | E-3DPSM: A State Machine for Event-based Egocentric 3D Human Pose Estimation | background | discussion |
+| CVPR2026-3467 | EV-CGNet: Co-visible Focused 3D-guided 2D Event Keypoint Detection Network | background | discussion |
 | CVPR2026-0881 | Event Stream Filtering via Probability Flux Estimation | background | discussion |
 | CVPR2026-3419 | Event-Based Motion Deblurring Using Task-Oriented 3D Gaussian Event Representations | background | discussion |
-| CVPR2026-3680 | Event-based Motion Deblurring with Unpaired Data | exclude | discussion |
+| CVPR2026-3680 | Event-based Motion Deblurring with Unpaired Data | exclude | watch |
 | CVPR2026-2084 | Event6D: Event-based Novel Object 6D Pose Tracking | background | discussion |
 | CVPR2026-3694 | EventDrive: Event Cameras for Vision-Language Driving Intelligence | exclude | watch |
 | CVPR2026-2918 | EventGait: Towards Robust Gait Recognition with Event Streams | anchor | discussion |
 | CVPR2026-1824 | EventHub: Data Factory for Generalizable Event-Based Stereo Networks without Active Sensors | background | discussion |
+| CVPR2026-3325 | FlashCap: Millisecond-Accurate Human Motion Capture via Flashing LEDs and Event-Based Vision | background | watch |
 | CVPR2026-2682 | From Contrast to Consistency: Rethinking Event-based Continuous-Time Optical Flow Estimation | background | watch |
 | CVPR2026-3753 | Learning to See through Illumination Extremes with Event Streaming in Multimodal Large Language Models | exclude | watch |
+| CVPR2026-0806 | LiREC-Net: A Target-Free and Learning-Based Network for LiDAR, RGB, and Event Calibration | background | watch |
 | CVPR2026-2128 | MER-Tracker: Towards High-Speed 3D Point Tracking via Multi-View Event-RGB Hybrid Cameras | background | discussion |
 | CVPR2026-0226 | Moving Border Ownership for Event-based Motion Segmentation | background | discussion |
 | CVPR2026-0111 | On the Role of Temporal Granularity in the Robustness of Spiking Neural Networks | background | exclude |
@@ -58,13 +62,13 @@
 | CVPR2026-2519 | Stable Spike: Dual Consistency Optimization via Bitwise AND Operations for Spiking Neural Networks | background | watch |
 | CVPR2026-0399 | Temporal Interaction in Spiking Transformers with Multi-Delay Mixer | background | discussion |
 | CVPR2026-0405 | Temporal Representation Enhancement (TRE): Learning to Forget Dominant Patterns for Enhanced Temporal Spiking Features | background | watch |
+| CVPR2026-2758 | Texvent: Asynchronous Event Data Simulation via Text Prompt | background | discussion |
 | CVPR2026-0479 | Towards Persistence: Learning Topological Constraints for Event-based Small Object Detection | background | discussion |
 | CVPR2026-1160 | Towards Reliable Evaluation of Adversarial Robustness for Spiking Neural Networks | background | exclude |
 | CVPR2026-0662 | Tracking through Severe Occlusion via Event-Derived Transient Cues | background | discussion |
 | CVPR2026-2308 | TTAPFormer: Robust Arbitrary Point Tracking via Transient Asynchronous Fusion of Frames and Events | background | discussion |
 | CVPR2026-3330 | x^2-Fusion: Cross-Modality and Cross-Dimension Flow Estimation in Event Edge Space | background | discussion |
 
-## Audit
+## Audit Source
 
-Current dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-08-12-dual-exclude-audit.md`.
-Complete official proceedings remain available in this venue's `mother-list.csv`.
+Use `00-index/candidate-screening-audit.csv` for every retained or excluded candidate decision and its official abstract evidence.

@@ -2,23 +2,24 @@
 
 ## Current Status
 
-- Official mother list: 2871 papers (preserved in full).
-- Active title-candidate records: 43.
-- Active retained reviewed papers: 26.
-- Every active semantic role was reassessed from the complete official title and abstract.
-- Legacy A/B/C values in venue CSVs are search-stage provenance only.
+- Official mother list: 2871 papers.
+- High-recall title/abstract candidates: 57.
+- Candidates with complete official-title/abstract audit: 57.
+- Retained A/B/C provenance records: 26.
+- Dual-track exclusions among current candidates: 31.
+- A/B/C is conference-search provenance only; active reading assignments come from the dual-track audit.
 
-## Official Source
+## Scope And Evidence
 
-- URL: https://openaccess.thecvf.com/CVPR2025?day=all
+- Every title candidate is represented in `00-index/candidate-screening-audit.csv` with its complete official abstract and SHA256.
 - Full-PDF search over the complete mother list was not performed.
 
-## Active Dual-Track Counts
+## Retained Dual-Track Counts
 
 - Survey: anchor=1, included=1, background=22, exclude=2.
 - Advisor: method_chain=0, discussion=16, watch=7, exclude=3.
 
-## Active Entries
+## Retained Entries
 
 | ID | Title | Survey role | Advisor role |
 | --- | --- | --- | --- |
@@ -49,7 +50,6 @@
 | CVPR2025-1714 | Towards Effective and Sparse Adversarial Attack on Spiking Neural Networks via Breaking Invisible Surrogate Gradients | included | exclude |
 | CVPR2025-0668 | VISTREAM: Improving Computation Efficiency of Visual Streaming Perception via Law-of-Charge-Conservation Inspired Spiking Neural Network | exclude | watch |
 
-## Audit
+## Audit Source
 
-Current dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-08-12-dual-exclude-audit.md`.
-Complete official proceedings remain available in this venue's `mother-list.csv`.
+Use `00-index/candidate-screening-audit.csv` for every retained or excluded candidate decision and its official abstract evidence.

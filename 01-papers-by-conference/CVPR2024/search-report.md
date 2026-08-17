@@ -2,29 +2,31 @@
 
 ## Current Status
 
-- Official mother list: 2716 papers (preserved in full).
-- Active title-candidate records: 33.
-- Active retained reviewed papers: 23.
-- Every active semantic role was reassessed from the complete official title and abstract.
-- Legacy A/B/C values in venue CSVs are search-stage provenance only.
+- Official mother list: 2716 papers.
+- High-recall title/abstract candidates: 47.
+- Candidates with complete official-title/abstract audit: 47.
+- Retained A/B/C provenance records: 24.
+- Dual-track exclusions among current candidates: 23.
+- A/B/C is conference-search provenance only; active reading assignments come from the dual-track audit.
 
-## Official Source
+## Scope And Evidence
 
-- URL: https://openaccess.thecvf.com/CVPR2024?day=all
+- Every title candidate is represented in `00-index/candidate-screening-audit.csv` with its complete official abstract and SHA256.
 - Full-PDF search over the complete mother list was not performed.
 
-## Active Dual-Track Counts
+## Retained Dual-Track Counts
 
-- Survey: anchor=1, included=0, background=22, exclude=0.
-- Advisor: method_chain=2, discussion=3, watch=15, exclude=3.
+- Survey: anchor=1, included=0, background=23, exclude=0.
+- Advisor: method_chain=1, discussion=3, watch=17, exclude=3.
 
-## Active Entries
+## Retained Entries
 
 | ID | Title | Survey role | Advisor role |
 | --- | --- | --- | --- |
 | CVPR2024-0453 | 3D Feature Tracking via Event Camera | background | exclude |
-| CVPR2024-1880 | A Simple and Effective Point-based Network for Event Camera 6-DOFs Pose Relocalization | background | method_chain |
+| CVPR2024-1880 | A Simple and Effective Point-based Network for Event Camera 6-DOFs Pose Relocalization | background | watch |
 | CVPR2024-2342 | Are Conventional SNNs Really Efficient? A Perspective from Network Quantization | background | watch |
+| CVPR2024-0885 | Bring Event into RGB and LiDAR: Hierarchical Visual-Motion Fusion for Scene Flow | background | watch |
 | CVPR2024-1533 | Efficient Meshflow and Optical Flow Estimation from Event Cameras | background | exclude |
 | CVPR2024-0876 | eTraM: Event-based Traffic Monitoring Dataset | background | watch |
 | CVPR2024-0529 | Event Stream-based Visual Object Tracking: A High-Resolution Benchmark Dataset and A Novel Baseline | background | watch |
@@ -46,7 +48,6 @@
 | CVPR2024-1053 | State Space Models for Event Cameras | background | exclude |
 | CVPR2024-1718 | TTA-EVF: Test-Time Adaptation for Event-based Video Frame Interpolation via Reliable Pixel and Sample Estimation | background | watch |
 
-## Audit
+## Audit Source
 
-Current dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-08-12-dual-exclude-audit.md`.
-Complete official proceedings remain available in this venue's `mother-list.csv`.
+Use `00-index/candidate-screening-audit.csv` for every retained or excluded candidate decision and its official abstract evidence.

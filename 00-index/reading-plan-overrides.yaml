@@ -1,6 +1,0 @@
-# DEPRECATED
-#
-# The A/B/C + P0-P3 override workflow is retired. Maintain active roles,
-# topics, reasons, and reading_status in 00-index/paper-selection.csv, then run:
-#
-#   python3 scripts/update_selection.py

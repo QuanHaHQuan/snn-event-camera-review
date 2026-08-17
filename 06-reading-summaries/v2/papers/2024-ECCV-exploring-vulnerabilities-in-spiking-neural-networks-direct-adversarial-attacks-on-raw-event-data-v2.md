@@ -161,6 +161,14 @@ Table 5 显示 soft continuous attack 的 ASR 显著高于 hard discrete attack�
 
 与 SpikeFool 和 Spike-Compatible 相比，本文不是只在固定 binary spike tensor 上做 spike flips，而是直接生成可变长度 COO event list。它适合支撑一个重要结论：event discreteness 和 SNN spike dynamics 并不会天然带来 adversarial robustness，因为连续松弛、STE 和 surrogate gradient 仍可建立有效攻击路径。
 
+### PDF-verified relation backfill
+
+主要路线是把 raw-event insertion/deletion/polarity change 表为三状态离散变量，并用 Gumbel-Softmax、STE 和 SNN surrogate gradient 联合优化。
+
+- **Adversarial Attacks on Spiking Convolutional Neural Networks for Event-based Vision (Jonas Büchel et al., arXiv 2021)** — `baseline`。该工作是 discrete spike/event adversarial perturbation 的实验 comparator；当前论文与其主要区别在于本文第 3–4 节所述的核心机制。 对应 Section 6: robustness and security。证据：Related Work 2 and Experiments, PDF pp.3 and 11, citation and bibliography [6]。 当前 active corpus 未覆盖。 值得 backward search。
+- **Exploring Adversarial Attack in Spiking Neural Networks with Spike-Compatible Gradient (Ling Liang et al., TNNLS 2021)** — `baseline`。该工作是 binary spike tensor attack 的实验 comparator；当前论文与其主要区别在于本文第 3–4 节所述的核心机制。 对应 Section 6: robustness and security。证据：Related Work 2, PDF p.3, citation and bibliography [26]。 当前 active corpus 未覆盖。
+- **Categorical Reparameterization with Gumbel-Softmax (Eric Jang et al., arXiv 2016)** — `foundation`。该工作提供 categorical relaxation for event edits 的基础机制；当前论文将其用于自身的 event/SNN pipeline，而不是把该前驱本身作为新贡献。 对应 Section 6: robustness and security。证据：Method 3.2, PDF pp.5-6, citation and bibliography [21]。 当前 active corpus 未覆盖。
+
 ## 8. Survey-Usable Takeaways
 
 - Raw-event interface 本身是独立攻击面，不能只评估内部 grid representation 的鲁棒性。

@@ -192,6 +192,13 @@ EV-ACT 与 TTPOINT 都处理 event-camera action recognition，但技术路线�
 
 它不是核心 SNN architecture paper，但可作为 SNN 方法必须面对的强 non-spiking benchmark 与系统参照。
 
+### PDF-verified relation backfill
+
+主要路线是建立 EV-ACT benchmark，并组合 voxel filtering、多种 dense event representations 与 SlowFast-style temporal modeling。
+
+- **End-to-End Learning of Representations for Asynchronous Event-Based Data (Daniel Gehrig et al., ICCV 2019)** — `baseline`。该工作是 learned event representation 的实验 comparator；当前论文与其主要区别在于本文第 3–4 节所述的核心机制。 对应 Sections 2 and 5: representation and action recognition。证据：Related Work and Experiments, PDF pp.3 and 9, citation and bibliography [35]。 当前 active corpus 未覆盖。 值得 backward search。
+- **SlowFast Networks for Video Recognition (Christoph Feichtenhofer et al., ICCV 2019)** — `foundation`。该工作提供 multi-rate temporal modeling 的基础机制；当前论文将其用于自身的 event/SNN pipeline，而不是把该前驱本身作为新贡献。 对应 Section 5: action recognition。证据：Related Work and Method, PDF pp.3 and 5-6, citation and bibliography [24]。 当前 active corpus 未覆盖。
+
 ## 8. Survey-Usable Takeaways
 
 * Takeaway 1: Event representation 不是中性的预处理；count、polarity、timestamp 和 temporal bins 保留的信息不同，并会直接影响 action-recognition performance。

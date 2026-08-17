@@ -722,6 +722,13 @@ $$
 
 ---
 
+### PDF-verified relation backfill
+
+主要路线是以 SNN output spike time 决定 event-cell boundary，并由下游 ANN task loss 交替产生 pseudo-label。
+
+- **Better and Faster: Adaptive Event Conversion for Event-based Object Detection (Yansong Peng et al., AAAI 2023)** — `same_task_different_mechanism`。两者都尝试根据任务需求形成自适应 event windows；该工作学习 adaptive event conversion，SpikeSlicer 则用 SNN output spike time 决定 event-cell boundary。对应 Sections 2 and 4: slicing and hybrid interface。证据：Related Work 2, PDF p.3, citation and bibliography [13]。当前 active corpus 未覆盖。值得 backward search。
+- **Asynchronous Spatio-Temporal Memory Network for Continuous Event-Based Object Detection (Jia Li et al., TIP 2022)** — `same_task_different_mechanism`。两者都面向连续 event stream 的 temporal grouping/processing；ASTMNet 使用 asynchronous spatio-temporal memory，SpikeSlicer 学习 task-dependent slicing boundary。对应 Sections 2 and 4: slicing and hybrid interface。证据：Related Work 2, PDF p.3, citation and bibliography [14]。当前 active corpus 未覆盖。值得 backward search。
+
 ## 8. Survey-Usable Takeaways
 
 1. Event-based vision pipeline 不仅需要研究 representation，也需要研究 representation 之前的 temporal slicing。

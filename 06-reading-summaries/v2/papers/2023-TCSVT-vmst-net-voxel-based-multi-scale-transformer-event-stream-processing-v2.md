@@ -222,6 +222,13 @@ VMST-Net 在 object classification 设置中仅约 `0.44G` MACs，但 runtime �
 
 它不是 SNN 文献，但适合作为判断 SNN 方法收益究竟来自 spiking computation，还是来自 sparse voxel representation 与 hierarchical architecture 的重要对照。
 
+### PDF-verified relation backfill
+
+主要路线是 sparse event voxels、intra-voxel feature encoding、multi-scale local-to-global Transformer 与 hierarchical downsampling。
+
+- **End-to-End Learning of Representations for Asynchronous Event-Based Data (Daniel Gehrig et al., ICCV 2019)** — `alternative`。两者都处理 learned dense versus sparse voxel representation，但采用不同 representation、state 或 computation route。 对应 Section 2: event representation。证据：Related Work, PDF pp.2-3, citation and bibliography [27]。 当前 active corpus 未覆盖。 值得 backward search。
+- **PointNet++: Deep Hierarchical Feature Learning on Point Sets in a Metric Space (Charles Ruizhongtai Qi et al., NeurIPS 2017)** — `foundation`。该工作提供 hierarchical sparse grouping 的基础机制；当前论文将其用于自身的 event/SNN pipeline，而不是把该前驱本身作为新贡献。 对应 Section 2: event representation。证据：Related Work and Method, PDF pp.3-5, citation and bibliography [44]。 当前 active corpus 未覆盖。
+
 ## 8. Survey-Usable Takeaways
 
 * Takeaway 1: Voxel representation 的性能不只取决于如何划分 voxel，更取决于如何编码 voxel 内部的 events。

@@ -111,6 +111,14 @@ SFOD 继承前作 Spiking DenseNet+SSD 的 voxel cube、PLIF backbone、Extra Bl
 
 它适合作为讨论 SNN 如何继承现代检测器 multi-scale hierarchy，以及 SNN 与 conventional head 之间接口设计的核心案例。
 
+### PDF-verified relation backfill
+
+主要路线是 PLIF spiking backbone + SPES multi-scale fusion + decoded analog SSD head。
+
+- **Object Detection with Spiking Neural Networks on Automotive Event Data (Luca Cordone et al., IJCNN 2022)** — `extends`。当前论文沿用该工作的 SNN event detection backbone and head，并针对当前任务增加新的结构或训练约束。 对应 Sections 4 and 5: topology and detection。证据：Introduction and Method, PDF pp.2 and 4, citation and bibliography [9]。 当前 active corpus 未覆盖。 值得 backward search。
+- **Incorporating Learnable Membrane Time Constant to Enhance Learning of Spiking Neural Networks (Wei Fang et al., ICCV 2021)** — `foundation`。该工作提供 PLIF neuron dynamics 的基础机制；当前论文将其用于自身的 event/SNN pipeline，而不是把该前驱本身作为新贡献。 对应 Section 3: neuron dynamics。证据：Method 3.1, PDF p.4, citation and bibliography [12]。 当前 active corpus 未覆盖。
+- **Deep Directly-Trained Spiking Neural Networks for Object Detection (Qiaoyi Su et al., ICCV 2023)** — `baseline`。该工作的 EMS-YOLO 是 SNN event-camera object detection 的实验 comparator；当前论文与其主要区别在于本文第 3–4 节所述的核心机制。对应 Section 5: detection。证据：Experiments Table 5, PDF p.8, EMS-YOLO model, citation and bibliography [41]。当前 active corpus 未覆盖。
+
 ## 8. Survey-Usable Takeaways
 
 * Takeaway 1: SNN event detector 的性能瓶颈不只来自 neuron model，缺乏深浅层 feature fusion 同样会限制检测性能。

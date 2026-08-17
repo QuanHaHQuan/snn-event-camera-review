@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the active dual-track index and regenerate its reading plans."""
+"""Generate the active dual-track indexes from the complete abstract audit."""
 
 from __future__ import annotations
 
@@ -11,13 +11,19 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "00-index"
+AUDIT = INDEX / "candidate-screening-audit.csv"
+METADATA = INDEX / "retained-papers.csv"
 SELECTION = INDEX / "paper-selection.csv"
-AUDIT = INDEX / "core-screening-audit.csv"
-DUAL_EXCLUDE_AUDIT = ROOT / "05-logs" / "codex-runs" / "2026-08-12-dual-exclude-audit.md"
+CONFERENCE_ROOT = ROOT / "01-papers-by-conference"
 
 SURVEY_ROLES = {"anchor", "included", "background", "exclude"}
 ADVISOR_ROLES = {"method_chain", "discussion", "watch", "exclude"}
-READING_STATUSES = {"survey_core", "advisor_required", "advisor_helpful", "retained_reference"}
+ACTIVE_READING_STATUSES = {
+    "survey_core",
+    "advisor_required",
+    "advisor_helpful",
+    "retained_reference",
+}
 
 SURVEY_TOPICS = {
     "event_to_spike": "Events-to-spikes and direct input",
@@ -57,136 +63,134 @@ EXTERNAL_ADVISOR_CHAIN = [
         "assignment": "focus",
         "link": "",
         "reason": (
-            "The TPAMI extension starts from SECNet. Its Event Cloud hierarchy already contains "
-            "Spatial-FA and Temporal-FA FFT-filter-iFFT modules; the extension question is how to "
-            "refine those frequency mechanisms and couple them to SNN computation."
-        ),
-    },
-    {
-        "title": "TTPOINT: A Tensorized Point Cloud Network for Lightweight Action Recognition with Event Cameras",
-        "year": "2023",
-        "venue": "ACMMM",
-        "assignment": "predecessor",
-        "link": (
-            "../06-reading-summaries/v2/papers/"
-            "2023-ACMMM-ttpoint-tensorized-point-cloud-event-action-recognition-v2.md"
-        ),
-        "reason": (
-            "TTPOINT is an external advisor-group predecessor for tensorized sparse event-point "
-            "processing and the architectural lineage leading to PEPNet and SECNet."
+            "The TPAMI extension starts from SECNet. Its Event Cloud hierarchy already "
+            "contains Spatial-FA and Temporal-FA FFT-filter-iFFT modules; the extension "
+            "question is how to refine those frequency mechanisms and couple them to SNN "
+            "computation."
         ),
     },
 ]
 
-OFFICIAL_PROCEEDINGS = {
-    "CVPR2024": "https://openaccess.thecvf.com/CVPR2024?day=all",
-    "CVPR2025": "https://openaccess.thecvf.com/CVPR2025?day=all",
-    "CVPR2026": "https://openaccess.thecvf.com/CVPR2026?day=all",
-    "ECCV2024": "https://eccv.ecva.net/virtual/2024/papers.html",
-    "ICCV2025": "https://openaccess.thecvf.com/ICCV2025?day=all",
-    "ICLR2024": "https://proceedings.iclr.cc/paper_files/paper/2024",
-    "ICLR2025": "https://proceedings.iclr.cc/paper_files/paper/2025",
-    "ICML2024": "https://proceedings.mlr.press/v235/",
-    "ICML2025": "https://proceedings.mlr.press/v267/",
-    "NeurIPS2024": "https://papers.nips.cc/paper_files/paper/2024",
-    "NeurIPS2025": "https://papers.nips.cc/paper_files/paper/2025",
-}
+SELECTION_FIELDS = [
+    "paper_id",
+    "title",
+    "year",
+    "venue",
+    "survey_role",
+    "survey_topics",
+    "survey_reason",
+    "advisor_role",
+    "advisor_topics",
+    "advisor_reason",
+    "reading_status",
+    "evidence_source",
+    "needs_pdf_check",
+]
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
-    with path.open(newline="") as handle:
+    with path.open(newline="", encoding="utf-8") as handle:
         return list(csv.DictReader(handle))
+
+
+def write_csv(path: Path, fields: list[str], rows: list[dict[str, str]]) -> None:
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 def values(value: str) -> set[str]:
     return {item for item in value.split(";") if item}
 
 
-def validate(rows: list[dict[str, str]], metadata: dict[str, dict[str, str]]) -> None:
+def candidate_rows() -> dict[str, dict[str, str]]:
+    result: dict[str, dict[str, str]] = {}
+    for path in sorted(CONFERENCE_ROOT.glob("*/candidates.csv")):
+        for row in read_csv(path):
+            paper_id = row.get("id", "")
+            if not paper_id:
+                raise ValueError(f"Candidate without ID in {path.relative_to(ROOT)}")
+            if paper_id in result:
+                raise ValueError(f"Duplicate candidate ID: {paper_id}")
+            result[paper_id] = row
+    return result
+
+
+def validate_audit(rows: list[dict[str, str]]) -> None:
     ids = [row["paper_id"] for row in rows]
     if len(ids) != len(set(ids)):
-        raise ValueError("Duplicate paper IDs in paper-selection.csv")
-    if set(ids) != set(metadata):
-        raise ValueError("paper-selection.csv and all-papers.csv contain different active IDs")
-    for row in rows:
-        if row["survey_role"] not in SURVEY_ROLES or row["advisor_role"] not in ADVISOR_ROLES:
-            raise ValueError(f"Invalid role for {row['paper_id']}")
-        if not values(row["survey_topics"]) <= set(SURVEY_TOPICS):
-            raise ValueError(f"Invalid survey topic for {row['paper_id']}")
-        if not values(row["advisor_topics"]) <= set(ADVISOR_TOPICS):
-            raise ValueError(f"Invalid advisor topic for {row['paper_id']}")
-        if not values(row["reading_status"]) <= READING_STATUSES:
-            raise ValueError(f"Invalid reading status for {row['paper_id']}")
-        if row["needs_pdf_check"] not in {"yes", "no"}:
-            raise ValueError(f"Invalid PDF-check flag for {row['paper_id']}")
-        if row["needs_pdf_check"] == "yes" and "survey_core" in values(row["reading_status"]):
-            raise ValueError(f"Unresolved paper cannot enter Survey Core: {row['paper_id']}")
+        raise ValueError("Duplicate paper IDs in candidate-screening-audit.csv")
 
-
-def validate_audit_source(
-    rows: list[dict[str, str]], metadata: dict[str, dict[str, str]]
-) -> list[dict[str, str]]:
-    """Validate the complete title/abstract audit against the active index."""
-    audit_rows = read_csv(AUDIT)
-    audit_ids = [row["paper_id"] for row in audit_rows]
-    if len(audit_ids) != len(set(audit_ids)):
-        raise ValueError("Duplicate paper IDs in core-screening-audit.csv")
-
-    active_by_id = {row["paper_id"]: row for row in rows}
-    for audit_row in audit_rows:
-        paper_id = audit_row["paper_id"]
-        abstract = audit_row["abstract"].strip()
-        if audit_row["abstract_reviewed"] != "yes" or not abstract:
-            raise ValueError(f"Missing reviewed abstract for {paper_id}")
-        if not audit_row["official_page"]:
-            raise ValueError(f"Missing official page for {paper_id}")
-        if audit_row["venue"] == "NeurIPS" and not audit_row["official_track"]:
-            raise ValueError(f"Missing NeurIPS track for {paper_id}")
-        expected_hash = hashlib.sha256(abstract.encode()).hexdigest()
-        if audit_row["abstract_sha256"] != expected_hash:
-            raise ValueError(f"Abstract hash drift for {paper_id}")
-
-        dual_excluded = (
-            audit_row["survey_role"] == "exclude"
-            and audit_row["advisor_role"] == "exclude"
+    candidates = candidate_rows()
+    current_candidates = set(candidates)
+    audited_ids = set(ids)
+    missing_candidates = current_candidates - audited_ids
+    if missing_candidates:
+        sample = ", ".join(sorted(missing_candidates)[:10])
+        raise ValueError(
+            f"{len(missing_candidates)} current candidates lack title/abstract audit: {sample}"
         )
-        should_be_active = not dual_excluded
-        is_active = paper_id in active_by_id
-        if should_be_active != is_active:
-            raise ValueError(f"Active/dual-exclude partition drift for {paper_id}")
-        expected_active_flag = "yes" if is_active else "no"
-        if audit_row["in_active_corpus"] != expected_active_flag:
-            raise ValueError(f"Audit active flag drift for {paper_id}")
+    stale_audits = audited_ids - current_candidates
+    if stale_audits:
+        sample = ", ".join(sorted(stale_audits)[:10])
+        raise ValueError(
+            f"{len(stale_audits)} audit rows are absent from current candidates: {sample}"
+        )
 
-        if not is_active:
-            if audit_row["reading_status"] != "excluded_from_active_corpus":
-                raise ValueError(f"Invalid excluded reading status for {paper_id}")
+    for row in rows:
+        paper_id = row["paper_id"]
+        candidate = candidates[paper_id]
+        identity_fields = {
+            "title": "title",
+            "year": "year",
+            "venue": "conference",
+        }
+        for audit_field, candidate_field in identity_fields.items():
+            if row[audit_field].strip() != candidate[candidate_field].strip():
+                raise ValueError(
+                    f"Candidate/audit {audit_field} drift for {paper_id}"
+                )
+        abstract = row["abstract"].strip()
+        if row["abstract_reviewed"] != "yes" or not abstract:
+            raise ValueError(f"Missing reviewed abstract for {paper_id}")
+        if not row["official_page"]:
+            raise ValueError(f"Missing official page for {paper_id}")
+        if row["venue"] == "NeurIPS" and not row["official_track"]:
+            raise ValueError(f"Missing NeurIPS track for {paper_id}")
+        if row["abstract_sha256"] != hashlib.sha256(abstract.encode()).hexdigest():
+            raise ValueError(f"Abstract hash drift for {paper_id}")
+        if row["survey_role"] not in SURVEY_ROLES:
+            raise ValueError(f"Invalid Survey role for {paper_id}")
+        if row["advisor_role"] not in ADVISOR_ROLES:
+            raise ValueError(f"Invalid Advisor role for {paper_id}")
+        if not values(row["survey_topics"]) <= set(SURVEY_TOPICS):
+            raise ValueError(f"Invalid Survey topic for {paper_id}")
+        if not values(row["advisor_topics"]) <= set(ADVISOR_TOPICS):
+            raise ValueError(f"Invalid Advisor topic for {paper_id}")
+        if row["needs_pdf_check"] not in {"yes", "no"}:
+            raise ValueError(f"Invalid PDF-check flag for {paper_id}")
+
+        dual_excluded = row["survey_role"] == "exclude" and row["advisor_role"] == "exclude"
+        expected_active = "no" if dual_excluded else "yes"
+        if row["in_active_corpus"] != expected_active:
+            raise ValueError(f"Active-corpus flag drift for {paper_id}")
+        if dual_excluded:
+            if row["reading_status"] != "excluded_from_active_corpus":
+                raise ValueError(f"Invalid excluded status for {paper_id}")
             continue
 
-        active_row = active_by_id[paper_id]
-        if metadata[paper_id].get("official_track", "") != audit_row["official_track"]:
-            raise ValueError(f"Official-track drift for {paper_id}")
-        semantic_fields = (
-            "survey_role",
-            "survey_topics",
-            "survey_reason",
-            "advisor_role",
-            "advisor_topics",
-            "advisor_reason",
-            "needs_pdf_check",
-        )
-        for field in semantic_fields:
-            if active_row[field] != audit_row[field]:
-                raise ValueError(f"Audit drift for {paper_id} field {field}")
-        if active_row["reading_status"] != audit_row["reading_status"]:
-            raise ValueError(f"Audit reading-status drift for {paper_id}")
+        statuses = values(row["reading_status"])
+        if not statuses or not statuses <= ACTIVE_READING_STATUSES:
+            raise ValueError(f"Invalid reading status for {paper_id}")
+        if row["needs_pdf_check"] == "yes" and "survey_core" in statuses:
+            raise ValueError(f"Unresolved paper cannot enter Survey Core: {paper_id}")
 
-        statuses = values(active_row["reading_status"])
         expected_survey_decision = (
             "core"
             if "survey_core" in statuses
             else "exclude"
-            if active_row["survey_role"] == "exclude"
+            if row["survey_role"] == "exclude"
             else "reference"
         )
         expected_advisor_decision = (
@@ -195,65 +199,69 @@ def validate_audit_source(
             else "helpful"
             if "advisor_helpful" in statuses
             else "exclude"
-            if active_row["advisor_role"] == "exclude"
+            if row["advisor_role"] == "exclude"
             else "reference"
         )
-        if audit_row["survey_core_decision"] != expected_survey_decision:
-            raise ValueError(f"Survey Core audit drift for {paper_id}")
-        if audit_row["advisor_core_decision"] != expected_advisor_decision:
-            raise ValueError(f"Advisor Core audit drift for {paper_id}")
+        if row["survey_core_decision"] != expected_survey_decision:
+            raise ValueError(f"Survey decision drift for {paper_id}")
+        if row["advisor_core_decision"] != expected_advisor_decision:
+            raise ValueError(f"Advisor decision drift for {paper_id}")
 
-    if set(active_by_id) != {
-        row["paper_id"]
-        for row in audit_rows
-        if not (row["survey_role"] == "exclude" and row["advisor_role"] == "exclude")
-    }:
-        raise ValueError("Audit and active index cover different paper IDs")
-    return audit_rows
+
+def evidence_source(row: dict[str, str]) -> str:
+    parts = [row["evidence_basis"]]
+    if row["pdf_boundary_check"] != "not_needed":
+        parts.append(row["pdf_boundary_check"])
+    return "; ".join(part for part in parts if part)
+
+
+def generate_selection(
+    audit_rows: list[dict[str, str]], metadata: dict[str, dict[str, str]]
+) -> list[dict[str, str]]:
+    active = [row for row in audit_rows if row["in_active_corpus"] == "yes"]
+    active_ids = {row["paper_id"] for row in active}
+    if active_ids != set(metadata):
+        missing_metadata = sorted(active_ids - set(metadata))
+        stale_metadata = sorted(set(metadata) - active_ids)
+        raise ValueError(
+            "Audit/retained-papers active set drift: "
+            f"missing_metadata={missing_metadata[:5]} stale_metadata={stale_metadata[:5]}"
+        )
+    active.sort(key=lambda row: (-int(row["year"]), row["venue"], row["title"].lower()))
+    generated = []
+    for row in active:
+        generated.append(
+            {
+                "paper_id": row["paper_id"],
+                "title": row["title"],
+                "year": row["year"],
+                "venue": row["venue"],
+                "survey_role": row["survey_role"],
+                "survey_topics": row["survey_topics"],
+                "survey_reason": row["survey_reason"],
+                "advisor_role": row["advisor_role"],
+                "advisor_topics": row["advisor_topics"],
+                "advisor_reason": row["advisor_reason"],
+                "reading_status": row["reading_status"],
+                "evidence_source": evidence_source(row),
+                "needs_pdf_check": row["needs_pdf_check"],
+            }
+        )
+    write_csv(SELECTION, SELECTION_FIELDS, generated)
+    return generated
+
+
+def validate_retained_cards(metadata: dict[str, dict[str, str]]) -> None:
+    for paper_id, row in metadata.items():
+        card_path = row["card_path"]
+        if not card_path:
+            raise ValueError(f"Missing retained card path for {paper_id}")
+        if not (ROOT / card_path).is_file():
+            raise ValueError(f"Missing retained card file for {paper_id}: {card_path}")
 
 
 def markdown_cell(value: str) -> str:
     return " ".join(value.split()).replace("|", "\\|")
-
-
-def neurips_track(row: dict[str, str]) -> str:
-    if row.get("conference", "") != "NeurIPS":
-        return ""
-    value = row.get("track", "") or row.get("status_or_award", "")
-    return value.strip().removeprefix("Track: ")
-
-
-def write_dual_exclude_audit(audit_rows: list[dict[str, str]]) -> int:
-    excluded = [
-        row
-        for row in audit_rows
-        if row["survey_role"] == "exclude" and row["advisor_role"] == "exclude"
-    ]
-    excluded.sort(
-        key=lambda row: (-int(row["year"]), row["venue"], row["title"].lower())
-    )
-    lines = [
-        "# Dual-Exclude Audit",
-        "",
-        "These papers were reviewed from their complete official title and abstract and have no retained role in either active track. Complete venue `mother-list.csv` files remain untouched.",
-        "",
-        f"Total: **{len(excluded)} papers**.",
-        "",
-        "This table is generated from `00-index/core-screening-audit.csv`; every row has a non-empty official abstract and a verified SHA256 hash.",
-        "",
-        "| ID | Title | Year | Venue | Track | Survey reason | Advisor reason | Official evidence |",
-        "| --- | --- | ---: | --- | --- | --- | --- | --- |",
-    ]
-    for row in excluded:
-        lines.append(
-            f"| {row['paper_id']} | {markdown_cell(row['title'])} | {row['year']} | "
-            f"{row['venue']} | {row['official_track'] or '-'} | "
-            f"{markdown_cell(row['survey_reason'])} | "
-            f"{markdown_cell(row['advisor_reason'])} | "
-            f"[official page]({row['official_page']}) |"
-        )
-    DUAL_EXCLUDE_AUDIT.write_text("\n".join(lines).rstrip() + "\n")
-    return len(excluded)
 
 
 def plan_link(row: dict[str, str], metadata: dict[str, dict[str, str]]) -> str:
@@ -272,39 +280,37 @@ def write_plan(
     labels: dict[str, str],
 ) -> None:
     rows.sort(key=lambda row: (-int(row["year"]), row["title"].lower()))
-    coverage = defaultdict(list)
+    coverage: dict[str, list[dict[str, str]]] = defaultdict(list)
     for row in rows:
         for topic in values(row[topic_field]):
             coverage[topic].append(row)
+
     core_label = "Current proceedings core" if title.startswith("Advisor") else "Current core"
     lines = [f"# {title}", "", intro, "", f"{core_label}: **{len(rows)} papers**.", ""]
     if title.startswith("Survey"):
         counts = Counter(row["survey_role"] for row in rows)
         lines += [
             f"Composition: **{counts['anchor']} anchor + {counts['included']} included + "
-            f"{counts['background']} selected background**. The global role counts are corpus statistics, "
-            "not reading assignments.",
-            "The table below is a newest-first inventory, not a prescribed reading sequence. "
-            "Read by method cluster using `03-review-draft/outline.md` and checkpoint plans.",
+            f"{counts['background']} selected background**.",
+            "This newest-first inventory is not a prescribed reading sequence. Read by method "
+            "cluster using `03-review-draft/outline.md` and its checkpoints.",
             "",
         ]
     if title.startswith("Advisor"):
         required_count = sum("advisor_required" in values(row["reading_status"]) for row in rows)
         helpful_count = sum("advisor_helpful" in values(row["reading_status"]) for row in rows)
         lines += [
-            f"Composition: **{required_count} required + {helpful_count} helpful**. The broader "
-            "`method_chain`, `discussion`, and "
-            "`watch` counts in `paper-selection.csv` are candidate-pool labels, not reading assignments.",
-            "Helpful assignments are focused mechanism reads: extract only the module named in "
-            "the row, and do not treat the paper's full architecture as part of the Advisor direction.",
+            f"Composition: **{required_count} required + {helpful_count} helpful**.",
+            "Helpful assignments are focused mechanism reads. They do not enroll an entire "
+            "architecture or make Mamba/SSM part of the Advisor direction.",
             "",
-            f"The complete Advisor knowledge chain is **{len(rows) + len(EXTERNAL_ADVISOR_CHAIN)} "
-            f"papers**: the {len(rows)} proceedings-corpus assignments below plus "
-            f"{len(EXTERNAL_ADVISOR_CHAIN)} separately listed focus/predecessor papers.",
+            f"The bounded Advisor reading set is **{len(rows) + len(EXTERNAL_ADVISOR_CHAIN)} "
+            f"papers**: {len(rows)} proceedings-corpus assignments and "
+            f"{len(EXTERNAL_ADVISOR_CHAIN)} external focus paper.",
             "",
-            "## Focus And External Predecessor",
+            "## Focus Paper",
             "",
-            "| Paper | Year | Venue | Assignment | Why it is required |",
+            "| Paper | Year | Venue | Assignment | Why it is included |",
             "| --- | ---: | --- | --- | --- |",
         ]
         for external in EXTERNAL_ADVISOR_CHAIN:
@@ -316,6 +322,7 @@ def write_plan(
                 f"{external['assignment']} | {external['reason']} |"
             )
         lines.append("")
+
     groups = [("Core Inventory", rows)]
     if title.startswith("Advisor"):
         groups = [
@@ -325,124 +332,38 @@ def write_plan(
     item_number = 0
     for heading, group_rows in groups:
         role_label = "Assignment" if title.startswith("Advisor") else "Role"
-        lines += [f"## {heading}", "", f"| # | Paper | Year | Venue | Track | {role_label} | Why it is core |", "| ---: | --- | ---: | --- | --- | --- | --- |"]
+        lines += [
+            f"## {heading}",
+            "",
+            f"| # | Paper | Year | Venue | Track | {role_label} | Why it is core |",
+            "| ---: | --- | ---: | --- | --- | --- | --- |",
+        ]
         for row in group_rows:
             item_number += 1
-            displayed_role = (
-                "required" if "advisor_required" in values(row["reading_status"])
-                else "helpful" if "advisor_helpful" in values(row["reading_status"])
-                else row[role_field]
-            ) if title.startswith("Advisor") else row[role_field]
+            displayed_role = row[role_field]
+            if title.startswith("Advisor"):
+                displayed_role = (
+                    "required"
+                    if "advisor_required" in values(row["reading_status"])
+                    else "helpful"
+                )
             lines.append(
-                f"| {item_number} | [{row['title']}]({plan_link(row, metadata)}) | {row['year']} | {row['venue']} | "
+                f"| {item_number} | [{row['title']}]({plan_link(row, metadata)}) | "
+                f"{row['year']} | {row['venue']} | "
                 f"{metadata[row['paper_id']].get('official_track') or '-'} | "
-                f"{displayed_role} | {row[reason_field]} |"
+                f"{displayed_role} | {markdown_cell(row[reason_field])} |"
             )
         lines.append("")
-    lines += ["", "## Coverage Map", ""]
+
+    lines += ["## Coverage Map", ""]
     for topic, label in labels.items():
         if not coverage[topic]:
             continue
-        links = "; ".join(f"[{row['title']}]({plan_link(row, metadata)})" for row in coverage[topic])
+        links = "; ".join(
+            f"[{row['title']}]({plan_link(row, metadata)})" for row in coverage[topic]
+        )
         lines += [f"### {label}", "", links, ""]
-    path.write_text("\n".join(lines).rstrip() + "\n")
-
-
-def write_legacy_redirects() -> None:
-    redirects = {
-        "reading-plan-core.md": "# Deprecated Core Reading Plan\n\nUse [Survey Core](reading-plan-survey-core.md) and [Advisor Core](reading-plan-advisor-core.md).\n",
-        "reading-plan-p0.md": "# Deprecated P0 Plan\n\nUse [Survey Core](reading-plan-survey-core.md).\n",
-        "reading-plan-p1.md": "# Deprecated P1 Plan\n\nUse `paper-selection.csv` and filter `reading_status=retained_reference`.\n",
-        "auto-summary-p2.md": "# Deprecated P2 Queue\n\nP0-P3 priorities are retired. Use `paper-selection.csv`.\n",
-        "advisor-track.md": "# Deprecated Advisor Track\n\nUse [Advisor Core](reading-plan-advisor-core.md).\n",
-        "uncertain-review.md": "# PDF Check Queue\n\nFilter `paper-selection.csv` by `needs_pdf_check=yes`.\n",
-        "level-T-advisor-direction.md": "# Deprecated\n\nUse [Advisor Core](reading-plan-advisor-core.md).\n",
-        "out-of-scope-x.md": "# Deprecated Out-of-Scope Index\n\nSee the [current dual-exclude audit](../05-logs/codex-runs/2026-08-12-dual-exclude-audit.md).\n",
-    }
-    for filename, content in redirects.items():
-        (INDEX / filename).write_text(content)
-
-
-def write_search_reports(rows: list[dict[str, str]]) -> None:
-    by_id = {row["paper_id"]: row for row in rows}
-    for folder in sorted((ROOT / "01-papers-by-conference").iterdir()):
-        if not folder.is_dir() or not (folder / "mother-list.csv").exists():
-            continue
-        mother = read_csv(folder / "mother-list.csv")
-        candidates = read_csv(folder / "candidates.csv")
-        reviewed = read_csv(folder / "abc-reviewed.csv")
-        active = [by_id[row["id"]] for row in reviewed]
-        survey = Counter(row["survey_role"] for row in active)
-        advisor = Counter(row["advisor_role"] for row in active)
-        first = mother[0] if mother else {}
-        venue = first.get("conference", folder.name.rstrip("0123456789"))
-        year = first.get("year", "")
-        track_by_id = {row["id"]: neurips_track(row) for row in mother}
-        tracks = Counter(track for track in track_by_id.values() if track)
-        lines = [
-            f"# {venue} {year} Search Report", "", "## Current Status", "",
-            f"- Official mother list: {len(mother)} papers (preserved in full).",
-            f"- Active title-candidate records: {len(candidates)}.",
-            f"- Active retained reviewed papers: {len(reviewed)}.",
-            "- Every active semantic role was reassessed from the complete official title and abstract.",
-            "- Legacy A/B/C values in venue CSVs are search-stage provenance only.",
-            "", "## Official Source", "", f"- URL: {OFFICIAL_PROCEEDINGS.get(folder.name, '')}",
-            "- Full-PDF search over the complete mother list was not performed.",
-        ]
-        if tracks:
-            non_main_core = [
-                row
-                for row in active
-                if track_by_id.get(row["paper_id"], "") != "Main Conference Track"
-                and values(row["reading_status"])
-                & {"survey_core", "advisor_required", "advisor_helpful"}
-            ]
-            lines += [
-                "",
-                "## Official Track Counts",
-                "",
-                *[f"- {track}: {count}" for track, count in sorted(tracks.items())],
-                "- NeurIPS special handling: all official accepted tracks are eligible, but non-main-track papers require stronger evidence for Core enrollment.",
-                f"- Current non-main-track Core assignments: {len(non_main_core)}.",
-            ]
-            for row in non_main_core:
-                lines.append(
-                    f"  - {row['title']} ({track_by_id[row['paper_id']]}; {row['reading_status']})"
-                )
-        lines += [
-            "", "## Active Dual-Track Counts", "",
-            f"- Survey: anchor={survey['anchor']}, included={survey['included']}, background={survey['background']}, exclude={survey['exclude']}.",
-            f"- Advisor: method_chain={advisor['method_chain']}, discussion={advisor['discussion']}, watch={advisor['watch']}, exclude={advisor['exclude']}.",
-            "", "## Active Entries", "",
-        ]
-        if tracks:
-            lines += [
-                "| ID | Title | Official track | Survey role | Advisor role |",
-                "| --- | --- | --- | --- | --- |",
-            ]
-        else:
-            lines += [
-                "| ID | Title | Survey role | Advisor role |",
-                "| --- | --- | --- | --- |",
-            ]
-        for row in sorted(active, key=lambda item: item["title"].lower()):
-            if tracks:
-                lines.append(
-                    f"| {row['paper_id']} | {row['title']} | "
-                    f"{track_by_id[row['paper_id']]} | {row['survey_role']} | "
-                    f"{row['advisor_role']} |"
-                )
-            else:
-                lines.append(
-                    f"| {row['paper_id']} | {row['title']} | "
-                    f"{row['survey_role']} | {row['advisor_role']} |"
-                )
-        lines += [
-            "", "## Audit", "",
-            "Current dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-08-12-dual-exclude-audit.md`.",
-            "Complete official proceedings remain available in this venue's `mother-list.csv`.",
-        ]
-        (folder / "search-report.md").write_text("\n".join(lines) + "\n")
+    path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
 
 
 def write_survey_reference_pool(
@@ -475,58 +396,147 @@ def write_survey_reference_pool(
         "official_page",
         "card_path",
     ]
-    with (INDEX / "survey-reference-pool.csv").open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
-        writer.writeheader()
-        for row in reference_rows:
-            source = metadata[row["paper_id"]]
-            writer.writerow(
-                {
-                    **{field: row[field] for field in fields[:7]},
-                    "official_track": source.get("official_track", ""),
-                    "pdf_link": source["pdf_link"],
-                    "official_page": source["official_page"],
-                    "card_path": source["card_path"],
-                }
-            )
+    output_rows = []
+    for row in reference_rows:
+        source = metadata[row["paper_id"]]
+        output_rows.append(
+            {
+                **{field: row[field] for field in fields[:7]},
+                "official_track": source.get("official_track", ""),
+                "pdf_link": source["pdf_link"],
+                "official_page": source["official_page"],
+                "card_path": source["card_path"],
+            }
+        )
+    write_csv(INDEX / "survey-reference-pool.csv", fields, output_rows)
     return len(reference_rows)
 
 
+def write_search_reports(
+    audit_rows: list[dict[str, str]], active_rows: list[dict[str, str]]
+) -> None:
+    audit_by_id = {row["paper_id"]: row for row in audit_rows}
+    active_by_id = {row["paper_id"]: row for row in active_rows}
+    for folder in sorted(CONFERENCE_ROOT.iterdir()):
+        if not folder.is_dir() or not (folder / "mother-list.csv").exists():
+            continue
+        mother = read_csv(folder / "mother-list.csv")
+        candidates = read_csv(folder / "candidates.csv")
+        reviewed = read_csv(folder / "abc-reviewed.csv")
+        candidate_audits = [audit_by_id[row["id"]] for row in candidates]
+        retained = [active_by_id[row["id"]] for row in reviewed]
+        first = mother[0] if mother else {}
+        venue = first.get("conference", folder.name.rstrip("0123456789"))
+        year = first.get("year", "")
+        survey = Counter(row["survey_role"] for row in retained)
+        advisor = Counter(row["advisor_role"] for row in retained)
+        excluded = sum(row["in_active_corpus"] == "no" for row in candidate_audits)
+        tracks = Counter(
+            row["official_track"] for row in candidate_audits if row["official_track"]
+        )
+        lines = [
+            f"# {venue} {year} Search Report",
+            "",
+            "## Current Status",
+            "",
+            f"- Official mother list: {len(mother)} papers.",
+            f"- High-recall title/abstract candidates: {len(candidates)}.",
+            f"- Candidates with complete official-title/abstract audit: {len(candidate_audits)}.",
+            f"- Retained A/B/C provenance records: {len(reviewed)}.",
+            f"- Dual-track exclusions among current candidates: {excluded}.",
+            "- A/B/C is conference-search provenance only; active reading assignments come from the dual-track audit.",
+            "",
+            "## Scope And Evidence",
+            "",
+            "- Every title candidate is represented in `00-index/candidate-screening-audit.csv` with its complete official abstract and SHA256.",
+            "- Full-PDF search over the complete mother list was not performed.",
+        ]
+        if tracks:
+            lines += [
+                "- NeurIPS includes all official long-paper tracks; the official track is retained for every audited candidate.",
+                "",
+                "## Official Track Counts",
+                "",
+                *[f"- {track}: {count}" for track, count in sorted(tracks.items())],
+            ]
+        lines += [
+            "",
+            "## Retained Dual-Track Counts",
+            "",
+            f"- Survey: anchor={survey['anchor']}, included={survey['included']}, background={survey['background']}, exclude={survey['exclude']}.",
+            f"- Advisor: method_chain={advisor['method_chain']}, discussion={advisor['discussion']}, watch={advisor['watch']}, exclude={advisor['exclude']}.",
+            "",
+            "## Retained Entries",
+            "",
+            "| ID | Title | Survey role | Advisor role |",
+            "| --- | --- | --- | --- |",
+        ]
+        for row in sorted(retained, key=lambda item: item["title"].lower()):
+            lines.append(
+                f"| {row['paper_id']} | {markdown_cell(row['title'])} | "
+                f"{row['survey_role']} | {row['advisor_role']} |"
+            )
+        lines += [
+            "",
+            "## Audit Source",
+            "",
+            "Use `00-index/candidate-screening-audit.csv` for every retained or excluded candidate decision and its official abstract evidence.",
+        ]
+        (folder / "search-report.md").write_text(
+            "\n".join(lines).rstrip() + "\n", encoding="utf-8"
+        )
+
+
 def main() -> None:
-    rows = read_csv(SELECTION)
-    metadata_rows = read_csv(INDEX / "all-papers.csv")
+    audit_rows = read_csv(AUDIT)
+    validate_audit(audit_rows)
+    metadata_rows = read_csv(METADATA)
     metadata = {row["id"]: row for row in metadata_rows}
-    validate(rows, metadata)
-    audit_rows = validate_audit_source(rows, metadata)
+    validate_retained_cards(metadata)
+    rows = generate_selection(audit_rows, metadata)
+
     survey_core = [row for row in rows if "survey_core" in values(row["reading_status"])]
     advisor_core = [
-        row for row in rows
+        row
+        for row in rows
         if values(row["reading_status"]) & {"advisor_required", "advisor_helpful"}
     ]
     write_plan(
-        INDEX / "reading-plan-survey-core.md", "Survey Core Reading Plan",
-        "Strictly serves the survey **Spiking Neural Networks for Event Cameras**. Anchor papers define the intersection; selected included/background papers cover indispensable representation, training, conversion, evaluation, and open-problem context.",
-        survey_core, metadata, "survey_topics", "survey_role", "survey_reason", SURVEY_TOPICS,
+        INDEX / "reading-plan-survey-core.md",
+        "Survey Core Reading Plan",
+        "Strictly serves the survey **Spiking Neural Networks for Event Cameras**. "
+        "Event representation and SNN computation are parallel foundations; the Core focuses "
+        "on their explicit intersection and indispensable supporting evidence.",
+        survey_core,
+        metadata,
+        "survey_topics",
+        "survey_role",
+        "survey_reason",
+        SURVEY_TOPICS,
     )
     write_plan(
-        INDEX / "reading-plan-advisor-core.md", "Advisor Core Reading Plan",
-        "Serves the **SECNet ICML 2026 oral to TPAMI extension** direction: Event Camera + frequency/Fourier + SNN. SECNet already applies Spatial-FA and Temporal-FA FFT modules to Event Cloud features, so this plan targets the existing frequency interface and its SNN extension. Mamba/SSM similarity alone does not justify enrollment; a detachable Fourier mechanism may justify focused reading.",
-        advisor_core, metadata, "advisor_topics", "advisor_role", "advisor_reason", ADVISOR_TOPICS,
+        INDEX / "reading-plan-advisor-core.md",
+        "Advisor Core Reading Plan",
+        "Serves the **SECNet ICML 2026 oral to TPAMI extension** direction: Event Camera + "
+        "frequency/Fourier + SNN. Mamba/SSM is outside the planned extension and is not part "
+        "of the Advisor Core.",
+        advisor_core,
+        metadata,
+        "advisor_topics",
+        "advisor_role",
+        "advisor_reason",
+        ADVISOR_TOPICS,
     )
-    survey_reference_count = write_survey_reference_pool(rows, metadata)
-    dual_excluded_count = write_dual_exclude_audit(audit_rows)
-    write_legacy_redirects()
-    write_search_reports(rows)
+    reference_count = write_survey_reference_pool(rows, metadata)
+    write_search_reports(audit_rows, rows)
     required = sum("advisor_required" in values(row["reading_status"]) for row in rows)
     helpful = sum("advisor_helpful" in values(row["reading_status"]) for row in rows)
+    excluded = sum(row["in_active_corpus"] == "no" for row in audit_rows)
     print(
-        f"active={len(rows)} survey_core={len(survey_core)} "
-        f"survey_reference_pool={survey_reference_count} advisor_required={required} "
-        f"advisor_helpful={helpful} advisor_core={len(advisor_core)} "
-        f"dual_excluded={dual_excluded_count}"
+        f"audited={len(audit_rows)} active={len(rows)} survey_core={len(survey_core)} "
+        f"survey_reference_pool={reference_count} advisor_required={required} "
+        f"advisor_helpful={helpful} advisor_core={len(advisor_core)} excluded={excluded}"
     )
-    print("survey_roles", dict(Counter(row["survey_role"] for row in rows)))
-    print("advisor_roles", dict(Counter(row["advisor_role"] for row in rows)))
 
 
 if __name__ == "__main__":

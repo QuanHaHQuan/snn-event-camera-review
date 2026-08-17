@@ -245,6 +245,14 @@ Ablation 表明，adaptive update 相比 uniform update 将 latency 从 5.8 ms �
 
 它适合与 SNN 的 membrane-state accumulation、threshold triggering 和 sparse temporal update 进行概念比较，但不能作为 SNN architecture 的实例。
 
+### PDF-verified relation backfill
+
+主要路线是把 raw-event encoding 写入规则索引的 hierarchical memories，并以 content-dependent gate 减少高层更新。
+
+- **Hierarchical Neural Memory Network for Low Latency Event Processing (Ryuhei Hamaguchi et al., CVPR 2023)** — `extends`。当前论文沿用该工作的 hierarchical event memory updates，并针对当前任务增加新的结构或训练约束。 对应 Sections 2 and 6: dense representation and conditional computation。证据：Introduction, Related Work and Experiments, PDF pp.2-4 and 10-12, citation and bibliography [17]。 当前 active corpus 未覆盖。 值得 backward search。
+- **Matrix-LSTM: A Differentiable Recurrent Surface for Asynchronous Event-Based Data (Marco Cannici et al., ECCV 2020)** — `alternative`。两者都处理 stateful event representation，但采用不同 representation、state 或 computation route。 对应 Section 2: event representation。证据：Related Work 2, PDF p.4, citation and bibliography [7]。 当前 active corpus 未覆盖。 值得 backward search。
+- **Associative Memory Augmented Asynchronous Spatiotemporal Representation Learning for Event-based Perception (Uday Kamal et al., ICLR 2023)** — `same_task_different_mechanism`。两者解决相同任务中的 memory-based event representation，但核心计算机制不同。 对应 Section 2: event representation。证据：Introduction and Related Work, PDF pp.2 and 4, citation and bibliography [21]。 当前 active corpus 未覆盖。
+
 ## 8. Survey-Usable Takeaways
 
 - Takeaway 1: 本文将 sparse event sets 写入具有规则空间索引的 hierarchical memories，从而连接 event-level input 与 dense prediction decoder。

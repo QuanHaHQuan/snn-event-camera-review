@@ -113,6 +113,14 @@ Limitations：算法高度依赖 TPE + SVD/K-means initialization；cluster coun
 
 在 efficiency and hardware taxonomy 中只能作为 neuromorphic motivation / open challenge：论文未报告真实 hardware、energy、latency 或 operation count。重要开放问题包括 robust initialization、自动确定 motion count/type、cluster birth/death、复杂非线性 motion、完整 tensor-neuron implementation 与 quantitative benchmarking。
 
+### PDF-verified relation backfill
+
+主要路线是把 event-motion segmentation 的 EM inference 映射为 WTA E-step 与 STDP-like M-step。
+
+- **A Unifying Contrast Maximization Framework for Event Cameras, with Applications to Motion, Depth, and Optical Flow Estimation (Guillermo Gallego et al., CVPR 2018)** — `foundation`。该工作提供 IWE contrast maximization for motion 的基础机制；当前论文将其用于自身的 event/SNN pipeline，而不是把该前驱本身作为新贡献。 对应 Sections 4 and 5: optimization-inspired SNN and motion segmentation。证据：Introduction, PDF p.2, citation and bibliography [14]。 当前 active corpus 未覆盖。 值得 backward search。
+- **STDP Enables Spiking Neurons to Detect Hidden Causes of Their Inputs (Bernhard Nessler et al., NeurIPS 2009)** — `foundation`。该工作提供 STDP as latent-cause inference 的基础机制；当前论文将其用于自身的 event/SNN pipeline，而不是把该前驱本身作为新贡献。 对应 Sections 3 and 4: local learning and Bayesian SNN。证据：Introduction and Related Work, PDF pp.2-3, citation and bibliography [29]。 当前 active corpus 未覆盖。 值得 backward search。
+- **Event-based Motion Segmentation with Spatio-temporal Graph Cuts (Yi Zhou et al., TNNLS 2021)** — `same_task_different_mechanism`。两者解决相同任务中的 event motion segmentation，但核心计算机制不同。 对应 Section 5: motion segmentation。证据：Related Work, PDF p.3, citation and bibliography [44]。 当前 active corpus 未覆盖。
+
 ## 8. Survey-Usable Takeaways
 
 本文最有综述价值的贡献，是展示一种不同于“event representation + deep SNN”的路线：将 event motion segmentation 看成 Bayesian latent-variable inference，并以 WTA competition 近似 posterior responsibility、以 STDP-like plasticity 近似 contrast-maximizing parameter update。其结论应限制为 spike-based EM prototype 在少量 EED cases 上的可行性验证。TPE/SVD initialization 与 conventional warping/IWE computation 是方法不可忽略的组成，因此不能将结果概括为纯 local-STDP SNN 从 raw events 自动发现 motions，也不能从 event-driven 形式推导真实 hardware efficiency。

@@ -263,6 +263,14 @@ VSAL 无位置编码时 N-Caltech101/DailyAction 为 $75.5\%/95.8\%$，absolute-
 
 与 point-wise graph methods 相比，EVSTr 先在 voxel 内整合局部 events，以提高统计稳定性；与 dense frame Transformers 相比，它只处理 selected non-empty voxels；与 SNN 方法相比，它不使用 neuron dynamics，而依靠显式 timestamp/coordinate、set aggregation 和 Transformer attention 建模时间。它不属于 spike coding、SNN training、ANN-to-SNN conversion 或 neuromorphic hardware deployment。
 
+### PDF-verified relation backfill
+
+主要路线是 event voxel set representation、MNEL local aggregation、VSAL global attention 和 segment-level S2TM。
+
+- **EventNet: Asynchronous Recursive Event Processing (Yusuke Sekikawa et al., CVPR 2019)** — `baseline`。该工作是 sparse event processing 的实验 comparator；当前论文与其主要区别在于本文第 3–4 节所述的核心机制。 对应 Section 2: event representation。证据：Related Work II, PDF p.3, citation and bibliography [23]。 当前 active corpus 未覆盖。
+- **PointNet++: Deep Hierarchical Feature Learning on Point Sets in a Metric Space (Charles Ruizhongtai Qi et al., NeurIPS 2017)** — `foundation`。该工作提供 hierarchical sparse neighborhoods 的基础机制；当前论文将其用于自身的 event/SNN pipeline，而不是把该前驱本身作为新贡献。 对应 Section 2: event representation。证据：Method III-B, PDF p.6, citation and bibliography [30]。 当前 active corpus 未覆盖。
+- **End-to-End Learning of Representations for Asynchronous Event-Based Data (Daniel Gehrig et al., ICCV 2019)** — `alternative`。两者都处理 dense learned tensor versus sparse voxel set，但采用不同 representation、state 或 computation route。 对应 Sections 2 and 6: representation and efficiency。证据：Related Work and Experiments, PDF pp.3 and 8, citation and bibliography [4]。 当前 active corpus 未覆盖。 值得 backward search。
+
 ## 8. Survey-Usable Takeaways
 
 1. EVSTr 展示了稀疏 event recognition 的三级建模结构：voxel-level local aggregation、voxel-set global interaction 和 segment-level long-range temporal modeling。

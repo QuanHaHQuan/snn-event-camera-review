@@ -2,26 +2,28 @@
 
 ## Current Status
 
-- Official mother list: 2387 papers (preserved in full).
-- Active title-candidate records: 35.
-- Active retained reviewed papers: 26.
-- Every active semantic role was reassessed from the complete official title and abstract.
-- Legacy A/B/C values in venue CSVs are search-stage provenance only.
+- Official mother list: 2387 papers.
+- High-recall title/abstract candidates: 47.
+- Candidates with complete official-title/abstract audit: 47.
+- Retained A/B/C provenance records: 28.
+- Dual-track exclusions among current candidates: 19.
+- A/B/C is conference-search provenance only; active reading assignments come from the dual-track audit.
 
-## Official Source
+## Scope And Evidence
 
-- URL: https://eccv.ecva.net/virtual/2024/papers.html
+- Every title candidate is represented in `00-index/candidate-screening-audit.csv` with its complete official abstract and SHA256.
 - Full-PDF search over the complete mother list was not performed.
 
-## Active Dual-Track Counts
+## Retained Dual-Track Counts
 
-- Survey: anchor=2, included=2, background=20, exclude=2.
-- Advisor: method_chain=0, discussion=9, watch=14, exclude=3.
+- Survey: anchor=2, included=2, background=22, exclude=2.
+- Advisor: method_chain=0, discussion=9, watch=16, exclude=3.
 
-## Active Entries
+## Retained Entries
 
 | ID | Title | Survey role | Advisor role |
 | --- | --- | --- | --- |
+| ECCV2024-1943 | 3D Hand Sequence Recovery from Real Blurry Images and Event Stream | background | watch |
 | ECCV2024-0096 | Asynchronous Bioplausible Neuron for Spiking Neural Networks for Event-Based Vision | background | discussion |
 | ECCV2024-0858 | BKDSNN: Enhancing the Performance of Learning-based Spiking Neural Networks Training with Blurred Knowledge Distillation | background | watch |
 | ECCV2024-0606 | CMTA: Cross-Modal Temporal Alignment for Event-guided Video Deblurring | background | watch |
@@ -34,6 +36,7 @@
 | ECCV2024-0903 | Event Trojan: Asynchronous Event-based Backdoor Attacks | background | exclude |
 | ECCV2024-1102 | Event-based Head Pose Estimation: Benchmark and Method | background | watch |
 | ECCV2024-1094 | Event-Based Motion Magnification | exclude | discussion |
+| ECCV2024-1397 | EventBind: Learning a Unified Representation to Bind Them All for Event-based Open-world Understanding | background | watch |
 | ECCV2024-1740 | Exploring Vulnerabilities in Spiking Neural Networks: Direct Adversarial Attacks on Raw Event Data | included | exclude |
 | ECCV2024-0945 | FARSE-CNN: Fully Asynchronous, Recurrent and Sparse Event-Based CNN | background | discussion |
 | ECCV2024-1083 | Finding Meaning in Points: Weakly Supervised Semantic Segmentation for Event Cameras | background | watch |
@@ -49,7 +52,6 @@
 | ECCV2024-2228 | Temporal-Mapping Photography for Event Cameras | background | watch |
 | ECCV2024-1328 | Towards Robust Event-based Networks for Nighttime via Unpaired Day-to-Night Event Translation | background | exclude |
 
-## Audit
+## Audit Source
 
-Current dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-08-12-dual-exclude-audit.md`.
-Complete official proceedings remain available in this venue's `mother-list.csv`.
+Use `00-index/candidate-screening-audit.csv` for every retained or excluded candidate decision and its official abstract evidence.

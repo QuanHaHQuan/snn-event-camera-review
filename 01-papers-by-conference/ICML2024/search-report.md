@@ -2,26 +2,28 @@
 
 ## Current Status
 
-- Official mother list: 2610 papers (preserved in full).
-- Active title-candidate records: 23.
-- Active retained reviewed papers: 13.
-- Every active semantic role was reassessed from the complete official title and abstract.
-- Legacy A/B/C values in venue CSVs are search-stage provenance only.
+- Official mother list: 2610 papers.
+- High-recall title/abstract candidates: 26.
+- Candidates with complete official-title/abstract audit: 26.
+- Retained A/B/C provenance records: 14.
+- Dual-track exclusions among current candidates: 12.
+- A/B/C is conference-search provenance only; active reading assignments come from the dual-track audit.
 
-## Official Source
+## Scope And Evidence
 
-- URL: https://proceedings.mlr.press/v235/
+- Every title candidate is represented in `00-index/candidate-screening-audit.csv` with its complete official abstract and SHA256.
 - Full-PDF search over the complete mother list was not performed.
 
-## Active Dual-Track Counts
+## Retained Dual-Track Counts
 
-- Survey: anchor=0, included=0, background=13, exclude=0.
-- Advisor: method_chain=0, discussion=4, watch=5, exclude=4.
+- Survey: anchor=0, included=0, background=14, exclude=0.
+- Advisor: method_chain=0, discussion=5, watch=5, exclude=4.
 
-## Active Entries
+## Retained Entries
 
 | ID | Title | Survey role | Advisor role |
 | --- | --- | --- | --- |
+| ICML2024-1996 | ALERT-Transformer: Bridging Asynchronous and Synchronous Machine Learning for Real-Time Event-based Spatio-Temporal Data | background | discussion |
 | ICML2024-2133 | Autaptic Synaptic Circuit Enhances Spatio-temporal Predictive Learning of Spiking Neural Networks | background | discussion |
 | ICML2024-0803 | CLIF: Complementary Leaky Integrate-and-Fire Neuron for Spiking Neural Networks | background | discussion |
 | ICML2024-1239 | Enhancing Adversarial Robustness in SNNs with Sparse Gradients | background | exclude |
@@ -36,7 +38,6 @@
 | ICML2024-1168 | Towards efficient deep spiking neural networks construction with spiking activity based pruning | background | watch |
 | ICML2024-2598 | Towards Efficient Spiking Transformer: a Token Sparsification Framework for Training and Inference Acceleration | background | discussion |
 
-## Audit
+## Audit Source
 
-Current dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-08-12-dual-exclude-audit.md`.
-Complete official proceedings remain available in this venue's `mother-list.csv`.
+Use `00-index/candidate-screening-audit.csv` for every retained or excluded candidate decision and its official abstract evidence.

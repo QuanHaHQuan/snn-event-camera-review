@@ -1,65 +1,116 @@
-# Advisor Direction: Event Camera + Frequency + SNN
+# Advisor 方向阅读图：SECNet + Frequency + SNN
 
-## Objective
+## 一、目标与边界
 
-The advisor direction is not an open-ended search for new ideas. The known extension direction is the combination of **event cameras, frequency modeling, and SNNs**, with FFT/Fourier methods as a central mechanism to understand. SECNet already applies Spatial-FA and Temporal-FA FFT-filter-iFFT modules inside its Event Cloud hierarchy. The reading goal is therefore to understand the existing frequency interfaces, their evidence, and how they can be refined and coupled to SNN computation. Mamba and SSM are explicitly outside the planned TPAMI extension. The bounded chain contains 14 papers: SECNet, the external TTPOINT predecessor, and 12 current proceedings-corpus assignments.
+本方向服务于 **SECNet ICML 2026 oral 的 TPAMI 扩展**。目标已经确定为：
 
-## Conceptual Sequence
+**Event Camera + frequency/Fourier，尤其是 FFT + SNN。**
 
-1. **SECNet and Event Cloud lineage**
-   - Read SECNet first as the focus paper and identify the exact inputs, transformed axes, filters, inverse transforms, and outputs of Spatial-FA and Temporal-FA, alongside its Event Cloud grouping and temporal pipeline.
-   - Use `TTPOINT`, `PEPNet`, and `SpikePoint` to trace sparse event-point processing and the transition from non-spiking lightweight networks to a point-based SNN.
+这不是开放式 idea 搜索，也不需要建立庞大的方法谱系。Mamba/SSM 不属于本次扩展方向，不进入 Advisor Core。
 
-2. **Event-side frequency**
-   - What frequency means for an asynchronous event stream.
-   - How polarity, event rate, temporal windows, voxelization, and interpolation affect the signal being transformed.
-   - Read `Beyond Duality`, `Frequency-aware Event-based Video Deblurring`, and `Exploiting Frequency Dynamics` as direct FFT designs.
-   - Read only the detachable SCPG module in `AIMDepth` and the blur-event magnitude/phase mechanism in `Event-based Motion Deblurring with Unpaired Data`; neither whole architecture is a method-chain predecessor.
+当前限定阅读集共 **9 篇**：
 
-3. **Fourier/FFT and wavelet foundations**
-   - DFT/FFT decomposes a sampled signal into global frequency components.
-   - FFT gives frequency bins but does not by itself preserve precise time localization.
-   - Wavelets provide localized multi-scale time-frequency analysis and are not the same operation as FFT.
-   - Read `SpikF` for Fourier-based SNN processing and `Spiking Wavelet Transformer` for a wavelet-based SNN alternative.
+- 1 篇 focus paper：SECNet；
+- 5 篇直接机制论文；
+- 3 篇启发性论文。
 
-4. **Frequency inside SNNs**
-   - How spike trains and membrane dynamics respond to low/high-frequency input.
-   - Whether the method transforms the input, hidden feature, attention/token mixing, or loss.
-   - Read `Spiking Neural Networks Need High-Frequency Information` and `FEEL-SNN`.
+完整名单由 [Advisor Core Reading Plan](../00-index/reading-plan-advisor-core.md) 生成和维护。
 
-5. **Coupling frequency with event representation and SNN computation**
-   - Where the frequency transform is inserted: before SNN input, inside a block, between modalities, or in the objective.
-   - Whether the transform operates over time, space, channels, or event density.
-   - How complex amplitude/phase, magnitude-only features, high/low-pass bands, and sparsity interact with spikes.
-   - Compare the direct FFT papers with `Spiking Wavelet Transformer`; wavelet is a localized time-frequency alternative, not a substitute term for FFT.
-   - Use only PRE-Mamba's Event Cloud interface and 1D FFT regularization loss; the paper explicitly avoids an inference FFT layer.
-   - Do not study the Mamba/SSM backbones in `AIMDepth` or `PRE-Mamba`; their enrollment is limited to the named separable mechanisms.
+## 二、Focus Paper
 
-6. **Mapping back to SECNet**
-   - Trace the exact Event Cloud tensors already processed by SECNet Spatial-FA and Temporal-FA, then compare alternative signals, axes, filters, and SNN coupling points.
-   - Distinguish a frequency analysis tool, a learned frequency module, and a loss-only spectral constraint.
-   - Check whether the proposed combination preserves asynchronous timing, polarity, sparsity, and scalability.
-   - Compare claims using ablations and efficiency evidence rather than assuming FFT is automatically cheaper or more event-native.
+### SECNet
 
-## What to Extract From Each Paper
+首先完整理解 SECNet：
 
-For every frequency-related paper, record the same mechanism trace:
+1. Event Cloud 如何构建和分层处理；
+2. Spatial-FA 与 Temporal-FA 的输入 tensor；
+3. FFT 沿哪个轴执行；
+4. 频域 filter 如何学习；
+5. iFFT 后的结果流向哪里；
+6. 现有 frequency path 与未来 SNN 模块可能在哪里连接。
 
-1. **Signal**: raw events, event rate, voxel/tensor sequence, hidden feature, spike train, or multimodal feature.
-2. **Sampling**: event window, timestep grid, interpolation, padding, or other operation that makes the signal transformable.
-3. **Transform**: DFT/FFT, learned Fourier layer, high/low-pass decomposition, wavelet, or a non-Fourier frequency statistic.
-4. **Axis**: time, space, channel, token, or event-density axis on which the transform is applied.
-5. **Insertion point**: before the SNN, inside an SNN block, in an ANN branch, between modalities, or in the loss/objective.
-6. **Spike interaction**: whether the frequency result is converted to spikes, modulates membrane dynamics, mixes spike tokens, or remains an ANN feature.
-7. **Evidence**: ablation, accuracy/latency trade-off, event sparsity, energy estimate, or hardware measurement.
+后续论文都用于回答一个问题：**它提供的频率机制或 SNN 接口，能否帮助分析或改进 SECNet 已有设计？**
 
-This trace prevents three common conflations: an event-rate statistic is not automatically an FFT, a wavelet is not an FFT, and operational/inference frequency is not Fourier frequency.
+## 三、五篇直接机制论文
 
-## Reading Assignment
+### Event-side FFT
 
-The active list is `00-index/reading-plan-advisor-core.md`:
+1. **Beyond Duality**
+   - 关注 RGB/event feature 的 2D FFT、power spectrum、cross spectrum、spectral coherence 和 iFFT。
+   - 用于理解跨模态频谱如何区分 shared/private features。
 
-- external chain: SECNet is the focus paper and TTPOINT is the already-read predecessor;
-- `advisor_required`: eight current-corpus papers needed for the Event Cloud and Fourier/SNN chain;
-- `advisor_helpful`: four current-corpus focused reads; for AIMDepth and PRE-Mamba, read only the explicitly named FFT/Event Cloud mechanism, not the Mamba/SSM backbone;
-- the generated file reports **12 current-corpus papers** and **14 papers in the complete knowledge chain**.
+2. **Exploiting Frequency Dynamics for Enhanced Multimodal Event-based Action Recognition**
+   - 关注 stacked/reconstructed event frames 上的 3D FFT、learned frequency filter 和 iFFT。
+   - 用于比较不同 event representation 进入频域后的信息差异。
+
+3. **Frequency-aware Event-based Video Deblurring for Real-World Motion Blur**
+   - 关注 spatial 2D FFT 与 flattened time-channel 1D FFT。
+   - 用于区分 spatial frequency、temporal dependency 与 cross-modal fusion。
+
+### SNN-side Fourier
+
+4. **SpikF**
+   - 关注 frequency-domain selection 如何进入 spiking long-sequence model。
+   - 核查 transform axis、spike interaction 和 energy evidence，不能只依赖摘要中的效率结论。
+
+5. **FEEL-SNN**
+   - 关注 input DFT、timestep-dependent frequency mask、inverse DFT 与 SNN 的接口。
+   - 用于理解 Fourier processing 放在 SNN 输入前时解决什么问题、保留什么信息。
+
+## 四、三篇启发性论文
+
+1. **Spiking Neural Networks Need High-Frequency Information**
+   - 用于理解 spiking neuron 的 frequency bias。
+   - 它提供的是 Fourier/Z-domain analysis 和 high-frequency motivation，不是 FFT module 范例。
+
+2. **SpikePoint**
+   - 用于理解 sparse Event Cloud 如何直接进入 point-based SNN。
+   - 重点思考 frequency module 可以放在 event grouping、point feature、spike encoding 或 hidden state 的哪个位置。
+
+3. **Spiking Wavelet Transformer**
+   - 用于比较 localized wavelet 与 global Fourier transform。
+   - Wavelet 是 time-frequency alternative，不能和 FFT 混称。
+
+## 五、不再属于 Core 的论文
+
+以下论文保留为可选 reference，但不要求当前阅读：
+
+- AIMDepth：Mamba backbone 不相关，SCPG 仅在需要 amplitude/phase cross-modal prior 时回查；
+- PRE-Mamba：Mamba/SSM 不相关，loss-only FFT 不属于优先机制；
+- Event-based Motion Deblurring with Unpaired Data：magnitude/phase modulation 可按需回查；
+- TTPOINT、PEPNet：保留为 Event Cloud lineage 背景，不作为当前扩刊必读。
+
+被移出 Advisor Core 不代表论文被删除，也不影响它们在 Survey、reference pool 或历史 V2 中的其他用途。
+
+## 六、统一提取框架
+
+阅读每篇 frequency 论文时只记录以下内容：
+
+1. **Signal**：raw events、event frame/voxel、Event Cloud、hidden feature 或 spike train；
+2. **Sampling**：如何把 asynchronous events 变成可执行 transform 的信号；
+3. **Transform**：FFT/DFT、learned Fourier、filter 或 wavelet；
+4. **Axis**：time、space、channel、token 或 event-density；
+5. **Insertion point**：SNN 前、SNN 内部、ANN branch、multimodal fusion 或 loss；
+6. **Spike interaction**：frequency result 如何影响 encoding、membrane、spike token 或 output；
+7. **Evidence**：ablation、accuracy、latency、operation estimate 或 hardware measurement。
+
+必须区分：
+
+- frequency analysis 与可训练 FFT module；
+- Fourier frequency 与运行频率；
+- FFT 与 wavelet；
+- arithmetic estimate 与真实 hardware efficiency。
+
+## 七、建议阅读顺序
+
+1. SECNet；
+2. Exploiting Frequency Dynamics；
+3. Frequency-aware Event-based Video Deblurring；
+4. Beyond Duality；
+5. FEEL-SNN；
+6. SpikF；
+7. Spiking Neural Networks Need High-Frequency Information；
+8. SpikePoint；
+9. Spiking Wavelet Transformer。
+
+完成后只需形成一张对照表，比较 signal、axis、transform、insertion point、SNN coupling 和 evidence，然后回到 SECNet 标出可借鉴与不可直接迁移的机制。

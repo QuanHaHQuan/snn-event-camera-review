@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Update global indexes from reviewed venue CSV files."""
+"""Generate retained-paper metadata and the conference inventory."""
 
 from __future__ import annotations
 
@@ -22,24 +22,20 @@ GLOBAL_COLUMNS = [
     "notes",
 ]
 
-LEVEL_FILES = {
-    "A": "level-A-papers.md",
-    "B": "level-B-event-camera.md",
-    "C": "level-C-snn.md",
+OFFICIAL_PROCEEDINGS = {
+    "CVPR2024": "https://openaccess.thecvf.com/CVPR2024?day=all",
+    "CVPR2025": "https://openaccess.thecvf.com/CVPR2025?day=all",
+    "CVPR2026": "https://openaccess.thecvf.com/CVPR2026?day=all",
+    "ECCV2024": "https://eccv.ecva.net/virtual/2024/papers.html",
+    "ICCV2025": "https://openaccess.thecvf.com/ICCV2025?day=all",
+    "ICLR2024": "https://proceedings.iclr.cc/paper_files/paper/2024",
+    "ICLR2025": "https://proceedings.iclr.cc/paper_files/paper/2025",
+    "ICLR2026": "https://proceedings.iclr.cc/paper_files/paper/2026",
+    "ICML2024": "https://proceedings.mlr.press/v235/",
+    "ICML2025": "https://proceedings.mlr.press/v267/",
+    "NeurIPS2024": "https://papers.nips.cc/paper_files/paper/2024",
+    "NeurIPS2025": "https://papers.nips.cc/paper_files/paper/2025",
 }
-
-LEVEL_TITLES = {
-    "A": "Level A Papers",
-    "B": "Level B Event-Camera Papers",
-    "C": "Level C SNN Papers",
-}
-
-LEVEL_DESCRIPTIONS = {
-    "A": "Core intersection papers combining SNN/spiking computation with event-camera data or event-based vision.",
-    "B": "Event-camera-side background papers without clear SNN/spiking neural network use.",
-    "C": "SNN-side background papers without clear event-camera or DVS data use.",
-}
-
 
 def read_csv(path: Path) -> list[dict[str, str]]:
     with path.open(newline="", encoding="utf-8") as handle:
@@ -117,47 +113,10 @@ def collect_reviewed_rows(repo_root: Path) -> list[dict[str, str]]:
 
 
 def write_all_papers(index_dir: Path, rows: list[dict[str, str]]) -> None:
-    with (index_dir / "all-papers.csv").open("w", newline="", encoding="utf-8") as handle:
+    with (index_dir / "retained-papers.csv").open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=GLOBAL_COLUMNS, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
-
-
-def markdown_link(label: str, path_or_url: str) -> str:
-    if not path_or_url:
-        return ""
-    return f"[{label}]({path_or_url})"
-
-
-def write_level_indexes(index_dir: Path, rows: list[dict[str, str]]) -> None:
-    for level, filename in LEVEL_FILES.items():
-        level_rows = [row for row in rows if row.get("level", "").upper() == level]
-        lines = [
-            f"# {LEVEL_TITLES[level]}",
-            "",
-            "> Legacy conference-screening provenance. Do not use this level as an active reading role; use `paper-selection.csv`.",
-            "",
-            LEVEL_DESCRIPTIONS[level],
-            "",
-        ]
-        if not level_rows:
-            lines.append("No papers indexed yet.")
-        else:
-            lines.extend(["| Year | Conference | Title | Card | Official Page | Notes |", "| --- | --- | --- | --- | --- | --- |"])
-            for row in level_rows:
-                card = markdown_link("card", row.get("card_path", ""))
-                official = markdown_link("official", row.get("official_page", ""))
-                lines.append(
-                    "| {year} | {conference} | {title} | {card} | {official} | {notes} |".format(
-                        year=row.get("year", ""),
-                        conference=row.get("conference", ""),
-                        title=row.get("title", ""),
-                        card=card,
-                        official=official,
-                        notes=row.get("notes", ""),
-                    )
-                )
-        (index_dir / filename).write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def write_conferences(index_dir: Path, repo_root: Path) -> None:
@@ -176,25 +135,16 @@ def write_conferences(index_dir: Path, repo_root: Path) -> None:
         first = rows[0] if rows else {}
         venue = first.get("conference", folder.name)
         year = first.get("year", "")
-        source = first.get("source_url", "")
+        source = first.get("source_url", "") or OFFICIAL_PROCEEDINGS.get(folder.name, "")
         status = "processed" if (folder / "abc-reviewed.csv").exists() else "mother-list only"
         notes = f"{len(rows)} papers" if rows else "No rows"
         rel_folder = folder.relative_to(repo_root).as_posix()
-        lines.append(f"| {venue} | {year} | {source} | {rel_folder} | {status} | {notes} |")
+        source_link = f"[official proceedings]({source})" if source else "-"
+        folder_link = f"[{folder.name}](../{rel_folder}/)"
+        lines.append(
+            f"| {venue} | {year} | {source_link} | {folder_link} | {status} | {notes} |"
+        )
     (index_dir / "conferences.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
-
-
-def ensure_datasets(index_dir: Path) -> None:
-    path = index_dir / "datasets.md"
-    if path.exists() and path.read_text(encoding="utf-8").strip():
-        return
-    path.write_text(
-        "# Datasets\n\n"
-        "Track event-camera, neuromorphic vision, and SNN-relevant datasets mentioned by reviewed papers.\n\n"
-        "| Dataset | Modality | Tasks | Papers | Notes |\n"
-        "| --- | --- | --- | --- | --- |\n",
-        encoding="utf-8",
-    )
 
 
 def main() -> int:
@@ -206,10 +156,8 @@ def main() -> int:
     index_dir = repo_root / "00-index"
     rows = collect_reviewed_rows(repo_root)
     write_all_papers(index_dir, rows)
-    write_level_indexes(index_dir, rows)
     write_conferences(index_dir, repo_root)
-    ensure_datasets(index_dir)
-    print(f"Updated global indexes with {len(rows)} A/B/C papers.")
+    print(f"Updated retained-paper metadata with {len(rows)} A/B/C provenance rows.")
     return 0
 
 

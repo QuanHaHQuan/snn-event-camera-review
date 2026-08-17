@@ -189,6 +189,14 @@ TTPOINT 继承 PointNet、PointNet++ 和 PointMLP 的 hierarchical point-cloud p
 
 它的重要性在于说明：即使不使用 SNN，point-based ANN 也可达到极小参数规模，因此评估 SNN efficiency 时不能只与大型 frame-based CNN 对比。
 
+### PDF-verified relation backfill
+
+主要路线是 time-balanced sampled Event Cloud + hierarchical point MLP，并以 tensor-train decomposition 压缩 action-recognition network。
+
+- **PointNet++: Deep Hierarchical Feature Learning on Point Sets in a Metric Space (Charles Ruizhongtai Qi et al., NeurIPS 2017)** — `foundation`。该工作提供 hierarchical point processing 的基础机制；当前论文将其用于自身的 event/SNN pipeline，而不是把该前驱本身作为新贡献。 对应 Sections 2 and 6: representation and efficiency。证据：Related Work 2, PDF pp.2-3, citation and bibliography [24]。 当前 active corpus 未覆盖。
+- **Modeling Point Clouds with Self-Attention and Gumbel Subset Sampling (Jiancheng Yang et al., CVPR 2019)** — `alternative`。两者都处理 point sampling and attention，但采用不同 representation、state 或 computation route。 对应 Sections 2 and 5: representation and action recognition。证据：Related Work 2, PDF p.3, citation and bibliography [33]。 当前 active corpus 未覆盖。
+- **Space-Time Event Clouds for Gesture Recognition: From RGB Cameras to Event Cameras (Qinyi Wang et al., WACV 2019)** — `baseline`。该工作是 Event Cloud recognition 的实验 comparator；当前论文与其主要区别在于本文第 3–4 节所述的核心机制。 对应 Sections 2 and 5: representation and action recognition。证据：Related Work, PDF p.2, citation and bibliography [29]。 当前 active corpus 未覆盖。 值得 backward search。
+
 ## 8. Survey-Usable Takeaways
 
 * Takeaway 1: Event stream 可以将时间视为第三个坐标，直接构成 sparse `x-y-t` point cloud，而无需先生成 dense event frames。

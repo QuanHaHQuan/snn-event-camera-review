@@ -2,23 +2,24 @@
 
 ## Current Status
 
-- Official mother list: 3330 papers (preserved in full).
-- Active title-candidate records: 34.
-- Active retained reviewed papers: 17.
-- Every active semantic role was reassessed from the complete official title and abstract.
-- Legacy A/B/C values in venue CSVs are search-stage provenance only.
+- Official mother list: 3330 papers.
+- High-recall title/abstract candidates: 38.
+- Candidates with complete official-title/abstract audit: 38.
+- Retained A/B/C provenance records: 17.
+- Dual-track exclusions among current candidates: 21.
+- A/B/C is conference-search provenance only; active reading assignments come from the dual-track audit.
 
-## Official Source
+## Scope And Evidence
 
-- URL: https://proceedings.mlr.press/v267/
+- Every title candidate is represented in `00-index/candidate-screening-audit.csv` with its complete official abstract and SHA256.
 - Full-PDF search over the complete mother list was not performed.
 
-## Active Dual-Track Counts
+## Retained Dual-Track Counts
 
 - Survey: anchor=1, included=0, background=15, exclude=1.
 - Advisor: method_chain=1, discussion=8, watch=7, exclude=1.
 
-## Active Entries
+## Retained Entries
 
 | ID | Title | Survey role | Advisor role |
 | --- | --- | --- | --- |
@@ -40,7 +41,6 @@
 | ICML2025-3117 | TTFSFormer: A TTFS-based Lossless Conversion of Spiking Transformer | background | watch |
 | ICML2025-2726 | When Every Millisecond Counts: Real-Time Anomaly Detection via the Multimodal Asynchronous Hybrid Network | background | watch |
 
-## Audit
+## Audit Source
 
-Current dual-excluded titles and reasons are recorded in `05-logs/codex-runs/2026-08-12-dual-exclude-audit.md`.
-Complete official proceedings remain available in this venue's `mother-list.csv`.
+Use `00-index/candidate-screening-audit.csv` for every retained or excluded candidate decision and its official abstract evidence.

@@ -26,17 +26,6 @@ EXTERNAL_ADVISOR_ROWS = [
             "before assessing how the existing frequency path can be refined and coupled to SNNs."
         ),
     },
-    {
-        "title": "TTPOINT: A Tensorized Point Cloud Network for Lightweight Action Recognition with Event Cameras",
-        "year": "2023",
-        "venue": "ACMMM",
-        "reading_status": "advisor_predecessor",
-        "_assignment": "predecessor",
-        "advisor_reason": (
-            "External advisor-group predecessor for tensorized sparse event-point processing "
-            "and the lineage leading to PEPNet and SECNet."
-        ),
-    },
 ]
 
 
@@ -165,6 +154,8 @@ def write_papers_index(
 def main() -> None:
     rows = read_csv(SELECTION)
     v2_files = scan_v2_files()
+    for folder in (V2_ROOT / "survey", V2_ROOT / "advisor"):
+        folder.mkdir(parents=True, exist_ok=True)
     survey_rows = [row for row in rows if "survey_core" in values(row["reading_status"])]
     advisor_rows = [
         row

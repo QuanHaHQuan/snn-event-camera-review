@@ -170,6 +170,14 @@ Limitations：核心方法主要是现有 STN、UNet、attention SNN、mask conn
 
 在综述中，其价值主要是补充一个应用分支：SNN 不仅可用于 classification、detection 或 optical flow，也可作为 E-SAI 去遮挡系统中的 temporal filter。相较专门研究 event representation、neuronal dynamics 或 SNN learning 的论文，REDIR 更适合作为 application-oriented example，而不是深入展开的核心方法论文。
 
+### PDF-verified relation backfill
+
+主要路线是 STN timestamp registration、SNN/TSA occlusion filtering 与 ANN reconstruction decoder 的 hybrid pipeline。
+
+- **Learning to See Through with Events (Lei Yu et al., TPAMI 2023)** — `foundation`。该工作提供 event synthetic aperture de-occlusion 的基础机制；当前论文将其用于自身的 event/SNN pipeline，而不是把该前驱本身作为新贡献。 对应 Section 5: reconstruction and restoration。证据：Introduction and Related Work, PDF pp.2-4, citation and bibliography [30]。 当前 active corpus 未覆盖。
+- **Event-based Synthetic Aperture Imaging with a Hybrid Network (Xinyu Zhang et al., CVPR 2021)** — `baseline`。该工作是 event de-occlusion reconstruction 的实验 comparator；当前论文与其主要区别在于本文第 3–4 节所述的核心机制。 对应 Section 5: reconstruction and restoration。证据：Experiments 5.2, PDF pp.11-12, citation and bibliography [31]。 当前 active corpus 未覆盖。
+- **Spatial Transformer Networks (Max Jaderberg et al., NeurIPS 2015)** — `foundation`。该工作提供 learned affine event registration 的基础机制；当前论文将其用于自身的 event/SNN pipeline，而不是把该前驱本身作为新贡献。 对应 Section 5: reconstruction and restoration。证据：Method 4.2, PDF pp.7-8, citation and bibliography [9]。 当前 active corpus 未覆盖。
+
 ## 8. Survey-Usable Takeaways
 
 REDIR 表明，移动事件相机的多视角去遮挡任务可以分解为：先学习每个 timestamp 的二维 registration，再利用 SNN 的时间状态过滤不稳定遮挡事件，最后通过 ANN decoder 恢复强度图像。其最值得综述引用的结论是：在 E-SAI 场景中，SNN 可作为 hybrid pipeline 的 temporal filtering component；但论文的主要性能来源更可能是 STN-based registration，而不是新的 SNN 机制。

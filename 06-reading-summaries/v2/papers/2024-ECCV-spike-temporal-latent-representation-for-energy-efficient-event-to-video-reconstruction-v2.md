@@ -609,6 +609,15 @@ $$
 
 ---
 
+### PDF-verified relation backfill
+
+主要路线是把 convolutional LASSO/ISTA unfolding 映射为 spike-rate latent code，再用串联 spiking decoder 输出 video intensity。
+
+- **An Iterative Thresholding Algorithm for Linear Inverse Problems with a Sparsity Constraint (Ingrid Daubechies et al., Communications on Pure and Applied Mathematics 2004)** — `foundation`。该工作提供 unfolded sparse coding 的基础机制；当前论文将其用于自身的 event/SNN pipeline，而不是把该前驱本身作为新贡献。 对应 Sections 4 and 5: optimization-inspired SNN and reconstruction。证据：Method 3.1, PDF pp.4-5, citation and bibliography [5]。 当前 active corpus 未覆盖。
+- **Learning Efficient Sparse and Low Rank Models (Pablo Sprechmann et al., TPAMI 2015)** — `foundation`。该工作提供 unfolded sparse coding 的基础机制；当前论文将其用于自身的 event/SNN pipeline，而不是把该前驱本身作为新贡献。 对应 Sections 4 and 5: optimization-inspired SNN and reconstruction。证据：Method 3.1, PDF pp.4-5, citation and bibliography [32]。 当前 active corpus 未覆盖。
+- **Events-to-Video: Bringing Modern Computer Vision to Event Cameras (Henri Rebecq et al., CVPR 2019)** — `baseline`。该工作是 event-to-video reconstruction 的实验 comparator；当前论文与其主要区别在于本文第 3–4 节所述的核心机制。 对应 Section 5: reconstruction。证据：Related Work and Experiments, PDF pp.3 and 10, citation and bibliography [28]。 当前 active corpus 未覆盖。 值得 backward search。
+- **Fast Image Reconstruction with an Event Camera (Cedric Scheerlinck et al., WACV 2020)** — `baseline`。该工作是 lightweight recurrent reconstruction 的实验 comparator；当前论文与其主要区别在于本文第 3–4 节所述的核心机制。 对应 Sections 5 and 6: reconstruction and efficiency。证据：Related Work and Experiments Table 1, PDF pp.3 and 10, citation and bibliography [30]。 当前 active corpus 未覆盖。
+
 ## 8. Survey-Usable Takeaways
 
 1. E2V 是从亮度变化恢复绝对灰度的 ill-posed inverse problem。
