@@ -128,6 +128,7 @@ def validate_v2_relations(
         row
         for row in registry.values()
         if row["repository_path"].endswith("-v2.md")
+        and row["paper_key"] in grouped
     ]
     for source in source_nodes:
         source_key = source["paper_key"]

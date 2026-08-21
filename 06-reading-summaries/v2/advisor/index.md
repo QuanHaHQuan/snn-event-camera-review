@@ -2,7 +2,7 @@
 
 Human-guided reading progress for the SECNet to TPAMI extension direction: Event Camera + frequency/Fourier + SNN.
 
-Progress: **1/9 complete**, **8 missing**.
+Progress: **3/9 complete**, **6 missing**.
 
 A V2 paper has one canonical file in `../papers/`. This index records its track-specific purpose; it does not duplicate the summary.
 
@@ -14,6 +14,6 @@ A V2 paper has one canonical file in `../papers/`. This index records its track-
 | 4 | SpikF: Spiking Fourier Network for Efficient Long-term Prediction | 2025 | ICML | required | missing | - | The official abstract establishes a Spiking Fourier Network with frequency-domain selection for long sequences, providing direct SNN-side Fourier foundations. |
 | 5 | Spiking Neural Networks Need High-Frequency Information | 2025 | NeurIPS | helpful | missing | - | Read as conceptual inspiration for the frequency bias of spiking neurons and the difference between frequency analysis and inserting an FFT module. |
 | 6 | FEEL-SNN: Robust Spiking Neural Networks with Frequency Encoding and Evolutionary Leak Factor | 2024 | NeurIPS | required | missing | - | The PDF confirms input DFT, timestep-dependent frequency masks, and inverse DFT before the SNN, making FEEL-SNN a direct Fourier-to-SNN coupling mechanism. |
-| 7 | Frequency-aware Event-based Video Deblurring for Real-World Motion Blur | 2024 | CVPR | required | missing | - | The PDF uses 2D FFT for spatial feature filtering and 1D FFT over the flattened time-channel dimension for event/RGB fusion, providing a direct event-side FFT architecture. |
+| 7 | Frequency-aware Event-based Video Deblurring for Real-World Motion Blur | 2024 | CVPR | required | complete | [2024-CVPR-frequency-aware-event-based-video-deblurring-for-real-world-motion-blur-v2.md](../papers/2024-CVPR-frequency-aware-event-based-video-deblurring-for-real-world-motion-blur-v2.md) | The PDF uses 2D FFT for spatial feature filtering and 1D FFT over the flattened time-channel dimension for event/RGB fusion, providing a direct event-side FFT architecture. |
 | 8 | SpikePoint: An Efficient Point-based Spiking Neural Network for Event Cameras Action Recognition | 2024 | ICLR | helpful | complete | [2024-ICLR-spikepoint-an-efficient-point-based-spiking-neural-network-for-event-cameras-action-recognition-v2.md](../papers/2024-ICLR-spikepoint-an-efficient-point-based-spiking-neural-network-for-event-cameras-action-recognition-v2.md) | Read as Event Cloud + SNN inspiration for where frequency processing could connect to a sparse point-based spiking pipeline. |
-| 9 | Spiking Wavelet Transformer | 2024 | ECCV | helpful | missing | - | The PDF places a sparse wavelet transform inside a spike-driven token mixer; it is a direct SNN time-frequency alternative, but wavelet is not FFT. |
+| 9 | Spiking Wavelet Transformer | 2024 | ECCV | helpful | complete | [2024-ECCV-spiking-wavelet-transformer-v2.md](../papers/2024-ECCV-spiking-wavelet-transformer-v2.md) | The PDF places a sparse wavelet transform inside a spike-driven token mixer; it is a direct SNN time-frequency alternative, but wavelet is not FFT. |

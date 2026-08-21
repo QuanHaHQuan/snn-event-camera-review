@@ -127,6 +127,42 @@ $$
 \approx0.798.
 $$
 
+论文给出的 folded-normal 推导先把一般 Gaussian density 映射为：
+
+$$
+f(x;\mu,\delta^2)
+=
+\frac{1}{\sqrt{2\pi}\delta}
+\left(
+e^{-\frac{(x-\mu)^2}{2\delta^2}}
++
+e^{-\frac{(x+\mu)^2}{2\delta^2}}
+\right),
+\qquad x\geq0,
+$$
+
+其期望为：
+
+$$
+\dot\mu
+=
+\sqrt{\frac{2}{\pi}}\delta e^{-\frac{\mu^2}{2\delta^2}}
++
+\mu\left[
+1-2\Phi\left(-\frac{\mu}{\delta}\right)
+\right],
+$$
+
+$$
+\Phi(x)
+=
+\frac12\left[
+1+\operatorname{erf}\left(\frac{x}{\sqrt2}\right)
+\right].
+$$
+
+在 standard normal 情况 $\mu=0,\delta=1$，退化为 $\sqrt{2/\pi}$。PDF 中该处的符号将 CDF 写作 $\phi$，且 erf 积分排版损坏；以上保留可确认的 folded-normal 关系，损坏细节标记为 Needs further check。
+
 Absolute value 解决负 probability，却丢失方向，并使 relative part 整体变大。作者不采用精确的 expectation correction $c-\sqrt{2/\pi}\operatorname{SD}$，而是构造两个 branches：
 
 $$
@@ -174,6 +210,20 @@ SpikePoint 只做一次 FPS/KNN grouping，随后保持 1024 个 group-level fea
 Small model 用于 Daily DVS、DVS Action；large model 用于 DVS128 Gesture、HMDB51-DVS、UCF101-DVS。每个 Conv1D 后接 BatchNorm。$\operatorname{ResF}_B$ 的 bottleneck width 是输入的一半，并保持 block 外部 channels 不变；global $\operatorname{ResF}$ 不使用 bottleneck。Figure 8 画出 dropout 0.5，而 Appendix A.7.1 又称 extractor 与 classifier 之间的 dropout 被省略，具体 placement 存在文字/图示不一致。
 
 ### 3.5 PLIF dynamics、post-LIF residual 与训练
+
+正文首先用离散 spike train 表示单个输入/输出 spike：
+
+$$
+S_j(t)
+=
+\sum_{s\in C_j}\gamma(t-s),
+\qquad
+\gamma(x)
+=
+\theta\left(U(t,x)-V_{\mathrm{th}}\right),
+$$
+
+其中 $C_j$ 是第 $j$ 个 neuron 的 firing-time set；达到 threshold 时 $\gamma=1$，否则为 0。
 
 正文先用带 synaptic-current state 的 generic LIF 描述：
 
@@ -408,9 +458,9 @@ $$
 
 **Limitations.** Polarity 被丢弃；raw timestamps 被重新编码成随机 rate spikes；absolute coordinates 丢失 per-point direction，且超出 $[0,1]$ 时的 encoder 处理不明；$N,N',M$ 符号冲突；random sampling 易选中 noise；window length 与 DVS Action preprocessing 依赖 dataset-specific tuning；overlapping random split 可能泄漏；post-LIF sum 不保证 binary；CV 与 residual-gradient 推导有错误或印刷不一致；energy 没有覆盖完整 pipeline，static estimate 也无法按公式复现。
 
-## 7. Relation to Other Papers and Survey Taxonomy
+## 7. Relation to Other Papers and Track Context
 
-本论文主要属于 event representation、SNN architecture、temporal modeling、training method、action recognition、efficiency and hardware proxy 以及 open challenges。它连接 PointNet/PointNet++ 式 point processing 与 direct-trained SNN：相较 frame-based SNN，它保留 point sparsity 和归一化时间坐标；相较 Point Cloud ANN，它避免多阶段 set abstraction，并用 spike-compatible coordinate encoding 与 post-LIF residual mapping。它不是 dense prediction、tracking、optical flow、detection 或 adversarial robustness 方法。
+在 Survey 中，SpikePoint 属于 sparse event representation、SNN architecture、temporal modeling、training method、action recognition、efficiency proxy 和 open challenges 的交叉证据。它连接 PointNet/PointNet++ 式 point processing 与 direct-trained SNN：相较 frame-based SNN，它保留 point sparsity 和归一化时间坐标；相较 Point Cloud ANN，它避免多阶段 set abstraction，并用 spike-compatible coordinate encoding 与 post-LIF residual mapping。
 
 ### PDF-verified relation backfill
 
@@ -420,9 +470,23 @@ $$
 - **TTPOINT: A Tensorized Point Cloud Network for Lightweight Action Recognition with Event Cameras (Hongwei Ren et al., ACMMM 2023)** — `baseline`。该工作是 point-based event action recognition 的实验 comparator；当前论文与其主要区别在于本文第 3–4 节所述的核心机制。 对应 Sections 4 and 5: ANN-SNN comparison and action recognition。证据：Related Work and Experiments, PDF pp.3 and 8, citation and bibliography [33]。 当前 active corpus 未覆盖。
 - **Modeling Point Clouds with Self-Attention and Gumbel Subset Sampling (Jiancheng Yang et al., CVPR 2019)** — `alternative`。两者都处理 point subset selection and feature modeling，但采用不同 representation、state 或 computation route。 对应 Sections 2 and 4: sparse representation and SNN integration。证据：Related Work, PDF p.3, citation and bibliography [37]。 当前 active corpus 未覆盖。
 
+### Relation to SECNet Extension Direction
+
+SpikePoint 是 Advisor papers 中最接近 SECNet input side 的方法。它不把事件累积成 frame 或 voxel，而是将窗口内 raw events 转成 $(x,y,z)$ pseudo-Point Cloud，再用 random sampling、FPS 和 KNN 构造 neighborhoods。这说明 SECNet 可以在 frequency module 之前保留 sparse point organization；但 SpikePoint 丢弃 polarity，并把 timestamp 压成归一化坐标后重新 rate encode，因此并非 raw event 到 neuronal spike 的一一映射。
+
+**Frequency/Fourier insertion point。** SpikePoint 本身没有 FFT、wavelet 或 spectral branch。若 SECNet 加入 frequency module，合理位置可以是 grouping 后的 local neighborhood，或 local pooling 后的 1024 个 group descriptors。直接对无序 point index 做 FFT 没有稳定物理含义，必须先定义 local coordinate ordering、graph spectrum、Laplacian basis 或规则 projection。
+
+**SNN coupling。** SpikePoint 展示了 continuous point coordinates 通过 Bernoulli rate coding 进入 direct-trained PLIF SNN，并用 post-LIF residual 提供 identity gradient path。若 SECNet 加入 Fourier/wavelet coefficients，必须处理 signed/complex values 与 rate coding 的冲突。本文的 absolute-value coordinate encoding 会丢失 direction，不能直接保留 Fourier phase 或 signed wavelet detail；可迁移的只是“在 sparse point representation 与 SNN backbone 之间定义显式编码接口”的思路。
+
+**可迁移性与边界。** 可迁移的是 single-stage grouping、local/global extractor、短 timestep rate coding 和 residual training design。不能直接迁移的是 dataset-specific window length、random sampling、polarity removal、absolute-coordinate compensation，以及不完整的 full-pipeline energy proxy。对 SECNet，应分别报告 Point Cloud sparsity、frequency representation cost 和 neuronal spike sparsity，不能因避免 frame conversion 就默认整个 pipeline 异步或低能耗。
+
 ## 8. Survey-Usable Takeaways
 
-SpikePoint 表明，event stream 可以不经 frame accumulation，而以 $(x,y,t)$ pseudo-point cloud 输入直接训练的 SNN；但这种“直接”仍包含窗口化、sampling/grouping 和重新 rate encoding。其最有综述价值的机制不是笼统的低功耗声明，而是三个具体设计：用 point neighborhoods 提取 local/global geometry；通过 relative-coordinate rescaling 降低短 timestep Poisson encoding 的相对误差；通过 $\operatorname{LIF}(I)+S^{l-1}$ 为 surrogate training 提供 identity gradient path。实验支持其为当时强竞争力的 point-based SNN，但真实系统能效、异步部署能力和带符号/超范围 coordinates 的编码仍未得到验证。
+- SpikePoint 避免 frame/voxel conversion，以 windowed $(x,y,t)$ pseudo-Point Cloud 驱动 SNN；但 pipeline 仍包含同步 sampling/grouping 和重新 rate encoding，并非逐 raw event 异步执行。
+- Singular-stage architecture 只做一次 FPS/KNN grouping，再用 local/global spiking extractors 建模 neighborhood 与跨 group relationships，减少多-stage point abstraction 对 spike sparsity 和 BPTT 的压力。
+- Relative-coordinate rescaling 能降低短 timestep rate coding 对小数值的相对误差，但 absolute value 丢失 direction，且超出 $[0,1]$ 后的 probability handling 未说明。
+- Post-LIF residual 为 surrogate training 提供 identity gradient path，但输出可能成为 $\{0,1,2\}$ multi-valued activation，不能简单称为全程 binary spikes。
+- 对 SECNet，SpikePoint 提供 Event Cloud + SNN 主干；frequency module 必须建立在有物理意义的 local grouping、graph spectrum 或规则投影之上，并单独解决 signed/complex spectral coding。
 
 ## Supplement Points
 

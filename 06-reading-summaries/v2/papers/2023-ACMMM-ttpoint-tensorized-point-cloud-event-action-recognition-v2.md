@@ -174,7 +174,7 @@ Subwindow sampling 在 DVS128 Gesture 上将 accuracy 从 97.0% 提高至 97.8%�
 * 论文对 TT-rank vector 与 width-dependent rank configuration 的符号说明不够清晰。
 * 轻量化证据限于 params/GFLOPs，未验证实际硬件部署。
 
-## 7. Relation to Other Papers and Survey Taxonomy
+## 7. Relation to Other Papers and Track Context
 
 TTPOINT 继承 PointNet、PointNet++ 和 PointMLP 的 hierarchical point-cloud processing 思路。与 ST-EVNet 和 PAT 相比，它更强调时间均衡采样与 tensorized model compression，而不是 self-attention 或复杂 subset selection。
 
@@ -189,13 +189,7 @@ TTPOINT 继承 PointNet、PointNet++ 和 PointMLP 的 hierarchical point-cloud p
 
 它的重要性在于说明：即使不使用 SNN，point-based ANN 也可达到极小参数规模，因此评估 SNN efficiency 时不能只与大型 frame-based CNN 对比。
 
-### PDF-verified relation backfill
-
-主要路线是 time-balanced sampled Event Cloud + hierarchical point MLP，并以 tensor-train decomposition 压缩 action-recognition network。
-
-- **PointNet++: Deep Hierarchical Feature Learning on Point Sets in a Metric Space (Charles Ruizhongtai Qi et al., NeurIPS 2017)** — `foundation`。该工作提供 hierarchical point processing 的基础机制；当前论文将其用于自身的 event/SNN pipeline，而不是把该前驱本身作为新贡献。 对应 Sections 2 and 6: representation and efficiency。证据：Related Work 2, PDF pp.2-3, citation and bibliography [24]。 当前 active corpus 未覆盖。
-- **Modeling Point Clouds with Self-Attention and Gumbel Subset Sampling (Jiancheng Yang et al., CVPR 2019)** — `alternative`。两者都处理 point sampling and attention，但采用不同 representation、state 或 computation route。 对应 Sections 2 and 5: representation and action recognition。证据：Related Work 2, PDF p.3, citation and bibliography [33]。 当前 active corpus 未覆盖。
-- **Space-Time Event Clouds for Gesture Recognition: From RGB Cameras to Event Cameras (Qinyi Wang et al., WACV 2019)** — `baseline`。该工作是 Event Cloud recognition 的实验 comparator；当前论文与其主要区别在于本文第 3–4 节所述的核心机制。 对应 Sections 2 and 5: representation and action recognition。证据：Related Work, PDF p.2, citation and bibliography [29]。 当前 active corpus 未覆盖。 值得 backward search。
+本文属于 Advisor 的历史 reference。对 SECNet 扩展的直接价值是 Event Cloud / point-based input 与轻量化非 SNN processing；它可以帮助理解 SECNet 的 Event Cloud lineage，但不属于 Survey Core，也不在本轮建立 Survey literature relations。PointNet++、Space-Time Event Clouds 等前驱仅作为本文内部背景保留。
 
 ## 8. Survey-Usable Takeaways
 

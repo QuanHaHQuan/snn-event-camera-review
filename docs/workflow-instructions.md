@@ -111,9 +111,11 @@ Then use the final outline to rank `survey-reference-pool.csv` separately for ea
 
 - `advisor_required`: necessary to understand SECNet, Event Cloud processing, FFT/Fourier mechanisms, or their SNN coupling;
 - `advisor_helpful`: focused mechanism reading only;
-- SECNet and TTPOINT are separately listed focus/predecessor papers.
+- SECNet is the separately listed focus paper. TTPOINT and other historical Event Cloud papers are optional references, not automatic Advisor Core assignments.
 
 Advisor roles in the broader corpus are retrieval labels, not reading assignments. Do not enroll every `method_chain`, `discussion`, or `watch` paper. Read frequency papers using the mechanism trace in `03-review-draft/advisor-frequency-reading-map.md`: signal, sampling, transform, axis, insertion point, spike interaction, and evidence.
+
+Advisor and Survey are separate evidence workflows. An Advisor-only V2 may explain how a paper informs SECNet, but it must not automatically create Survey paper relations, update `core-relation-matrix.csv`, update `literature-node-registry.csv`, change `outline.md`, alter Survey taxonomy, or add entries to the Survey evidence matrix. A paper assigned to both Survey and Advisor still follows the Survey evidence rules and may add a separate SECNet-context subsection; its Advisor role must not erase valid Survey evidence. The Advisor track is for the TPAMI extension and has no authority to reshape the Survey.
 
 ## 7. V2 Storage
 
