@@ -1,10 +1,10 @@
 # Survey Outline
 
-Status: **provisional after Checkpoint 01 and taxonomy-closure audit; current audited Core progress is 13/26 V2 papers**.
+Status: **provisional after Checkpoint 01 and taxonomy-closure audit**. Live Core progress is maintained in the generated [Survey V2 index](../06-reading-summaries/v2/survey/index.md).
 
-This is a working structure, not the final V1.0 outline. Checkpoint 01 is recorded in [outline-checkpoints/checkpoint-01-11-v2.md](outline-checkpoints/checkpoint-01-11-v2.md). The external-survey [taxonomy closure audit](taxonomy-closure-audit.md) broadens recall without replacing evidence from paper-level V2 reading. Current progress is 13/26; decisions that depend on the remaining 2025/2026 anchors, tracking, ANN-SNN conversion, or hardware evaluation remain open.
+This is a working structure, not the final V1.0 outline. Checkpoint 01 is recorded in [outline-checkpoints/checkpoint-01-11-v2.md](outline-checkpoints/checkpoint-01-11-v2.md). The external-survey [taxonomy closure audit](taxonomy-closure-audit.md) broadens recall without replacing evidence from paper-level V2 reading. Decisions that depend on the remaining 2025/2026 anchors, tracking, ANN-SNN conversion, or hardware evaluation remain open.
 
-The review-and-reading sequence from 13/26 to completion is maintained in [core-reading-roadmap-13-to-26.md](core-reading-roadmap-13-to-26.md).
+The review-and-reading sequence is maintained in [core-reading-roadmap-13-to-26.md](core-reading-roadmap-13-to-26.md). The filename records the roadmap's original 13/26 starting point; it is not a live progress counter.
 
 ## Working Title
 

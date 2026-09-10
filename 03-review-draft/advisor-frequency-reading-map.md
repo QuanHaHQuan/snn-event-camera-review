@@ -1,5 +1,7 @@
 # Advisor 方向阅读图：SECNet + Frequency + SNN
 
+> **Historical map (superseded 2026-09-10).** 本文件保留上一版频域扩刊思路，供回溯已有 V2 与频率机制证据；它不再控制当前 Advisor Core。当前实施主线与阅读顺序见 [SECNet-SNN Implementation Reading Map](advisor-secnet-snn-reading-map.md)。
+
 ## 一、目标与边界
 
 本方向服务于 **SECNet ICML 2026 oral 的 TPAMI 扩展**。目标已经确定为：

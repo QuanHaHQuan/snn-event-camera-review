@@ -17,7 +17,7 @@
 ## Retained Dual-Track Counts
 
 - Survey: anchor=4, included=0, background=36, exclude=5.
-- Advisor: method_chain=1, discussion=25, watch=15, exclude=4.
+- Advisor: method_chain=3, discussion=23, watch=15, exclude=4.
 
 ## Retained Entries
 
@@ -56,11 +56,11 @@
 | CVPR2026-3630 | SDTrack: A Baseline for Event-based Tracking via Spiking Neural Networks | anchor | discussion |
 | CVPR2026-3162 | Seeing Motion Through Polarity for Event-based Action Recognition | background | discussion |
 | CVPR2026-1312 | SMV-EAR: Bring Spatiotemporal Multi-View Representation Learning into Efficient Event-Based Action Recognition | background | discussion |
-| CVPR2026-1873 | Spike-driven Discrete Aggregation for Event-based Object Detection | anchor | discussion |
+| CVPR2026-1873 | Spike-driven Discrete Aggregation for Event-based Object Detection | anchor | method_chain |
 | CVPR2026-1935 | SpikeTrack: A Spike-driven Framework for Efficient Visual Tracking | exclude | watch |
 | CVPR2026-1798 | SpikeTrack: High-performance and Energy-efficient Event-Based Object Tracking with Spiking Neural Network | anchor | discussion |
 | CVPR2026-2519 | Stable Spike: Dual Consistency Optimization via Bitwise AND Operations for Spiking Neural Networks | background | watch |
-| CVPR2026-0399 | Temporal Interaction in Spiking Transformers with Multi-Delay Mixer | background | discussion |
+| CVPR2026-0399 | Temporal Interaction in Spiking Transformers with Multi-Delay Mixer | background | method_chain |
 | CVPR2026-0405 | Temporal Representation Enhancement (TRE): Learning to Forget Dominant Patterns for Enhanced Temporal Spiking Features | background | watch |
 | CVPR2026-2758 | Texvent: Asynchronous Event Data Simulation via Text Prompt | background | discussion |
 | CVPR2026-0479 | Towards Persistence: Learning Topological Constraints for Event-based Small Object Detection | background | discussion |

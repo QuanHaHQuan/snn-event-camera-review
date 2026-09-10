@@ -3,7 +3,7 @@
 This repository maintains one auditable proceedings corpus for two bounded goals:
 
 1. a survey on **Spiking Neural Networks for Event Cameras**;
-2. the **SECNet (ICML 2026 oral) to TPAMI extension** direction: Event Camera + frequency/Fourier + SNN.
+2. the **SECNet (ICML 2026 oral) to TPAMI extension** direction: a concrete SNN implementation of SECNet.
 
 The survey and Advisor tracks share evidence but have separate roles and reading plans. Mamba/SSM is not an Advisor direction. A/B/C survives only inside venue folders as search provenance; P0/P1/P2/P3 is retired.
 
@@ -13,8 +13,8 @@ The survey and Advisor tracks share evidence but have separate roles and reading
 - [`paper-selection.csv`](00-index/paper-selection.csv): generated active corpus;
 - [`Survey Core`](00-index/reading-plan-survey-core.md): human-guided deep-reading plan;
 - [`Survey reference pool`](00-index/survey-reference-pool.csv): non-Core retrieval pool for later section-level screening;
-- [`Advisor Core`](00-index/reading-plan-advisor-core.md): bounded SECNet/Fourier/SNN knowledge chain;
-- [`Survey outline`](03-review-draft/outline.md) and [`Advisor reading map`](03-review-draft/advisor-frequency-reading-map.md);
+- [`Advisor Core`](00-index/reading-plan-advisor-core.md): bounded SECNet-SNN implementation knowledge chain;
+- [`Survey outline`](03-review-draft/outline.md) and [`Advisor reading map`](03-review-draft/advisor-secnet-snn-reading-map.md);
 - [`V2 index`](06-reading-summaries/v2/index.md), with separate [Survey](06-reading-summaries/v2/survey/index.md) and [Advisor](06-reading-summaries/v2/advisor/index.md) views.
 
 `paper-selection.csv`, reading plans, reference pool, search reports, and V2 indexes are generated views. Do not edit them by hand.
@@ -32,10 +32,10 @@ Survey roles:
 
 Advisor roles:
 
-- `method_chain`: direct SECNet predecessor or closest mechanism chain;
-- `discussion`: concrete comparator or extension mechanism;
+- `method_chain`: direct SECNet-SNN predecessor or reusable implementation mechanism;
+- `discussion`: controlled evaluator, comparator, or second-stage optimization mechanism;
 - `watch`: adjacent evidence worth retaining;
-- `exclude`: no useful relation to Event Cloud + Fourier/FFT + SNN.
+- `exclude`: no useful relation to implementing SECNet as an SNN.
 
 `reading_status` is the actual assignment. Only papers excluded from both tracks leave the active corpus; complete mother lists and the audit evidence remain preserved.
 

@@ -14,7 +14,7 @@ Replace `<VENUE>` and `<YEAR>` before use.
 docs/workflow-instructions.md
 00-index/README.md
 03-review-draft/outline.md
-03-review-draft/advisor-frequency-reading-map.md
+03-review-draft/advisor-secnet-snn-reading-map.md
 00-index/reading-plan-survey-core.md
 00-index/reading-plan-advisor-core.md
 00-index/survey-reference-pool.csv
@@ -74,16 +74,16 @@ Survey 主题严格限定为 `Spiking Neural Networks for Event Cameras`，结�
 
 ## Advisor 判断
 
-Advisor 主线严格为：SECNet/Event Cloud + frequency/Fourier/FFT + SNN。Mamba/SSM 本身不属于主线；只有可拆出的 Event Cloud、FFT/frequency 或 SNN coupling mechanism 才有价值。
+Advisor 主线严格为：在保留 ordered Event Cloud 与 SECNet hierarchy 优势的前提下，把 SECNet 实现为准确、可训练、可部署的 SNN。已有 Spatial-FA/Temporal-FA 频率模块属于 baseline architecture，但 frequency/Fourier 不再是 Advisor 准入条件。Mamba/SSM 不属于第一版实现主线。
 
 角色只用：
 
-- `method_chain`: SECNet、Event Cloud hierarchy、FFT/frequency module 或 SNN coupling 的直接前驱/最近机制链；
-- `discussion`: 有明确可讨论、可迁移的模块、数据组织、频率接口或实验 comparator；
+- `method_chain`: Event Cloud/point-SNN、spike encoding、neuron、spiking architecture、aggregation 或 temporal block 的直接前驱/最近机制链；
+- `discussion`: controlled benchmark/comparator，或有明确可迁移的 training、memory、efficiency、hardware/deployment mechanism；
 - `watch`: 关联较弱但保留检索价值；
 - `exclude`: 对确认的扩刊方向无实际用途。
 
-不要把所有 frequency、wavelet、event 或 point-cloud 论文都加入 Advisor。必须说明 signal、sampling、transform、axis、insertion point、spike interaction 中至少哪一项可用于 SECNet；摘要无法确认关键边界时再标记 PDF check。
+不要把所有 generic SNN、event 或 point-cloud 论文都加入 Advisor。必须说明 SECNet insertion point、signal/state、spike boundary、neuron/operator、temporal axis、training path、deployment compatibility 中至少哪一项得到可执行指导；只有应用结果而没有可迁移机制的论文不进入 Core。摘要无法确认关键边界时再标记 PDF check。
 
 ## Core 与 Reading Assignment
 

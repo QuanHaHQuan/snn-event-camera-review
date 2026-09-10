@@ -17,7 +17,7 @@
 ## Retained Dual-Track Counts
 
 - Survey: anchor=0, included=0, background=14, exclude=0.
-- Advisor: method_chain=0, discussion=5, watch=5, exclude=4.
+- Advisor: method_chain=1, discussion=4, watch=5, exclude=4.
 
 ## Retained Entries
 
@@ -25,7 +25,7 @@
 | --- | --- | --- | --- |
 | ICML2024-1996 | ALERT-Transformer: Bridging Asynchronous and Synchronous Machine Learning for Real-Time Event-based Spatio-Temporal Data | background | discussion |
 | ICML2024-2133 | Autaptic Synaptic Circuit Enhances Spatio-temporal Predictive Learning of Spiking Neural Networks | background | discussion |
-| ICML2024-0803 | CLIF: Complementary Leaky Integrate-and-Fire Neuron for Spiking Neural Networks | background | discussion |
+| ICML2024-0803 | CLIF: Complementary Leaky Integrate-and-Fire Neuron for Spiking Neural Networks | background | method_chain |
 | ICML2024-1239 | Enhancing Adversarial Robustness in SNNs with Sparse Gradients | background | exclude |
 | ICML2024-2069 | EvGGS: A Collaborative Learning Framework for Event-based Generalizable Gaussian Splatting | background | watch |
 | ICML2024-0917 | EvTexture: Event-driven Texture Enhancement for Video Super-Resolution | background | exclude |

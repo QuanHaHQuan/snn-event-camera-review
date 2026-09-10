@@ -15,15 +15,15 @@ PAPERS = V2_ROOT / "papers"
 
 EXTERNAL_ADVISOR_ROWS = [
     {
-        "title": "Scalable Event Cloud Network for Event-based Classification (SECNet)",
+        "title": "Scalable Event Cloud Network for Event-based Classification",
         "year": "2026",
         "venue": "ICML oral",
         "reading_status": "advisor_focus",
         "_assignment": "focus",
         "advisor_reason": (
-            "Focus paper for the TPAMI extension. SECNet already contains Spatial-FA and "
-            "Temporal-FA FFT-filter-iFFT modules; read their exact signals, axes, and interfaces "
-            "before assessing how the existing frequency path can be refined and coupled to SNNs."
+            "Focus paper for the TPAMI extension. Freeze SECNet's ordered Event Cloud input, "
+            "G&S-SFA-AGG-TFA-RES hierarchy, tensor interfaces, and task heads before deciding "
+            "which operations should become spike-native and which should remain continuous."
         ),
     },
 ]
@@ -182,7 +182,7 @@ def main() -> None:
     advisor_completed, advisor_total = write_track_index(
         V2_ROOT / "advisor" / "index.md",
         "Advisor V2 Index",
-        "Human-guided reading progress for the SECNet to TPAMI extension direction: Event Camera + frequency/Fourier + SNN.",
+        "Human-guided reading progress for implementing the SECNet to TPAMI extension as an accurate, trainable, and deployable SNN.",
         advisor_rows,
         v2_files,
         "Assignment",

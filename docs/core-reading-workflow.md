@@ -209,7 +209,7 @@ tags: []
 第 7 节的内容必须按 track 处理：
 
 - **Survey-only V2** 使用 `Relation to Other Papers and Survey Taxonomy`，讨论论文在综述中的位置，并在证据充分时建立 Survey 关系。
-- **Advisor-only V2** 可以保留兼容标题，但正文只写 `Relation to SECNet Extension Direction` 的内容：frequency/Fourier mechanism、Event Cloud interface、SNN coupling、可迁移性和边界。不得生成 Survey taxonomy、Survey 章节归类或泛化的 Related Work 关系图。
+- **Advisor-only V2** 可以保留兼容标题，但正文只写 `Relation to SECNet Extension Direction` 的内容：Event Cloud-to-spike interface、point hierarchy、neuron dynamics、spike-native operator、temporal interaction、training/deployment、可迁移性和边界。不得生成 Survey taxonomy、Survey 章节归类或泛化的 Related Work 关系图。
 - **Survey + Advisor 共享 V2** 使用 `Relation to Other Papers and Track Context`：先按 Survey 规则保留关系标记和 graph edges，再单列 `Relation to SECNet Extension Direction`。Advisor 身份不能删除或替换这篇论文应有的 Survey evidence。
 
 ### 6.2 内容要求
@@ -234,7 +234,7 @@ tags: []
 
 ## 7. 第 7 节与文献关系
 
-生成 Survey-only 或 Survey + Advisor 共享 V2 时主动核查 PDF 的 Introduction、Related Work、关键 baseline 和 bibliography。用户没有逐段粘贴 Related Work，也不能省略这一步。生成 Advisor-only V2 时只核查与 SECNet、frequency/Fourier、Event Cloud 或 SNN coupling 直接相关的内容，不自动扩展成 Survey 文献关系审查。
+生成 Survey-only 或 Survey + Advisor 共享 V2 时主动核查 PDF 的 Introduction、Related Work、关键 baseline 和 bibliography。用户没有逐段粘贴 Related Work，也不能省略这一步。生成 Advisor-only V2 时只核查与 SECNet-SNN 的输入接口、point/Event Cloud hierarchy、neuron、temporal operator、training、efficiency 或 deployment 直接相关的内容，不自动扩展成 Survey 文献关系审查。
 
 ### 7.1 选择范围
 

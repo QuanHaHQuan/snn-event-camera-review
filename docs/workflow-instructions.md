@@ -5,9 +5,9 @@
 This repository serves two goals only:
 
 1. **Survey:** the strict intersection `Spiking Neural Networks for Event Cameras`;
-2. **Advisor:** SECNet to TPAMI, centered on Event Cloud + frequency/Fourier/FFT + SNN.
+2. **Advisor:** SECNet to TPAMI, centered on implementing SECNet as an accurate, trainable, and deployable SNN.
 
-Do not expand into generic event-based vision, generic SNN surveys, broad neuromorphic computing, asynchronous systems, event logs, temporal point processes, biological spike processing, or spike-camera imaging. Mamba/SSM is outside the Advisor direction; a paper containing a detachable FFT or Event Cloud mechanism may still receive a focused assignment for that mechanism alone.
+Do not expand into generic event-based vision, generic SNN application catalogues, broad neuromorphic computing, asynchronous systems, event logs, temporal point processes, biological spike processing, or spike-camera imaging. Generic SNN papers may enter the Advisor evidence pool only when they contribute a reusable neuron, architecture, training, temporal, efficiency, or deployment mechanism. Mamba/SSM is outside the planned first implementation.
 
 The venue allowlist is CVPR, ICCV, ECCV, NeurIPS, ICML, and ICLR. Add a venue/year only when complete official proceedings are available and process it as one unit.
 
@@ -46,7 +46,7 @@ For one venue/year:
 2. exclude workshops, demos, challenges, tutorials, and invited talks;
 3. for NeurIPS only, include all official long-paper tracks and preserve `official_track`;
 4. run high-recall retrieval over the complete official title and, whenever available, the complete official abstract; do not rely on title-only retrieval;
-5. reverse-search `Fourier`, `FFT`, `frequency`, `spectral`, and `wavelet` for the Advisor direction;
+5. reverse-search `spiking neuron`, `LIF`, `PLIF`, `surrogate gradient`, `STBP`, `online training`, `spiking transformer`, `spike-driven`, `point SNN`, `temporal delay`, `spike sparsity`, and `neuromorphic deployment` for the Advisor direction;
 6. inspect the complete official title and abstract for every candidate, including retrieval false positives;
 7. do not run full-PDF search over the mother list;
 8. use PDF review only when an abstract cannot resolve a material boundary.
@@ -77,10 +77,10 @@ Survey roles:
 
 Advisor roles:
 
-- `method_chain`: direct SECNet predecessor or closest mechanism chain;
-- `discussion`: concrete extension mechanism or comparator;
+- `method_chain`: direct Event Cloud/point-SNN predecessor or reusable SECNet-SNN implementation mechanism;
+- `discussion`: controlled evaluator, comparator, or second-stage optimization mechanism;
 - `watch`: adjacent retained evidence;
-- `exclude`: no useful relation to Event Cloud + Fourier/FFT + SNN.
+- `exclude`: no useful relation to implementing SECNet as an SNN.
 
 Reading assignments:
 
@@ -109,11 +109,11 @@ Then use the final outline to rank `survey-reference-pool.csv` separately for ea
 
 `reading-plan-advisor-core.md` is intentionally bounded:
 
-- `advisor_required`: necessary to understand SECNet, Event Cloud processing, FFT/Fourier mechanisms, or their SNN coupling;
-- `advisor_helpful`: focused mechanism reading only;
+- `advisor_required`: necessary to define the SECNet-SNN input interface, point hierarchy, neuron, aggregation, temporal block, or controlled evaluation;
+- `advisor_helpful`: second-stage training-memory, asynchronous-deployment, or efficiency optimization reading;
 - SECNet is the separately listed focus paper. TTPOINT and other historical Event Cloud papers are optional references, not automatic Advisor Core assignments.
 
-Advisor roles in the broader corpus are retrieval labels, not reading assignments. Do not enroll every `method_chain`, `discussion`, or `watch` paper. Read frequency papers using the mechanism trace in `03-review-draft/advisor-frequency-reading-map.md`: signal, sampling, transform, axis, insertion point, spike interaction, and evidence.
+Advisor roles in the broader corpus are retrieval labels, not reading assignments. Do not enroll every `method_chain`, `discussion`, or `watch` paper. Use `03-review-draft/advisor-secnet-snn-reading-map.md` to read in implementation order and extract: SECNet insertion point, signal/state type, spike boundary, neuron/operator, temporal axis, training path, deployment compatibility, and evidence type. Frequency/Fourier papers remain historical references unless they answer one of those live implementation questions.
 
 Advisor and Survey are separate evidence workflows. An Advisor-only V2 may explain how a paper informs SECNet, but it must not automatically create Survey paper relations, update `core-relation-matrix.csv`, update `literature-node-registry.csv`, change `outline.md`, alter Survey taxonomy, or add entries to the Survey evidence matrix. A paper assigned to both Survey and Advisor still follows the Survey evidence rules and may add a separate SECNet-context subsection; its Advisor role must not erase valid Survey evidence. The Advisor track is for the TPAMI extension and has no authority to reshape the Survey.
 

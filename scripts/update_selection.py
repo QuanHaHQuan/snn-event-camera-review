@@ -45,11 +45,17 @@ ADVISOR_TOPICS = {
     "event_cloud_point": "Event Cloud and point processing",
     "grouping_sampling": "Grouping, sampling and aggregation",
     "polarity": "Polarity-aware modeling",
+    "spike_encoding": "Event-to-spike interfaces and encoding",
+    "neuron_dynamics": "Spiking neuron dynamics",
+    "snn_architecture": "SNN architecture and spike-native operators",
+    "snn_training": "Direct, surrogate-gradient and online SNN training",
+    "temporal_modeling": "Temporal interaction, state and delay",
     "frequency": "Frequency-aware modeling",
     "fourier_fft": "Fourier transform and FFT",
     "wavelet_time_frequency": "Wavelet and localized time-frequency analysis",
     "scalability_efficiency": "Scalability and efficiency",
     "hardware": "Hardware and deployment",
+    "deployment": "Asynchronous and memory-aware deployment",
     "task_generalization": "Task and domain generalization",
     "snn_hybrid": "SNN and hybrid extensions",
     "datasets": "Datasets and evaluation",
@@ -57,16 +63,16 @@ ADVISOR_TOPICS = {
 
 EXTERNAL_ADVISOR_CHAIN = [
     {
-        "title": "Scalable Event Cloud Network for Event-based Classification (SECNet)",
+        "title": "Scalable Event Cloud Network for Event-based Classification",
         "year": "2026",
         "venue": "ICML oral",
         "assignment": "focus",
         "link": "",
         "reason": (
-            "The TPAMI extension starts from SECNet. Its Event Cloud hierarchy already "
-            "contains Spatial-FA and Temporal-FA FFT-filter-iFFT modules; the extension "
-            "question is how to refine those frequency mechanisms and couple them to SNN "
-            "computation."
+            "The TPAMI extension starts from SECNet and asks how to implement its ordered "
+            "Event Cloud hierarchy as an accurate, trainable, and genuinely efficient SNN. "
+            "Its existing Spatial-FA and Temporal-FA modules remain part of the baseline, "
+            "but frequency is no longer the Advisor admission criterion."
         ),
     },
 ]
@@ -517,9 +523,10 @@ def main() -> None:
     write_plan(
         INDEX / "reading-plan-advisor-core.md",
         "Advisor Core Reading Plan",
-        "Serves the **SECNet ICML 2026 oral to TPAMI extension** direction: Event Camera + "
-        "frequency/Fourier + SNN. Mamba/SSM is outside the planned extension and is not part "
-        "of the Advisor Core.",
+        "Serves the **SECNet ICML 2026 oral to TPAMI extension** direction: implement SECNet "
+        "as an accurate, trainable, and deployable SNN while preserving its ordered Event "
+        "Cloud hierarchy. Existing frequency modules are baseline components, not the Core "
+        "admission criterion. Mamba/SSM is outside the planned first implementation.",
         advisor_core,
         metadata,
         "advisor_topics",

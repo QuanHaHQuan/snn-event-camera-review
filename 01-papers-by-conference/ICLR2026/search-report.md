@@ -17,7 +17,7 @@
 ## Retained Dual-Track Counts
 
 - Survey: anchor=0, included=0, background=35, exclude=0.
-- Advisor: method_chain=0, discussion=5, watch=5, exclude=25.
+- Advisor: method_chain=1, discussion=6, watch=4, exclude=24.
 
 ## Retained Entries
 
@@ -51,8 +51,8 @@
 | ICLR2026-3011 | SAFA-SNN: Sparsity-Aware On-Device Few-Shot Class-Incremental Learning with Fast-Adaptive Structure of Spiking Neural Network | background | exclude |
 | ICLR2026-4671 | Segment Any Events with Language | background | exclude |
 | ICLR2026-4283 | SkyEvents: A Large-Scale Event-enhanced UAV Dataset for Robust 3D Scene Reconstruction | background | discussion |
-| ICLR2026-3550 | SMixer: Rethinking Efficient-Training and Event-Driven SNNs | background | watch |
-| ICLR2026-3725 | Spiking Discrepancy Transformer for Point Cloud Analysis | background | exclude |
+| ICLR2026-3550 | SMixer: Rethinking Efficient-Training and Event-Driven SNNs | background | discussion |
+| ICLR2026-3725 | Spiking Discrepancy Transformer for Point Cloud Analysis | background | method_chain |
 | ICLR2026-1286 | Time Is All It Takes: Spike-Retiming Attacks on Event-Driven Spiking Neural Networks | background | exclude |
 | ICLR2026-2262 | Towards Lossless Memory-efficient Training of Spiking Neural Networks via Gradient Checkpointing and Spike Compression | background | watch |
 | ICLR2026-5125 | TP-Spikformer: Token Pruned Spiking Transformer | background | watch |

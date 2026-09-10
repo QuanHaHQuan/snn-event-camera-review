@@ -17,7 +17,7 @@
 ## Retained Dual-Track Counts
 
 - Survey: anchor=2, included=0, background=14, exclude=0.
-- Advisor: method_chain=0, discussion=5, watch=8, exclude=3.
+- Advisor: method_chain=1, discussion=4, watch=8, exclude=3.
 
 ## Retained Entries
 
@@ -35,7 +35,7 @@
 | ICLR2024-0723 | Sparse Spiking Neural Network: Exploiting Heterogeneity in Timescales for Pruning Recurrent SNN | background | watch |
 | ICLR2024-1522 | Spatio-Temporal Approximation: A Training-Free SNN Conversion for Transformers | background | watch |
 | ICLR2024-2070 | Spike-driven Transformer V2: Meta Spiking Neural Network Architecture Inspiring the Design of Next-generation Neuromorphic Chips | background | discussion |
-| ICLR2024-1097 | SpikePoint: An Efficient Point-based Spiking Neural Network for Event Cameras Action Recognition | anchor | discussion |
+| ICLR2024-1097 | SpikePoint: An Efficient Point-based Spiking Neural Network for Event Cameras Action Recognition | anchor | method_chain |
 | ICLR2024-0272 | TAB: Temporal Accumulated Batch Normalization in Spiking Neural Networks | background | watch |
 | ICLR2024-2175 | Threaten Spiking Neural Networks through Combining Rate and Temporal Information | background | exclude |
 | ICLR2024-1982 | Towards Energy Efficient Spiking Neural Networks: An Unstructured Pruning Framework | background | watch |

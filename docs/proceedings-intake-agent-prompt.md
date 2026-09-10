@@ -101,14 +101,14 @@ id,title,authors,conference,year,official_track,official_page,pdf_link,status_or
 
 1. Event camera / DVS：`event camera`, `event-based vision`, `event stream`, `event representation`, `DVS`, `DVXplorer`, `neuromorphic vision`, `asynchronous vision`, `event voxel`, `event cloud`, `event point`；
 2. SNN：`spiking neural network`, `spiking`, `spike-driven`, `LIF`, `IF neuron`, `membrane potential`, `surrogate gradient`, `ANN-SNN conversion`, `neuromorphic computing`；
-3. Advisor frequency direction：`Fourier`, `FFT`, `frequency`, `frequency-domain`, `spectral`, `wavelet`, `time-frequency`, `frequency filtering`；
+3. Advisor SECNet-SNN implementation direction：`spiking neuron`, `LIF`, `PLIF`, `adaptive neuron`, `surrogate gradient`, `STBP`, `online training`, `spiking transformer`, `spike-driven`, `point SNN`, `temporal delay`, `spike sparsity`, `event-driven deployment`；
 4. 高风险歧义词：`event`, `spike`, `asynchronous`, `frequency`。这些命中必须通过完整摘要排除 event log、temporal point process、spike camera、biological spike sorting、普通 asynchronous optimization 和无关 signal processing。
 
 为降低漏检，还要做组合与反向检查：
 
 - 所有 SNN 候选检查摘要中是否实际使用 event-camera/DVS 输入，而不是只在 neuromorphic dataset 上做通用 benchmark；
 - 所有 event-camera 候选检查摘要中是否实际包含 SNN/spiking mechanism；
-- 所有 frequency/FFT/wavelet 候选检查是否与 event camera、Event Cloud 或 SNN 存在可解释接口；
+- 所有 Advisor SNN 候选检查是否提供可迁移到 SECNet 的 input encoding、point hierarchy、neuron、aggregation、temporal operator、training、efficiency 或 deployment mechanism；
 - 所有标题不明显但摘要命中的论文必须保留为 candidate；
 - 对边界词分别列出 false positives，不得静默删除。
 

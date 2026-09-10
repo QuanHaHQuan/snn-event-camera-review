@@ -1,6 +1,6 @@
 # Taxonomy Closure Audit
 
-Status: **v0.1, external-survey evidence integrated; current Core progress 13/26 V2 papers**.
+Status: **v0.1, external-survey evidence integrated at the 13/26 V2 snapshot**. Live Core progress is maintained in the generated [Survey V2 index](../06-reading-summaries/v2/survey/index.md).
 
 This audit asks whether the survey taxonomy is broad enough to discover relevant work. It does **not** turn every discovered branch into a Core-reading quota. `Spiking Transformer` is treated as one diagnostic example among many, not as the organizing center of the audit.
 
