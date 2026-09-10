@@ -1,6 +1,6 @@
 # Taxonomy pilot results
 
-日期：2026-09-10。Codebook：`0.1-design`。当前状态：**Batch A–D 首轮完成（30/30 papers）**，不是最终 taxonomy，也不是 usable 文献终审。
+日期：2026-09-10。Codebook：`0.1-design`。当前状态：**Batch A–D 首轮及 10-case 盲重标完成**，不是最终 taxonomy，也不是 usable 文献终审。
 
 ## 1. Batch A 完成范围
 
@@ -12,7 +12,7 @@
 - PDF-resolution events：6
 - PDF-required / resolved：6 / 6
 - 结构校验：59 列、全部 JSON、受控枚举顺序、audit 精确连接、evidence ID 三表连接、boundary/extent 约束均通过
-- 盲重标：尚未开始；将在 30 篇首轮完成后按计划抽取 10 个高风险 case
+- 盲重标：30 篇首轮完成后已按计划复核 10 个高风险 case；结果见第 8 节
 
 EAS-SNN 和 SDA 各有四种会改变推理边界的配置，因此分成配置级行；论文计数始终按 `paper_id` 去重，不能把 12 行误报成 12 篇。
 
@@ -158,6 +158,14 @@ Batch D 进一步确认：四个 primary inference roles 无需扩张；dataset�
 
 当前尚待 Astra 裁决或上游更正的 evidence-ready issue 共四项：`FL-I1`（FLAME interface vs embedded）、`AB-I1`（spiking MLP architecture label）、`AB-I2`（ABN backpropagation vs STDP 表述冲突）、`DD-I1`（DailyDVS cross-subject participant split 冲突）。它们均不阻塞 30 篇 pilot 首轮完成。
 
-## 8. 下一步
+## 8. 10-case 盲重标结果
 
-按既定清单对 03、04、06、07、12、13、14、22、24、29 做 10-case 盲重标，计算 agreement/confusion，并重点检查 role、spiking extent、time-axis mapping、selection 和 false-positive 边界。之后把 pilot 结论与四项 issue 交 Astra 修订 taxonomy architecture 和 codebook，再冻结首个可扩展版本。
+03、04、06、07、12、13、14、22、24、29 已按打乱次序完成 evidence-first 第二轮，并在固定重标结果后解盲。paper-level exact agreement 为：`scope` 10/10、`intersection_directness` 10/10、`primary_functional_role` 9/10、`spiking_extent` 10/10；补充检查的 `selection_status` 为 10/10。EAS-SNN 与 SDA 的 extent 使用配置标签集合比较，没有把多行配置重复计为多篇论文。
+
+唯一 confusion pair 是 FLAME 的 `embedded_module → event_interface`。第二轮认为 LIF Event Attention Layer 输出新的 binary event trains，并经 pooling 交给连续 EA-HiPPO principal backbone，符合当前“显式表示 handoff”的 interface 字面合同；首轮则强调这是 task-specific latent front-end。该分歧已由 `FL-I1` 完整覆盖，保留首轮 canonical label 等待 Astra，未为提高一致率而覆盖数据。
+
+所有预设门槛均通过，且没有重复出现的同类 confusion。详细方法、逐 case 对比和处置见 `taxonomy-pilot-blind-recheck.md` 与 `taxonomy-pilot-blind-recheck.csv`。当前 audit 共 70 events：30 次 abstract initial、27 次 PDF resolution、3 次 abstract-only resolution、10 次 blind recheck。
+
+## 9. 下一步
+
+把 taxonomy architecture、30 篇 pilot 结果、盲重标报告和四项 evidence-ready issue 交 Astra 做 checkpoint adjudication。Astra 应优先明确 interface/module 的 handoff 判据，再裁决 ABN 的 architecture label 与 training evidence conflict、DailyDVS split conflict，并决定是否发布 codebook 修订版或要求少量补充校准；在此之前不进入 572 篇全量标注。
