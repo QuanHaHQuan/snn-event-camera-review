@@ -186,3 +186,16 @@ Batch D 进一步确认：四个 primary inference roles 无需扩张；dataset�
 发布0.2校准版，不冻结v1.0。下一步只补checkpoint §6的六个缺口证据槽位（最多六篇，允许合并）并对五个旧case定向重判；不重做pilot，不启动572篇。之后回Astra检查适用域、边界稳定性、engine与遗漏机制，再决定扩展冻结。
 
 验证入口改为`python3 scripts/validate_taxonomy_pilot.py`：59列与codebook/JSON契约一致，107条事件包含原70条及32次确定性迁移、5次Astra裁决。历史blind文件不改分数；迁移可逐字段反向恢复原0.1快照。验证结果与更改清单见 [migration](taxonomy-codebook-migration-0.2.md)。
+
+## 10. Codebook 0.2 定向重判（Batch E1）
+
+按 checkpoint §6，仅复核 FLAME、CVPR2025-2047、REDIR、HsVT、STLR 五个受影响 role 边界，并检查 ABN/HsVT 的 `mlp` 映射。决定性 PDF 页面重读后，5/5 role 判断与当前 canonical 一致，2/2 `mlp` 判断一致；没有新事实、未解释分歧、第五种 primary role 或 annotation migration。
+
+- interface / embedded：FLAME 满足 I1–I4；PLIF-ASAB 的二值输出仍是低层任务特征；REDIR 的 SNN 已位于连续注册后的内部 feature path。
+- distributed task / embedded：HsVT 的 SpikingMLP 和 STFE 分布于四级主要 backbone，因此稳定为 `task_network`。
+- engine / task：STLR 的 spike/state 与非负 LASSO/ISTA 变量、更新及 fixed point 有显式核心映射，故 primary 仍为 `algorithmic_engine`，U-shaped SNN decoder 提供 secondary `task_network`。
+- `mlp`：ABN 的 Spiking MLP 是主任务承载架构；HsVT 的 SpikingMLP 是每个空间块中明确命名、重复出现的多层功能模块。普通 FFN/单 projection 不因此获得该标签。
+
+本轮是同一执行者的 evidence-first 定向稳定性检查，不报告为新的 blind 或 inter-rater agreement。完整逐合同记录见 [targeted recheck](taxonomy-codebook-0.2-targeted-recheck.md) 与 [CSV](taxonomy-codebook-0.2-targeted-recheck.csv)。现有事件合同没有 `targeted_recheck` 类型，因此没有把它伪装成 blind/PDF-resolution 事件，也没有修改 codebook 0.2。
+
+E1 已完成，但冻结门仍等待 G/C/F/D/P/H 六个补充证据槽位。下一步为最小补充校准 Batch E2，而不是全量 572 篇标注。
