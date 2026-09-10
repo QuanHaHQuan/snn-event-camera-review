@@ -1,6 +1,10 @@
 # Taxonomy annotation codebook
 
-版本：**0.2 / 2026-09-10，Astra checkpoint 校准版，未冻结**。30 篇 pilot 与 10-case 盲重标已完成；本版裁决见 [checkpoint](taxonomy-checkpoint-adjudication.md)，旧值与迁移见 [migration](taxonomy-codebook-migration-0.2.md)。本 codebook 仍可被补充校准推翻；只有 Astra checkpoint 可以修订取值，Sol 不得自建标签。它不继承旧 A/B/C、role、Core membership 或旧 needs_pdf_check 作为答案，也不替代现有 audit。
+版本：**0.2 / 2026-09-10，有限扩展冻结版（frozen_limited_expansion）**。
+
+<!-- release-status: frozen_limited_expansion -->
+
+E1/E2 冻结裁决见 [freeze decision](taxonomy-codebook-0.2-freeze-decision.md)。59 字段及受控词表不变；冻结的是执行合同，不是最终 taxonomy、最终 usable corpus 或所有字段的写作证据。true contrast-event spiking GNN 尚未校准，必须经 Sol High → Astra 首例裁决，不能由 Mid 放入主图。30 篇 pilot 与 10-case 盲重标已完成；本版裁决见 [checkpoint](taxonomy-checkpoint-adjudication.md)，旧值与迁移见 [migration](taxonomy-codebook-migration-0.2.md)。后续证据可触发Astra版本审查与显式迁移；只有 Astra checkpoint 可以修订取值，Sol 不得自建标签。它不继承旧 A/B/C、role、Core membership 或旧 needs_pdf_check 作为答案，也不替代现有 audit。
 
 ## A. 执行契约与数据类型
 
@@ -65,6 +69,10 @@ I1–I4全部得到证据才把该功能列为event_interface候选，再用主�
 **表示和spike的同步约束：** FLAME交接是neuron生成的`neuronal_spike_train`，不是传感窗占据`binary_map`。必须写明sensor event→LIF firing→pooling→E_flat(t)；其连续SSM使extent保持hybrid_subnetwork。此限定不把所有神经层spikes都收入representation_form。
 
 **backbone vs head：** 从representation至多层任务特征是backbone；从这些features到特定输出预测是head。SNN只在head就是embedded_module；head输出为连续值不否定其内部spiking。encoder-decoder都是SNN且共同完成任务可以task_network，decoder不因名字就降为head。
+
+**E2 主路径校准（沿用 F22，不新增标签）：** 多层、前端、参数占比或名为encoder都不充分。画出SNN产生的特征层级及接收者：若它提供主要编码层级，供下游解码/预测使用，或分布在多个principal stages，则候选task_network；若只交付早期低层特征给后续仍独立承担主要编码的ANN blocks，或只在局部支路/head工作，则候选embedded_module。Spike-FlowNet p.8 Fig.3的四尺度下采样encoder同时提供bottleneck和各decoder对应的skip features，是前者；PLIF-ASAB的低层输出经bridge交给ANN blocks，是后者。skip connection只是该例的决定性定位证据，不是所有task_network的必要条件；两者皆不满足I2/I3的事件表示合同。遇到只有单一handoff且主层级无法定位的encoder，unknown + role_conflict → Sol High，不按层数猜测。
+
+**E2 engine与secondary校准（沿用 F23）：** stereo的候选对应、disparity evidence、recurrent uniqueness competition实现明确求解；它不是因为最终完成depth就再获得secondary task_network。只有第二个独立SNN职责才加secondary：STLR有独立task decoder，stereo的外部30 ms地图读出没有。fully_spiking_task_network是extent，名称含task不要求primary也为task_network。数值模型的全spiking范围不外推到局部FPGA/ROLLS硬件变体。
 
 **多role的选择：** 先列独立模块，利用贡献句、方法组织和针对性消融找论文真正提出的主机制。SDA/EAS同时可能有SNN sampler和SNN detector；STLR可能有algorithmic encoder和task decoder。能定位主贡献则择一，另记secondary；无法证实主次必须unknown，禁止固定“engine永远胜过backbone”等机械优先级。0.2保留按主要机制贡献选择primary：强制按全系统主路径会把EAS/SDA的接口贡献及STLR的求解贡献埋入task_network。相同模块不能因换一个非主贡献decoder便改变role；无法证明主次仍保留unknown。
 
@@ -156,7 +164,7 @@ I1–I4全部得到证据才把该功能列为event_interface候选，再用主�
 
 - 目的：绑定字典和迁移规则。
 - 选择类型：single enum。
-- 取值及操作性定义：0.2=当前未冻结试运行规则（+本checkpoint校准版；−称final）；后续版本仅由Astra正式发布后加入，不预填1.0。
+- 取值及操作性定义：0.2=经E1/E2后有限扩展冻结的执行规则（+遵守适用域和特殊路由；−称最终taxonomy或全家族覆盖）；后续版本仅由Astra正式发布后加入，不预填1.0。
 - 判别例与邻界：正：Astra发布并记录迁移后的0.2；反：Sol自行创造版本或标签。
 - unknown 条件：不允许。
 - 摘要权限 / PDF 触发：不需 PDF，来自交接文件。
@@ -407,7 +415,7 @@ I1–I4全部得到证据才把该功能列为event_interface候选，再用主�
 - 目的：区分训练过程与推理纯度。
 - 选择类型：single enum。
 - 取值及操作性定义：direct_snn=以spiking模型为训练目标并直接优化（+SG训练；−ANN权重转换）；ann_to_snn=先训练/取得ANN，再转换校准为SNN（+thresholdbalance；−训练用ANNteacher）；conversion_then_finetune=转换后再训练SNN（+转换+SGfine-tune；−只校准）；joint_ann_snn=ANN和SNN部件作为混合系统联合训练（+端到端hybrid；−独立ANN转全SNN）；integer_train_spike_infer=以integer/multi-level训练图映射到spike推理且未构成传统ANN预训练转换（+明确integertrain；−只因为多阈值便推断conversion）；local_adaptive=无上述全局预训练路径，局部可塑性/在线适应构成学习（+STDP推断；−SGD在线）；no_training=固定权重或解析构造无需学习；not_applicable=无训练方法对象。
-- 判别例与邻界：若联合hybrid中含转换子模块而无法单一归类，先拆variant/描述phase；仍不合则unknown+issue，不能多选含混训练路径。
+- 判别例与邻界：先检查转换；保留映射权重而只校准timing/threshold仍为ann_to_snn，包括使用任务得分优化校准参数（E2 C），不能因出现optimizer便称再训练。conversion_then_finetune须明确在校准之外再训练SNN，不限于SG方法。无转换且同一loss联合更新可学习ANN与SNN部件时选joint_ann_snn（E2 F）；只有混合推理图不证明联合训练（E2 P暂unknown，具体训练问题deferred）。若联合hybrid中含转换子模块而无法单一归类，先拆variant/描述phase；仍不合则unknown+issue，不能多选含混训练路径。
 - unknown 条件：摘要“trained SNN”不足区分时unknown。
 - 摘要权限 / PDF 触发：明确abstract可暂判；转换/混合/整数训练边界须PDF训练section。
 - 最终用途：training横向轴，永不作primaryrole。
@@ -734,17 +742,23 @@ Astra review输入：字段缺失率、unknown/PDF状态、scope×directness、p
 
 分工固定：Astra负责字典、相邻标签、pilot后冻结、全库分布、最终taxonomy/outline与usable裁剪；Sol High负责pilot、PDF与困难证据准备，事实歧义按既有规则解决；Sol Mid负责冻结后的完整title/abstract抽取、clear case结构化、metadata、CSV验证、coverage和确定性生成。任何阶段不得自行修改Survey/Advisor membership或旧生成视图。当前annotations、events和blind记录路径见checkpoint；历史blind结果保持0.1-design，不按裁决后值改分数。
 
-**0.2门禁：** 本次完成checkpoint裁决与迁移；不进入572篇批量。下一步为checkpoint §6列出的最小补充校准和受影响边界定向重判，完成后由Astra决定扩展冻结。0.2不是v1.0，也不是最终taxonomy。
+**0.2门禁：** E1/E2后的有限扩展冻结已通过；发布状态由JSON契约与本文release-status共同记录。下一次执行仅启动30篇首批，分3个10篇小批，Mid初判→High解决证据→Astra批末审查；本次不启动。后续每批最多40篇，须首批checkpoint通过。G组合家族不在普通clear-case适用域，详见freeze decision §5–§6。0.2不是v1.0，也不是最终taxonomy。
 
 ### 0.2 适用范围澄清
 
 - 主图仅使用scope=core_intersection且taxonomy_placement=role_hypothesis的记录。基础论文若因比较用途已提取具体推理结构，可保留描述性role（如CLIF、RGB SpikeTrack），但不能进入核心role分布；generic SNN的event字段只记录其确有的benchmark输入，不代表专门耦合。
 - 纯training/attack/benchmark的角色为not_applicable；victim/承载模型的技术事实可以记录，须在证据field_path或配置中指明对象。不把攻击优化器归algorithmic_engine。
-- algorithmic_engine须同时满足：明确推断目标/latent变量、spike/state到变量及更新/解的对应、这种对应是推理贡献而非离线训练或类比。STLR与Spike Bayesian支持暂存primary；较弱的算法灵感只写temporal_mechanism/说明，不抢占primary。重复的机制可以secondary标注，但同一模块不重复计role。
+- algorithmic_engine须同时满足：明确推断目标/latent变量、spike/state到变量及更新/解的对应、这种对应是推理贡献而非离线训练或类比。STLR、Spike Bayesian及E2 stereo-correspondence solver支持在本冻结版正式保留primary；较弱的算法灵感只写temporal_mechanism/说明，不抢占primary。重复的机制可以secondary标注，但同一模块不重复计role。
 - []用于经检查没有该类多条记录（如明确无效率数值）；unknown用于本应有而未查。JSON object整体不适用可用字符串not_applicable，time_axis_mapping也可保留逐键适用性说明。
 - review_status=astra_adjudicated仅表示本checkpoint明列字段已由Astra裁决，范围在事件rationale中说明；不是全行每个数字重新读取。单纯版本/trigger规范化保留原Sol review_status。
 - 原文未报告或冲突字段不参加相应比较表的确定性统计；可以附“作者声明/未解决”脚注。主role稳定不保证全部59字段已达到最终写作精度。已有来源定位过粗的数值、非关键other_documented例外、训练监督细节须在实际使用前定向复核；不在本轮扩成全文复读。
 
+
+### 有限扩展的特殊路由与记录限制
+
+G组合家族必须在同一方法中确认contrast-event图、消息内容、neuron/state位置、图构造成本与event-time/SNN-time关系。`graph_network`继续是合法架构标签；未校准不是排除理由，也不支持“该家族不存在”。Mid发现graph与spiking组合或摘要含混时保留pending/unknown并提交具体问题，不能自行resolved。Sol High准备PDF证据及`G-`前缀issue；首次主图准入需Astra resolved与astra_adjudicated，未准入时taxonomy_placement=pending。该管理issue ID前缀不是新taxonomy label。
+
+所有core-intersection方法、PDF触发、interface/module/task相邻难例、engine、conversion/phase、fully-spiking或hardware功耗、弱/冲突证据均由Sol High核查。AB-I2、DD-I1、CV-I1依旧deferred；E2-P-I3仅训练路线待证，不影响pose的role/extent。已完成的PDF问题可保持resolved，deferred另在issue写重开条件；不能据此宣称所有字段均已解决。无新推理功能的训练/攻击论文继续cross_cutting。
 
 ## H. 0.2 机器契约镜像
 

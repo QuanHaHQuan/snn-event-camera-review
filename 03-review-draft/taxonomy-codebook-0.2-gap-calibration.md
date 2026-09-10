@@ -1,6 +1,6 @@
 # Codebook 0.2 冻结前缺口校准（Batch E2）
 
-日期：2026-09-10。执行者：GPT-5.6 Sol High。依据：[Astra checkpoint §6](taxonomy-checkpoint-adjudication.md#6-冻结前最小补充校准)。状态：**E2 事实校准完成，等待 Astra 冻结裁决**。
+日期：2026-09-10。执行者：GPT-5.6 Sol High。依据：[Astra checkpoint §6](taxonomy-checkpoint-adjudication.md#6-冻结前最小补充校准)。状态：**E2已获Astra裁决，0.2有限扩展冻结通过**。当前结论见 [freeze decision](taxonomy-codebook-0.2-freeze-decision.md)。下文§1–§6为Sol提交时的证据和建议；C训练、D secondary、F训练、P模块/训练字段以§7及迁移事件为准，保留原建议用于追溯。
 
 本轮严格限制在 G/C/F/D/P/H 六个证据槽位，没有重做 30 篇 pilot，没有启动 572 篇扩展，也没有修改 Survey/Advisor membership、codebook、canonical pilot annotations 或历史 events。新增 5 篇 canonical 校准论文；G 槽按规则保留“所查范围内未找到合格正例”，没有把两个不相交的方法拼成伪正例。
 
@@ -95,3 +95,11 @@ git diff --check
 - G 的适用域限制是否足够，或是否只为该家族保留 Sol High 特殊路由；
 - D 的新增证据是否足以正式保留 `algorithmic_engine`；
 - C/F/P/H 是否需要任何 role/extent migration。
+
+## 7. Astra冻结裁决与受影响字段
+
+C/F/P/H primary及全部五篇extent均保留，D primary正式保留engine。现有词表下更正：C conversion_then_finetune→ann_to_snn（仅timing/threshold校准）；F direct_snn→joint_ann_snn（Algorithm 1共同反传）；D secondary task_network→none（同一solver不重复计role）；P移除SNN functions中的连续task_head，training_route由direct_snn→unknown并以E2-P-I3 deferred / sol_high保留联合训练证据问题。后三种训练路线更正不改变scope/role。
+
+5行review_status设astra_adjudicated，仅覆盖主role、extent及上述字段，非59字段重审。原抽取证据保留，新增Astra证据/issue与 [5条可逆事件](taxonomy-codebook-0.2-gap-events.csv)。源快照ec707f9、独立baseline hash、原30篇历史均保护；不向canonical pilot追加这5篇。G记录保留原5候选，不补伪正例。
+
+允许下一任务按30篇首批执行；G进入特殊路由。现有ABN、DailyDVS、generic conversion三项deferred及新增P训练路线用途限制不被冻结解除。

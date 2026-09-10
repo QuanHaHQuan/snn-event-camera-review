@@ -1,5 +1,7 @@
 # Taxonomy checkpoint adjudication
 
+> 当前状态更新（2026-09-10）：E1/E2后已发布 **0.2有限扩展冻结版**，G适用域及后续门禁见 [freeze decision](taxonomy-codebook-0.2-freeze-decision.md)。下文保留本阶段当时结论，不把历史“未冻结”当作当前阻塞。
+
 日期：2026-09-10。裁决者：Astra High。输入基线：`5078db6`（完整 SHA 见 schema JSON）。发布 **codebook 0.2，校准版、未冻结**。
 
 **裁决 checkpoint 通过；全量扩展冻结门未通过。** 本次已解决规则问题并完成可逆迁移，可继续最小补充校准；不启动 572 篇标注，不发布 v1.0，不形成最终 taxonomy 或最终 usable corpus。ABN 和 DailyDVS 的来源事实仍未解决，已限制使用并正式 deferred，不能把“PDF 检查结束”称为“事实冲突消失”。

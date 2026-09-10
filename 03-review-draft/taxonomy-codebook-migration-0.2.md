@@ -1,5 +1,7 @@
 # Taxonomy codebook migration：0.1-design → 0.2
 
+> 当前状态更新（2026-09-10）：E1/E2后已发布 **0.2有限扩展冻结版**，G适用域及后续门禁见 [freeze decision](taxonomy-codebook-0.2-freeze-decision.md)。下文保留本阶段当时结论，不把历史“未冻结”当作当前阻塞。
+
 日期：2026-09-10。发布性质：checkpoint calibration release，**未冻结**。源快照：`5078db6`；完整commit及快照hash写入 `04-templates/taxonomy-paper-annotation-schema.json` 的 `pilot_baseline`。
 
 ## 1. 版本与结构兼容性

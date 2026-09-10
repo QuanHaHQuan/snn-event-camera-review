@@ -1,5 +1,7 @@
 # Codebook 0.2 targeted recheck
 
+> 当前状态更新（2026-09-10）：E1/E2后已发布 **0.2有限扩展冻结版**，G适用域及后续门禁见 [freeze decision](taxonomy-codebook-0.2-freeze-decision.md)。下文保留本阶段当时结论，不把历史“未冻结”当作当前阻塞。
+
 日期：2026-09-10。范围：FLAME、CVPR2025-2047、REDIR、HsVT、STLR 五个既有 role 边界，以及 ABN/HsVT 的 `mlp` 映射。此次不新增 canonical paper、不修改 30 篇 pilot annotation、不启动 572 篇扩展。
 
 ## 1. 方法与解释边界

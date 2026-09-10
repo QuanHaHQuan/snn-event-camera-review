@@ -1,12 +1,12 @@
 # Taxonomy architecture memo
 
-日期：2026-09-10。状态：**Astra checkpoint 后 architecture / codebook 0.2，校准版，未冻结**。裁决checkpoint通过，全量扩展冻结门未通过；详见 [checkpoint adjudication](taxonomy-checkpoint-adjudication.md)。
+日期：2026-09-10。状态：**codebook 0.2 有限扩展冻结通过；最终taxonomy未冻结**。E1/E2已完成，G组合家族仍未校准；当前门禁以 [E2 freeze decision](taxonomy-codebook-0.2-freeze-decision.md) 为准，旧checkpoint保留历史。
 
-本memo保留最初参考综述分析与文献扩展设计，并更新为30篇pilot后的高层判断。本次复用Sol High的36条配置级证据和10-case盲重标，裁决规则、迁移受影响字段，不重做pilot，不批量抽取，不修改Survey/Advisor membership、V2、outline或生成视图。
+本memo保留最初参考综述分析与文献扩展设计，并更新为30篇pilot加E1/E2后的高层判断。本次复用Sol High的36条pilot配置、5条E2配置、历史10-case盲重标及E1定向重判，裁决规则、迁移受影响字段，不重做pilot，不批量抽取，不修改Survey/Advisor membership、V2、outline或生成视图。
 
 ## 1. 当前 checkout、证据与研究边界
 
-当前目录与 `git rev-parse --show-toplevel` 都是 `/Users/haoquanchen/Documents/Codex/2026-07-01/i-want-to-build-a-reusable/snn-event-camera-review`。最初design阶段曾有20个tracked modified和4个untracked文件，该历史状态已被后续提交收录。**本次checkpoint开始时local main工作树干净，HEAD=5078db6**；近期Advisor文件和既有pilot成果均存在，保持不变。
+当前目录与 `git rev-parse --show-toplevel` 都是 `/Users/haoquanchen/Documents/Codex/2026-07-01/i-want-to-build-a-reusable/snn-event-camera-review`。最初design阶段曾有20个tracked modified和4个untracked文件，该历史状态已被后续提交收录。**原checkpoint开始时local main工作树干净，HEAD=5078db6；本次E2冻结审查起点仍为干净local main，HEAD=ec707f9**；近期Advisor文件和既有pilot成果均存在，保持不变。
 
 最初设计的读取入口包括README/workflows/索引/历史图；下表保留那次基线说明。本次重新核对candidate=572、active=298、reference=259、Survey Core=26、Survey V2=16/26；主要裁决输入改为用户指定的九份taxonomy设计/pilot/盲重标/事件/schema文件。没有把旧role或旧PDF状态当作新的annotation答案。
 
@@ -76,7 +76,7 @@
 
 `unresolved` 是 evidence state；scope 字段用 `unknown` 表示尚不能落入四类，不发明第五研究领域。`reference_only` 是 reading/selection disposition，表示暂不进 usable、但保留检索记录；不是 scope。完全重复的真实交叉论文仍为 core_intersection，selection 可以是 reference_only/redundant_reference；不能改写方法事实以迁就数量。
 
-## 4. Pilot支持的primary taxonomy：0.2暂定结构
+## 4. Pilot与E2支持的primary taxonomy：0.2执行结构
 
 以**主要机制贡献中的SNN推理功能**作为核心章节第一层，保留四role；不是用单一物理拓扑覆盖每篇论文。裁决后的核心分布为event_interface 4、task_network 5、embedded_module 3、algorithmic_engine 2，另有3篇cross-cutting，共17篇core。30篇全pilot的task_network=7包含CLIF及RGB SpikeTrack两项foundation，不能混入核心分布。
 
@@ -85,13 +85,13 @@
 | event_interface | 边界控制；选择/聚合表示；新neuronal event train编码 | SpikeSlicer；EAS/SDA；FLAME。逐项核查I1输入位置、I2事件组织功能、I3交接内容/接收者、I4独立功能 | 层间binary activation、仅早期feature或task-specific命名不构成判据；不要求跨backbone复用实验 |
 | task_network | Event输入主要特征/预测路径；多模态联合主推断 | SpikePoint、ABN、event SpikeTrack、HsVT；SpikeFET。SNN为主要抽取或多阶段混合主路径 | 局部head/支路不是backbone；连续head不自动使其成为embedded |
 | embedded_module | 串行局部feature/时间过滤；支路与跨模态条件化 | CVPR2025-2047 PLIF/ASAB、REDIR；ClearSight | hybrid是boundary属性；明确event输入表示构造归interface，多阶段主路归task |
-| algorithmic_engine（仍为假设） | 概率竞争/在线参数推断；固定点/展开latent coding | Spike Bayesian的WTA/EM；STLR的SVT/ISTA对应 | 普通SGD、attack optimizer、一般STDP训练、仅算法灵感不合格 |
+| algorithmic_engine（冻结版保留） | 概率竞争/在线参数推断；固定点/展开latent coding；约束对应求解 | Spike Bayesian的WTA/EM；STLR的SVT/ISTA；Osswald stereo的候选/竞争/视差事件 | 普通SGD、attack optimizer、一般STDP训练、仅算法灵感不合格 |
 
-FLAME由embedded_module改为event_interface：LIF产生新的binary event trains，经timestamp pooling成为E_flat(t)，交给连续EA-HiPPO。代码/训练不可拆卸不否定功能handoff。其representation改为受限的neuronal_spike_train，以区别sensor occupancy binary_map；extent保持hybrid。PLIF-ASAB、REDIR、ClearSight仍是内部任务特征模块。此修订需要小范围定向重判，不能用旧agreement声称新规则已稳定。
+FLAME由embedded_module改为event_interface：LIF产生新的binary event trains，经timestamp pooling成为E_flat(t)，交给连续EA-HiPPO。代码/训练不可拆卸不否定功能handoff。其representation改为受限的neuronal_spike_train，以区别sensor occupancy binary_map；extent保持hybrid。PLIF-ASAB、REDIR、ClearSight仍是内部任务特征模块。E1定向重判已完成5/5 role与2/2 mlp一致；这是同一执行者的定向稳定性检查，不是新盲测，旧primary 9/10保持原样。
 
 按主要贡献选primary仍优于只按系统主路径：后者会把EAS/SDA按detector变体拆散，也会淹没STLR的求解贡献。独立额外职责记secondary；不能用参数数量、最后一层、名称或固定engine优先级决定。证据无法判断主次时unknown+issue。
 
-algorithmic_engine在两个不同机制上有直接映射，暂保留primary；它的算法性质也以temporal_mechanism/模块说明作比较维度。若补充校准或前两批后仍无法按变量/更新/输出合同区分，允许降为secondary mechanism，并显式迁移两例。不把训练算法改名为推理角色。
+algorithmic_engine经E2 stereo的第三种独立机制校准，在0.2正式保留为primary；其变量/更新/解的合同比“optimization-inspired”更严格。不把训练算法改名为推理角色。未来若明确PDF仍反复无法稳定区分，必须重开Astra版本审查并迁移受影响记录，不能由Sol随意降级。D无独立第二个SNN任务网络，secondary由task_network改none；STLR的独立decoder保留secondary。
 
 **独立cross-cutting章节成立：** EventRPG、raw-event attack和input-grid retiming均为core，primary=not_applicable；以训练/增广、时间信用分配、安全/泛化组织，不能把victim classifier当新role。conversion始终是training_route；event-specific但无新推理功能的conversion放cross-cutting，generic conversion放foundation。
 
@@ -132,7 +132,7 @@ usable paper 必须有可填写的“支持什么具体论点、与哪个邻近�
 
 **当前不冻结v1.0。** 历史盲重标scope/directness/extent/selection均10/10，primary9/10；FLAME唯一分歧保留。0.2修复interface合同、mlp架构和neuronal_spike_train表示，规范八行未经批准的trigger写法，并建立可逆migration。ABN训练原文冲突、DailyDVS协议冲突以及generic conversion的监督来源限制均保持deferred；它们不改变主要role，但相关比较用途受限。
 
-冻结前的最小要求为六个证据槽位：true event-graph SNN、event-specific ANN-to-SNN conversion、经典event-SNN flow、depth、pose、真实sensor-chip co-design；最多六篇新增paper，允许多槽合并。另对FLAME、PLIF-ASAB、REDIR、HsVT、STLR五个既有case只做相邻role定向重判，以及ABN/HsVT的mlp规则检查，不重跑30篇。具体输入条件、禁止替代物、停止条件见checkpoint §6。未覆盖域可由Astra明确限制适用范围，但不能宣称已被正例验证。
+E1/E2满足有限扩展门：五例旧role与两例mlp复判完成；C/F/D/P/H五篇获得直接role/extent证据。G在五个已检查候选中没有可靠正例，明确排除出ordinary clear-case校准适用域，进入Sol High→Astra首例准入；不宣称不存在或已覆盖。H验证live sensor到芯片系统集成与成本边界，不足以宣称所有sensor/ASIC联合设计都已覆盖。P仅代表3D人体姿态，不代表全部6-DoF相机位姿家族。
 
 可扩展冻结要求：上述缺口已回答或正式限制范围；新合同无未解释分歧；没有必须发明primary才能表达的方法；关键scope/role/extent有直接证据或对应记录暂不作主图代表；unknown/来源冲突均有责任人和用途限制。达到agreement阈值只是必要条件，不能替代这些判断。
 
@@ -143,13 +143,17 @@ usable paper 必须有可填写的“支持什么具体论点、与哪个邻近�
 | 阶段 | 执行者 | 输入/交付 | 当前门禁 |
 | --- | --- | --- | --- |
 | 设计及30篇pilot | Astra High → Sol High | 原0.1、30篇/36配置、27 PDF检查、10-case盲重标 | 已完成，保留历史 |
-| 本checkpoint | Astra High | 四项原issue裁决、0.2、迁移、可执行章节结构、schema/validator | 裁决通过；尚未冻结可全量扩展版本 |
-| 最小补充校准 | Sol High | checkpoint §6最多六篇新样本和五例旧边界定向复判；只查具体问题 | 不启动572篇；新标签交issue queue |
-| 冻结审查 | Astra High | 检查新合同复现、遗漏机制、engine必要性、用途受限字段 | 明确版本/适用域，不能只因9/10命名v1.0 |
-| 冻结后全候选 | Sol Mid / High | Mid完整标题摘要、明确案例、metadata、schema/coverage；High核心方法/所有PDF触发/困难证据 | 40–50篇一批，第一批回Astra；从全部572而非298开始 |
+| 原checkpoint | Astra High | 四项原issue裁决、0.2校准版及可逆迁移 | 已完成；AB/DD/CV用途限制继续有效 |
+| E1/E2 | Sol High | 五例旧role、两例mlp；五篇新校准及G失败审计 | 已完成，35篇/41配置的校准证据层与旧membership独立 |
+| E2冻结审查 | Astra High | 保留四role与五例extent；修正少数字段，保留deferred | 0.2有限扩展冻结，G特殊路由；不是v1.0 |
+| 冻结后首批及后续 | Sol Mid / High | 首批30篇=3×10：clear-case候选、core inference候选、cross-cutting/边界候选；High解决所有核心方法及PDF触发 | 全572是待遍历母域，本轮不启动；首批后Astra，后续每批最多40篇 |
 | 中期 | Astra High | 约150/300/450条审查来源/年代/role/表示/未知/排除与family | 规则修改带版本迁移；不为了数量改变scope |
 | 最终合成 | Astra High，必要时单次xhigh | 全文献扩展与claim ledger后，final taxonomy、outline、150–180预期usable裁剪 | 属后续任务，不由本checkpoint提前决定 |
 
 Sol High负责证据与按规则解歧，Sol Mid负责冻结后的明确案例和确定性操作；不得自创标签，不同时修改同一工作树。Astra负责规则、全库分布、冲突、最终结构和裁剪。既有Survey/Advisor成员及V2仍独立。
 
-本轮完成规则裁决、文档与可逆迁移、只读验证、本地commit后停止；不push、不继续全量工作。下一步是上述最小校准，不是再次确认旧pilot是否执行，也不是重做30篇。
+本轮完成规则裁决、文档与可逆迁移、只读验证、本地commit后停止；不push、不继续全量工作。下一步按freeze decision启动单独30篇首批并停在Astra checkpoint；本次不创建批次或执行标注。
+
+## 9. E2冻结后的增量结论
+
+原pilot仍30篇/36配置；E2单独5篇/5配置，合计35篇/41配置。核心22篇=interface 4、task 9、embedded 3、engine 3及cross-cutting 3；这个刻意校准样本不能作为全库方法频率。C/F/P/H的task_network及extent保留；D保留engine及数值模型fully_spiking_task_network。首批规则、G限制、P训练路线新deferred与逐字段迁移见freeze decision。篇幅与150–180预期规模仍按独立论证价值，不设类别配额。

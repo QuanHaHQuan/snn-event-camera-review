@@ -1,6 +1,6 @@
 # Taxonomy pilot results
 
-日期：2026-09-10。首轮/盲重标使用`0.1-design`；当前canonical annotations已迁移到**0.2（未冻结）**。**Astra裁决checkpoint通过，全量扩展冻结门未通过**。下文§1–8保留Sol阶段历史结论与原分歧，当前裁决以§9及 [checkpoint](taxonomy-checkpoint-adjudication.md) 为准；不是最终taxonomy或usable终审。
+日期：2026-09-10。首轮/盲重标使用`0.1-design`；当前canonical annotations使用**0.2（有限扩展冻结）**。**E1/E2后的有限扩展checkpoint通过，最终taxonomy未冻结**。当前门禁见§12及 [freeze decision](taxonomy-codebook-0.2-freeze-decision.md)；下文§1–11保留各阶段当时结论与原分歧，§9原checkpoint由§12的扩展冻结门禁补充；不是最终taxonomy或usable终审。
 
 ## 1. Batch A 完成范围
 
@@ -211,3 +211,11 @@ E1 已完成，但冻结门仍等待 G/C/F/D/P/H 六个补充证据槽位。下�
 - H：live DVS–TrueNorth 系统仍由 `task_network` 表达；178.8 mW 只覆盖 TrueNorth network，不是 sensor/board/host/I/O 全系统。
 
 完整裁定建议与限制见 [E2 report](taxonomy-codebook-0.2-gap-calibration.md)、[59 字段 calibration CSV](taxonomy-codebook-0.2-gap-calibration.csv) 和 [G candidate audit](taxonomy-codebook-0.2-gap-candidate-audit.csv)。E2 至此停止，下一步交 Astra 决定冻结版本和允许扩展的适用域；不得直接启动 572 篇。
+
+## 12. Astra E2冻结决策（当前有效）
+
+发布0.2 frozen_limited_expansion，维持59字段与全部受控标签。E1为5/5 role、2/2 mlp定向一致；旧10-case blind仍primary9/10，其余四项10/10，未伪造新盲测。E2五篇主role及extent全部保留；G未获真实组合正例，形成明确适用域限制与Sol High→Astra首例路由。D的stereo-correspondence机制使engine在冻结版正式保留；其secondary task_network移除，避免同一solver重复计数。
+
+独立E2表的C训练改ann_to_snn，F改joint_ann_snn，P移除连续task_head并把训练路线暂置unknown（E2-P-I3 deferred）。AB-I2、DD-I1、CV-I1继续deferred。5条新可逆E2事件不进入原107条pilot事件。全部5行review_status=astra_adjudicated只表示上述字段审查；proposed_usable未提升为usable。
+
+冻结只允许后续分批扩展：首批30篇、3×10小批、先Mid后High，批末回Astra；通过后每批最多40篇。没有启动批次、重做pilot、改变membership或冻结final taxonomy。详细适用域、章节结构、停止条件、验证和迁移见freeze decision。

@@ -17,11 +17,14 @@ ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--annotations", type=Path, default=ROOT / "00-index/taxonomy-pilot-annotations.csv")
 parser.add_argument("--events", type=Path, default=ROOT / "03-review-draft/taxonomy-pilot-events.csv")
-parser.add_argument(
+modes = parser.add_mutually_exclusive_group()
+modes.add_argument(
     "--standalone-calibration",
     action="store_true",
     help="validate a separate 59-column calibration table without joining or rewriting the immutable pilot history",
 )
+modes.add_argument("--expansion-batch", action="store_true", help="validate a separate candidate-audit batch under the frozen limited-expansion policy; never rewrite pilot history")
+parser.add_argument("--calibration-events", type=Path, help="reversibly validate E2 adjudication against its separate immutable baseline")
 args = parser.parse_args()
 ANNOTATIONS = args.annotations
 TEMPLATE = ROOT / "04-templates/taxonomy-paper-annotation-schema.csv"
@@ -64,6 +67,22 @@ if args.standalone_calibration:
     }
 
 errors = []
+policy = CONTRACT.get("release_policy", {})
+if CONTRACT["status"] == "frozen_limited_expansion":
+    if "<!-- release-status: frozen_limited_expansion -->" not in CODEBOOK:
+        errors.append("codebook release status differs from JSON contract")
+    if not policy.get("batch_expansion_permitted") or policy.get("taxonomy_final"):
+        errors.append("limited freeze policy must permit batches without claiming final taxonomy")
+if args.expansion_batch:
+    if CONTRACT["status"] != "frozen_limited_expansion":
+        errors.append("expansion batch requires a limited-expansion freeze")
+    protected = [ROOT / "00-index/taxonomy-pilot-annotations.csv", ROOT / CONTRACT["calibration_baseline"]["annotations_path"]]
+    if ANNOTATIONS.resolve() in [p.resolve() for p in protected]:
+        errors.append("expansion mode cannot bypass canonical pilot/calibration history")
+    if len({r["paper_id"] for r in rows}) > policy["later_batch_max_canonical_papers"]:
+        errors.append("expansion batch exceeds the frozen canonical-paper cap")
+if args.calibration_events and not args.standalone_calibration:
+    errors.append("calibration events require standalone-calibration mode")
 fields_in_book = re.findall(r"^### F\d+\. `([^`]+)`", CODEBOOK, re.M)
 if template_header != CONTRACT["columns"] or fields_in_book != template_header:
     errors.append("codebook F01-F59, CSV header and JSON contract columns differ")
@@ -163,11 +182,23 @@ for rownum, row in enumerate(rows, 2):
     if row["review_status"] == "astra_adjudicated" and not any(i["owner"] == "astra" and i["status"] in {"resolved", "deferred"} for i in parsed["taxonomy_issue"]):
         fail(errors, rownum, f"{identity}: Astra review lacks issue disposition")
 
+    if args.expansion_batch:
+        if row["selection_status"] == "usable":
+            fail(errors, rownum, f"{identity}: expansion freeze does not authorize final usable selection")
+        graph = "graph_network" in row["architecture_family"].split(";") or "graph" in row["representation_form"].split(";")
+        if graph and row["scope"] == "core_intersection" and row["taxonomy_placement"] == "role_hypothesis":
+            approved = row["review_status"] == "astra_adjudicated" and row["pdf_check_status"] == "resolved" and any(
+                i["issue_id"].startswith("G-") and i["owner"] == "astra" and i["status"] == "resolved"
+                for i in parsed["taxonomy_issue"]
+            )
+            if not approved:
+                fail(errors, rownum, f"{identity}: uncalibrated event-graph SNN requires Sol High evidence and Astra G- issue disposition before main placement")
+
     official = parsed["official_source"]
     if official["pdf_sha256"] == "not_applicable":
         if row["pdf_check_status"] != "not_required":
             fail(errors, rownum, f"{identity}: missing PDF hash without abstract-only closure")
-    elif official["pdf_sha256"] == "unknown" and args.standalone_calibration:
+    elif official["pdf_sha256"] == "unknown" and (args.standalone_calibration or args.expansion_batch):
         if row["pdf_check_status"] == "resolved" and not re.search(r"v\d+$", official["version"]):
             fail(errors, rownum, f"{identity}: resolved remote PDF without a byte hash must name an immutable version")
     elif len(official["pdf_sha256"]) != 64:
@@ -238,14 +269,49 @@ for rownum, row in enumerate(rows, 2):
         fail(errors, rownum, f"{identity}: PDF check required without a question")
 
 if args.standalone_calibration:
+    baseline = CONTRACT.get("calibration_baseline")
+    canonical_calibration = baseline and ANNOTATIONS.resolve() == (ROOT / baseline["annotations_path"]).resolve()
+    if canonical_calibration or args.calibration_events:
+        event_path = args.calibration_events or ROOT / baseline["event_path"]
+        with event_path.open(newline="", encoding="utf-8") as handle:
+            calibration_events = list(csv.DictReader(handle))
+        reconstructed = copy.deepcopy(rows)
+        lookup = {(r["paper_id"], r["annotation_unit"]): r for r in reconstructed}
+        seen = set()
+        for event in reversed(calibration_events):
+            if event["event_id"] in seen:
+                errors.append("duplicate calibration event ID")
+            seen.add(event["event_id"])
+            if event["event_type"] not in CONTRACT["event_types"] or event["codebook_version"] not in CONTRACT["historical_event_versions"]:
+                errors.append("illegal calibration event type/version")
+            key = (event["paper_id"], event["annotation_unit"])
+            if key not in lookup:
+                errors.append(f"calibration event has no row: {key}")
+                continue
+            changes = json.loads(event["field_changes_json"])
+            for field, change in changes.items():
+                if field not in header or not isinstance(change, dict) or set(change) != {"from", "to"}:
+                    errors.append(f"invalid calibration change: {event['event_id']}")
+                    continue
+                if lookup[key][field] != change["to"]:
+                    errors.append(f"calibration to-value differs: {event['event_id']} {field}")
+                lookup[key][field] = change["from"]
+        encoded = json.dumps(reconstructed, ensure_ascii=False, separators=(",", ":")).encode()
+        if hashlib.sha256(encoded).hexdigest() != baseline["canonical_sha256"]:
+            errors.append("reverse calibration migration does not reproduce Sol E2 snapshot")
+        if not errors:
+            print(f"PASS: {len(calibration_events)} reversible E2 events reproduce the independent Sol calibration snapshot")
+if args.standalone_calibration or args.expansion_batch:
     if errors:
         print(f"FAIL: {len(errors)} validation error(s)")
         for error in errors:
             print(f"- {error}")
         raise SystemExit(1)
-    print(f"PASS: {len(rows)} standalone calibration rows, {len(set(row['paper_id'] for row in rows))} papers, {len(header)} columns")
+    kind = "expansion batch" if args.expansion_batch else "standalone calibration"
+    print(f"PASS: {len(rows)} {kind} rows, {len(set(row['paper_id'] for row in rows))} papers, {len(header)} columns")
     print("PASS: codebook/schema mirrors, enums, evidence links, role/boundary invariants and PDF-check closure")
-    print("LIMIT: standalone calibration does not join candidate audit or alter/check immutable pilot history")
+    print("PASS: candidate-audit identity/abstract joins and limited-freeze gates" if args.expansion_batch else "LIMIT: standalone calibration checks source strings/hashes, not independent official metadata authenticity")
+    print("LIMIT: separate table; run default validator independently to protect pilot history. Machine gates do not prove role contracts or detect mislabeled graphs.")
     raise SystemExit(0)
 
 with EVENTS.open(newline="", encoding="utf-8") as handle:

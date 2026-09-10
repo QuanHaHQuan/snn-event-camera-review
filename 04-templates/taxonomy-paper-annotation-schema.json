@@ -1,6 +1,6 @@
 {
   "codebook_version": "0.2",
-  "status": "calibration_release_not_frozen",
+  "status": "frozen_limited_expansion",
   "columns": [
     "paper_id",
     "canonical_title",
@@ -623,5 +623,37 @@
       "03-review-draft/taxonomy-pilot-blind-recheck.md": "a0b71e88a042d1aae87bd95411e7ab383845bcb9e42770da0cfed7c33a3d583a",
       "00-index/taxonomy-pilot-blind-recheck.csv": "e8535cc291e4c1d3a4b9ab61dc8fd2e578a5bbee9463568b7329406c7b1ecf33"
     }
+  },
+  "release_policy": {
+    "released_on": "2026-09-10",
+    "decision_document": "03-review-draft/taxonomy-codebook-0.2-freeze-decision.md",
+    "taxonomy_final": false,
+    "batch_expansion_permitted": true,
+    "automatic_bulk_execution": false,
+    "uncalibrated_combination": "true contrast-event graph with spiking message passing in the same method",
+    "graph_route": "sol_high_then_astra_first_positive",
+    "graph_main_placement_requires_astra": true,
+    "first_batch_canonical_papers": 30,
+    "subbatch_canonical_papers": 10,
+    "later_batch_max_canonical_papers": 40,
+    "deferred_pilot_issues": [
+      "AB-I2",
+      "DD-I1",
+      "CV-I1"
+    ],
+    "record_only_limit": "Freeze governs role/boundary annotation and routing, not final usable selection or completeness of every noncritical field."
+  },
+  "calibration_baseline": {
+    "git_commit": "ec707f94174808a3a387ae208e936227d9a898ed",
+    "annotations_path": "03-review-draft/taxonomy-codebook-0.2-gap-calibration.csv",
+    "canonical_sha256": "9c192dbb10e6f3c4861e28a31befba5e343c370a57340ec53b7393cc8073ceb8",
+    "event_path": "03-review-draft/taxonomy-codebook-0.2-gap-events.csv",
+    "paper_ids": [
+      "TPAMI2013-PEREZ-CARRASCO",
+      "ECCV2020-SPIKE-FLOWNET",
+      "SCIREP2017-OSSWALD-STEREO",
+      "ARXIV2023-ZOU-POSE",
+      "CVPR2017-AMIR-TRUENORTH"
+    ]
   }
 }
