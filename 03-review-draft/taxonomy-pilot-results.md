@@ -1,6 +1,6 @@
 # Taxonomy pilot results
 
-日期：2026-09-10。Codebook：`0.1-design`。当前状态：**Batch A complete（6/30 papers）**，不是最终 taxonomy，也不是 usable 文献终审。
+日期：2026-09-10。Codebook：`0.1-design`。当前状态：**Batch A–B complete（15/30 papers）**，不是最终 taxonomy，也不是 usable 文献终审。
 
 ## 1. Batch A 完成范围
 
@@ -81,14 +81,38 @@ SpikePoint、STLR、EAS-SNN、SDA、SpikeSlicer 的能量数字主要来自 AC/M
 
 FLAME 未明确说明离散 threshold 的梯度处理方式，因此 `credit_assignment=unknown`；这不是 primary role、scope 或 purity 的阻塞项，PDF 问题已按“not reported”关闭。
 
-## 5. 下一步
+## 5. Batch B 结果（pilot 07–15）
 
-继续执行 Batch B（09 篇，pilot 07–15），重点测试：
+本批按精简工作流完成：九篇均先封存官方标题/完整摘要初判，再只读取能回答 role、边界、时间轴、训练和效率问题的 PDF 段落；每篇保留一行，没有为了穷尽细节拆分配置。
 
-- `task_network` 与局部 `embedded_module` 的主次；
-- multimodal fusion、spiking backbone、ANN head 和 bridge 的边界；
-- “fully spiking”标题与实际 attention/normalization/readout；
-- neuromorphic hardware 数字究竟覆盖 SNN block 还是完整系统；
-- 同一方法训练与推理是否需要拆 annotation unit。
+- Canonical papers：累计 15；annotation rows：累计 21
+- Abstract-initial / PDF-resolution events：15 / 15
+- 当前 scope：14 篇 `core_intersection`，1 篇 `snn_foundation`
+- 当前 primary：`event_interface` 3、`task_network` 5、`embedded_module` 3、`algorithmic_engine` 2、`not_applicable` 2
+- PDF-required / resolved：累计 15 / 15
+- 批次校验：通过；未新增 taxonomy label，也未修改 codebook
 
-Batch B 完成后再做一次本地提交；30 篇首轮全部完成后才开始 10-case 盲重标和 agreement/confusion 统计，随后交 Astra 修订并冻结 codebook。
+| Paper | Scope / primary | Verified extent | Taxonomy 用途 |
+| --- | --- | --- | --- |
+| ICML2025-2762 HsVT | core / `task_network` | `hybrid_subnetwork` | MaxViT、LSTM 与 LIF 模块交错的 hybrid task network；作者的 45 nm 能量表也显示连续模块代价占主导。 |
+| CVPR2025-2047 Attention Hybrid | core / `embedded_module` | `hybrid_subnetwork` | SNN fast front-end 经 ASAB 转 dense ANN feature；Loihi-2 实测只覆盖四层 SNN block。 |
+| ICCV2025-1790 ClearSight | core / `embedded_module` | `hybrid_subnetwork` | event-SNN 支路以图像/事件特征动态设置 membrane 与空间 threshold，最终融合和重建仍为连续网络。 |
+| NeurIPS2025-4041 SpikeFET | core / `task_network` | `fully_spiking_backbone` | multimodal spiking feature/fusion 主干；integer training、binary spike inference，末端预测卷积阻止更强 purity 结论。 |
+| CVPR2026-1935 SpikeTrack | SNN foundation / `task_network` | `fully_spiking_backbone` | RGB-only 对照；保留用于非对称 timestep、spike memory 设计和同名论文消歧，不计入核心交叉语料。 |
+| CVPR2026-1798 SpikeTrack | core / `task_network` | `fully_spiking_backbone` | event-only SNN tracker；MSST 把连续 search frames 放入神经状态轴，DI-LIF 依据输入调整 integer firing depth。 |
+| NeurIPS2024-1436 Spike Bayesian | core / `algorithmic_engine` | `hybrid_subnetwork` | WTA firing 对应 EM E-step，STDP 对应 M-step，验证 algorithmic_engine 不是 task backbone 的别名。 |
+| ICLR2024-0249 EventRPG | core / `not_applicable` | `not_applicable` | SNN-specific relevance propagation 与 event augmentation 属于 cross-cutting training/analysis，不创造新 inference role。 |
+| ECCV2024-1740 Raw-event attack | core / `not_applicable` | `not_applicable` | raw COO event 攻击与 hidden grid 攻击的 threat boundary；属于 cross-cutting robustness。 |
+
+Batch B 支持四个结构性结论：`task_network` 与 `embedded_module` 的区别必须看 SNN 是否承担主任务路径；“fully spiking”标题仍需核查输入构造和末端 head；硬件证据必须写清只覆盖局部 SNN block 还是完整系统；training/attack 类论文应保留在核心交叉语料，但 primary inference role 应为 `not_applicable`。这些结论暂不触发 codebook 修改，待 30 篇完成后统一交 Astra 判断。
+
+## 6. 下一步
+
+继续执行 Batch C（pilot 16–23），重点测试：
+
+- event-camera-only 与 SNN-foundation 论文能否稳定挡在主 taxonomy 之外；
+- `benchmark_only` 与 `event_specific_training_analysis` 的边界；
+- 非 SNN 的 event graph/representation 论文是否具有明确 comparator 用途；
+- dataset、survey、hardware/efficiency authority 是否应进入主图之外的证据层。
+
+Batch C 完成后再做一次本地提交；30 篇首轮全部完成后才开始 10-case 盲重标和 agreement/confusion 统计，随后交 Astra 修订并冻结 codebook。
