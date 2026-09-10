@@ -4,6 +4,13 @@ Editable corpus decision source:
 
 - `candidate-screening-audit.csv`: complete official title/abstract evidence, hashes, dual-track roles, and reading assignments.
 
+Taxonomy discovery layer:
+
+- `taxonomy-census-batches.csv`: fixed 572-paper batch manifest;
+- `taxonomy-census.csv`: lightweight title/abstract census joined to the source by `paper_id`.
+
+The census is governed by [`taxonomy-census-protocol.md`](../03-review-draft/taxonomy-census-protocol.md). It does not replace or write back to the corpus decision source.
+
 Generated views:
 
 - `retained-papers.csv`: metadata for retained A/B/C conference-provenance rows;

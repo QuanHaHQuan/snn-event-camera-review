@@ -1,0 +1,121 @@
+# Taxonomy census protocol
+
+版本：0.1，2026-09-10。状态：可执行的标题—摘要普查层。
+
+## 1. 目的与边界
+
+本层回答两个问题：当前 572 篇候选分别属于哪一个大范围，以及这些论文自然呈现出哪些 SNN × event-camera 机制簇。它服务于 taxonomy discovery，不负责最终 taxonomy、最终纳排或逐篇深度证据表。
+
+数据源固定为 `00-index/candidate-screening-audit.csv`。其中 572 篇均已有完整官方标题、摘要、摘要哈希和来源页。census 通过 `paper_id` 连接这些信息，不复制 metadata、标题、摘要、来源或哈希，也不修改原 audit。
+
+本层与 codebook 0.2 分开：
+
+- `taxonomy-annotation-codebook.md` 的 59 字段继续作为后续关键论文的深度证据规范；
+- census 不执行 codebook 0.2 的 expansion batch，不创建迁移事件，不把 `review_status` 或摘要判断冒充全文终审；
+- `event_interface`、`task_network`、`embedded_module`、`algorithmic_engine` 只是待检验候选。允许 `unknown`、`other_candidate` 和开放的 `emergent_code`；
+- 全库普查与 High 核查完成后，才由 Astra 根据分布和反例提出 provisional taxonomy。
+
+## 2. 文件与所有权
+
+| 文件 | 作用 | 是否编辑 |
+| --- | --- | --- |
+| `00-index/candidate-screening-audit.csv` | 572 篇身份、完整摘要和既有双轨决策 | 本流程只读 |
+| `00-index/taxonomy-census-batches.csv` | 每个 `paper_id` 的确定性批次与批内顺序 | 固定 manifest，不手改 |
+| `00-index/taxonomy-census.csv` | 轻量 census 结果 | Mid 初填，High 定向修订 |
+| `scripts/validate_taxonomy_census.py` | validator，并提供不显示旧决策的 batch view | 维护脚本 |
+
+`taxonomy-census.csv` 有 16 列，其中 12 列需要摘要级科学判断，另外 4 列只负责连接与复核。禁止向 census 临时增加新的科学列来解决个案；个案细节写入开放字段或 PDF 问题队列。
+
+## 3. 十二个语义字段
+
+| 字段 | 类型 | 填写规则 |
+| --- | --- | --- |
+| `scope` | 单选 | `core_intersection`、`event_camera_only`、`snn_only`、`out_of_scope`、`uncertain` |
+| `intersection_directness` | 单选 | `method_coupled`、`event_specific_training_analysis`、`benchmark_only`、`single_axis`、`neither_axis`、`uncertain` |
+| `contribution_type` | 有序多选 | 记录摘要明确主张的贡献类型，不因论文有实验就标 dataset |
+| `pipeline_position` | 开放短文本 | 用一条短链描述输入 → 关键处理 → SNN/连续组件 → 输出；不适用时填 `not_applicable` |
+| `provisional_snn_role` | 有序多选 | 四个既有 role 只是候选；允许 `other_candidate`、`unknown` 或 `not_applicable` |
+| `task_application` | 开放短文本 | 使用摘要中的实际任务；不适用或不明时用 `not_applicable` / `unknown` |
+| `cross_cutting_topics` | 有序多选 | 训练、转换、增广、鲁棒性、效率、硬件、数据集等正交主题 |
+| `emergent_code` | 开放多值 | 使用简短 `lower_snake_case`，分号分隔；保留摘要中不能由现有 role 表达的机制。没有则 `none`，不明则 `unknown` |
+| `taxonomy_use` | 有序多选 | 该论文可能作为锚点、代表、边界、背景、cross-cutting 或排除候选；不是最终纳排 |
+| `abstract_basis` | 开放短文本 | 一至两句忠实转述摘要中支持 scope、贡献与候选作用的内容，不引用旧 survey/advisor 决策 |
+| `pdf_trigger_question` | 开放文本 | 没有必要则 `none`；否则只写一个摘要无法回答且会影响 scope、机制簇或 taxonomy 边界的具体问题 |
+| `confidence` | 单选 | `high`、`medium`、`low`；只表示摘要级判断把握 |
+
+多选字段以分号连接，去重并按下列顺序填写：
+
+- `contribution_type`：`inference_method;event_representation;neuron_or_dynamics;training_or_conversion;analysis_or_robustness;dataset_or_benchmark;hardware_or_deployment;survey_or_theory;other;uncertain`
+- `provisional_snn_role`：`event_interface;task_network;embedded_module;algorithmic_engine;other_candidate;not_applicable;unknown`
+- `cross_cutting_topics`：`training;conversion;augmentation;robustness_or_attack;efficiency;hardware_or_deployment;dataset_or_evaluation;temporal_modeling;representation_learning;generalization;none;other`
+- `taxonomy_use`：`taxonomy_anchor;representative_method;boundary_case;background_context;cross_cutting_evidence;dataset_or_evaluation;exclude_candidate;undetermined`
+
+`uncertain`、`unknown`、`none`、`not_applicable` 和 `undetermined` 是各字段的独占哨兵值，不能与同字段的实质标签并列。`other_candidate` 必须同时提供非空、非 `none` 的 `emergent_code`。
+
+## 4. 管理字段
+
+- `paper_id`：必须逐字连接 source audit 和 batch manifest。
+- `annotator`：记录执行模型和日期，例如 `GPT-5.6 Sol Medium / 2026-09-10`。
+- `review_status`：Mid 初填为 `mid_complete`；High 复核后为 `high_reviewed`、`high_corrected` 或 `high_escalated`。
+- `review_note`：Mid 留空。High 只在修正、限制或升级时写简短说明；普通通过可留空。
+
+## 5. 摘要级判断顺序
+
+1. 只从 batch view 阅读完整标题和摘要，不先查看旧 survey/advisor role、reason 或 membership。
+2. 确认是否为 contrast-change event camera；普通“event”、事件日志、物理 rare event、spike camera 不能自动进入 event 轴。
+3. 确认摘要是否声称真实 SNN / spiking-neuron computation；稀疏、异步、二值或 threshold 不能自动进入 SNN 轴。
+4. 判断两轴是方法耦合、事件特定训练/分析、仅 benchmark 共现、单轴还是都不是。
+5. 用开放的 pipeline 和 emergent code 先描述论文，再给 provisional role。不要从旧四 role 倒推描述。
+6. 摘要不能回答 taxonomy 关键边界时保留 `uncertain`/`unknown` 并提出一个具体 PDF 问题，不猜测补全。
+
+`scripts/validate_taxonomy_census.py --show-batch B001` 输出的只读 JSONL view 只含身份、完整摘要和官方页面，不暴露旧双轨决策。它是 Mid 的推荐入口。
+
+## 6. 批次与模型职责
+
+manifest 将 572 篇分成 10 批，每批 57–58 篇。分配按 `survey_core_decision × year × venue` 做确定性平衡，只用于让批次覆盖不同来源，不把旧 decision 传给 annotator。Batch 001 覆盖全部现有年份、venue 和旧 survey decision，用来检查轻量流程是否产生系统性误差。
+
+### Sol Mid
+
+- 逐篇完整阅读当前 batch 的 title/abstract；
+- 只填本表，不读 PDF，不填 59 字段，不改 source audit；
+- 一个 batch 全部完成并通过 validator 后停止；
+- 缺身份、摘要或哈希时不修 source，报告阻塞；
+- 不合并 open codes，不发布 taxonomy，不做最终纳排。
+
+Batch 001 通过 High 核查后，Mid 可依次完成其余批次。每批独立校验；不需要每批交 Astra。
+
+### Sol High
+
+Batch 001 核查全部 `core_intersection` / `uncertain`，并从其他 scope 分层抽查约 10%。全库完成后核查全部 `core_intersection` / `uncertain`，再对其余 scope 分层抽查。默认仍只使用 title/abstract；只有 scope 无法解决或可能出现 taxonomy-breaking mechanism 时才定向读取 PDF。
+
+High 可以修正记录并说明重复错误模式，不能为了个案扩充 schema 或静默创建正式 taxonomy label。需要 Astra 判断的新机制标为 `high_escalated`。
+
+### Astra
+
+Astra 不参与逐 batch 摘要标注，也不在 Batch 001 后重审 codebook。572 篇 census 和 High 核查完成后，Astra读取分布、共现、open-code clusters、反例和 PDF 队列，形成 provisional taxonomy。现有四 role 可以保留、重组、降级或在证据支持下修订。
+
+## 7. 停止条件与后续升级
+
+Mid 当前 batch 的停止条件：manifest 中每个 ID 恰有一条 `mid_complete` 记录，12 个语义字段均非空，枚举与哨兵规则通过。不要为了消除 `uncertain` 而读 PDF。
+
+Batch 001 High 核查通过的条件：没有反复出现的轴误判或强迫 role；若只是措辞和少量个案修正，记录模式后允许继续全库。若 schema 本身无法表达多篇论文，暂停剩余批次，交当前 Sol High 做一次最小修订，不直接交 Astra。
+
+全库 census 的停止条件：572 个 source IDs 各有一条记录，全部批次通过，High 已核查 core/uncertain 并完成分层抽查。此时输出聚类和 PDF 队列，交 Astra synthesis。
+
+论文只有在 Astra provisional taxonomy 后被提升为 anchor、边界证据或关键代表时，才进入模块化全文抽取。codebook 0.2 的相关字段按论文用途启用，不要求无关背景论文填满 59 列。
+
+## 8. 命令
+
+```bash
+# 检查 manifest、空表/当前结果和已完成行
+python3 scripts/validate_taxonomy_census.py
+
+# 查看不带旧决策的 Batch 001 title/abstract JSONL
+python3 scripts/validate_taxonomy_census.py --show-batch B001
+
+# 要求 Batch 001 的全部记录完成
+python3 scripts/validate_taxonomy_census.py --require-batch B001
+
+# 全库结束时要求 572 篇全部完成
+python3 scripts/validate_taxonomy_census.py --require-all
+```

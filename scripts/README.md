@@ -20,6 +20,10 @@ Reusable prompts for adding a new official venue/year are documented in:
 - `docs/proceedings-intake-agent-prompt.md`: official mother list, high-recall title/abstract retrieval, provenance, and handoff evidence;
 - `docs/proceedings-semantic-integration-prompt.md`: command-window dual-track screening, Core decisions, generation, and validation.
 
+## Taxonomy Census Validation
+
+`python3 scripts/validate_taxonomy_census.py` validates the separate lightweight taxonomy census, its exact join to the 572-paper source, and its fixed ten-batch manifest. Use `--show-batch B001` for a title/abstract-only JSONL view that omits prior Survey/Advisor decisions, `--require-batch B001` at a batch handoff, and `--require-all` at census completion. This validator does not classify papers, read PDFs, or run the 59-field codebook validator.
+
 ## Literature Graph Validation
 
 Run this after generating a V2, relation backfill, or bibliographic normalization:
