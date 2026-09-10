@@ -1,0 +1,627 @@
+{
+  "codebook_version": "0.2",
+  "status": "calibration_release_not_frozen",
+  "columns": [
+    "paper_id",
+    "canonical_title",
+    "year",
+    "venue",
+    "official_source",
+    "abstract_text",
+    "abstract_sha256",
+    "record_origin",
+    "codebook_version",
+    "annotation_unit",
+    "scope",
+    "intersection_directness",
+    "contribution_focus",
+    "event_input_source",
+    "modalities",
+    "spiking_computation",
+    "temporal_organization",
+    "representation_form",
+    "representation_properties",
+    "representation_learning",
+    "event_to_spike_interface",
+    "primary_functional_role",
+    "secondary_functional_roles",
+    "primary_role_reason",
+    "snn_module_functions",
+    "spiking_boundary_map",
+    "spiking_extent",
+    "spiking_signal",
+    "architecture_family",
+    "neuron_family",
+    "internal_state",
+    "temporal_mechanism",
+    "time_axis_mapping",
+    "training_route",
+    "learning_signal",
+    "credit_assignment",
+    "task",
+    "output",
+    "dataset_evaluation",
+    "efficiency_evidence",
+    "efficiency_claim_details",
+    "robustness_evidence",
+    "taxonomy_placement",
+    "taxonomy_issue",
+    "selection_status",
+    "inclusion_tier",
+    "concrete_survey_use",
+    "inclusion_reason",
+    "exclusion_reason",
+    "duplicate_family",
+    "evidence_quote_or_paraphrase",
+    "evidence_location",
+    "evidence_basis",
+    "confidence",
+    "needs_pdf_check",
+    "pdf_check_question",
+    "pdf_check_status",
+    "annotator",
+    "review_status"
+  ],
+  "enums": {
+    "record_origin": [
+      "candidate_audit",
+      "reference_bibliography",
+      "core_backward",
+      "forward_search",
+      "classic_pool",
+      "targeted_search"
+    ],
+    "codebook_version": [
+      "0.2"
+    ],
+    "scope": [
+      "event_camera_foundation",
+      "snn_foundation",
+      "core_intersection",
+      "boundary_or_exclude",
+      "unknown"
+    ],
+    "intersection_directness": [
+      "method_coupled",
+      "event_specific_training_analysis",
+      "benchmark_only",
+      "single_axis",
+      "neither_axis",
+      "unknown"
+    ],
+    "contribution_focus": [
+      "inference_system",
+      "event_interface_design",
+      "neuron_dynamics",
+      "training_method",
+      "analysis_robustness",
+      "dataset_benchmark",
+      "hardware_system",
+      "survey_theory",
+      "unknown"
+    ],
+    "event_input_source": [
+      "physical_event_camera",
+      "simulated_event_camera",
+      "sensor_resampled_static",
+      "spike_camera",
+      "noncamera_signal",
+      "not_applicable",
+      "unknown"
+    ],
+    "modalities": [
+      "event",
+      "rgb_frame",
+      "intensity_frame",
+      "depth_lidar",
+      "imu",
+      "other_signal",
+      "not_applicable",
+      "unknown"
+    ],
+    "spiking_computation": [
+      "confirmed",
+      "claimed",
+      "absent",
+      "unknown"
+    ],
+    "temporal_organization": [
+      "event_by_event",
+      "fixed_duration",
+      "fixed_count",
+      "adaptive_window",
+      "spatial_local_window",
+      "whole_sequence",
+      "not_applicable",
+      "unknown"
+    ],
+    "representation_form": [
+      "raw_event_sequence",
+      "event_frame",
+      "time_surface",
+      "binary_map",
+      "voxel_grid",
+      "point_set",
+      "graph",
+      "event_tokens",
+      "neuronal_spike_train",
+      "not_applicable",
+      "unknown"
+    ],
+    "representation_properties": [
+      "dense_storage",
+      "sparse_storage",
+      "polarity_preserved",
+      "polarity_discarded",
+      "timestamp_preserved",
+      "timestamp_quantized",
+      "timestamp_discarded",
+      "not_applicable",
+      "unknown"
+    ],
+    "representation_learning": [
+      "fixed_rule",
+      "learned_mapping",
+      "learned_selection",
+      "not_applicable",
+      "unknown"
+    ],
+    "event_to_spike_interface": [
+      "address_event_injection",
+      "continuous_current",
+      "rate_recoding",
+      "latency_phase_recoding",
+      "learned_spike_mapping",
+      "no_spike_interface",
+      "not_applicable",
+      "unknown"
+    ],
+    "primary_functional_role": [
+      "event_interface",
+      "task_network",
+      "embedded_module",
+      "algorithmic_engine",
+      "not_applicable",
+      "unknown"
+    ],
+    "secondary_functional_roles": [
+      "event_interface",
+      "task_network",
+      "embedded_module",
+      "algorithmic_engine",
+      "none",
+      "unknown"
+    ],
+    "snn_module_functions": [
+      "encoding_selection",
+      "feature_extraction",
+      "temporal_filter_memory",
+      "attention_routing",
+      "fusion",
+      "task_head",
+      "algorithm_update",
+      "none",
+      "unknown"
+    ],
+    "spiking_extent": [
+      "end_to_end_spiking_pipeline",
+      "fully_spiking_task_network",
+      "fully_spiking_backbone",
+      "hybrid_subnetwork",
+      "non_spiking",
+      "not_applicable",
+      "unknown"
+    ],
+    "spiking_signal": [
+      "binary",
+      "signed_binary",
+      "burst_count",
+      "integer_multilevel",
+      "continuous_only",
+      "not_applicable",
+      "unknown"
+    ],
+    "architecture_family": [
+      "conv_residual",
+      "mlp",
+      "recurrent",
+      "transformer_attention",
+      "mixer",
+      "point_network",
+      "graph_network",
+      "state_space",
+      "algorithmic_circuit",
+      "other_documented",
+      "not_applicable",
+      "unknown"
+    ],
+    "neuron_family": [
+      "if",
+      "lif",
+      "adaptive_lif",
+      "multi_state_neuron",
+      "other_documented",
+      "not_applicable",
+      "unknown"
+    ],
+    "internal_state": [
+      "membrane",
+      "synaptic_current",
+      "threshold_adaptation",
+      "auxiliary_neural_state",
+      "network_memory",
+      "plastic_weight",
+      "none",
+      "not_applicable",
+      "unknown"
+    ],
+    "temporal_mechanism": [
+      "integration_decay",
+      "recurrence_feedback",
+      "delay",
+      "multi_timescale",
+      "temporal_attention",
+      "adaptive_update",
+      "iterative_dynamics",
+      "none",
+      "not_applicable",
+      "unknown"
+    ],
+    "training_route": [
+      "direct_snn",
+      "ann_to_snn",
+      "conversion_then_finetune",
+      "joint_ann_snn",
+      "integer_train_spike_infer",
+      "local_adaptive",
+      "no_training",
+      "not_applicable",
+      "unknown"
+    ],
+    "learning_signal": [
+      "supervised",
+      "self_supervised",
+      "unsupervised_local",
+      "distillation",
+      "reinforcement",
+      "not_applicable",
+      "unknown"
+    ],
+    "credit_assignment": [
+      "surrogate_bptt",
+      "surrogate_other",
+      "local_plasticity",
+      "analytic_conversion",
+      "ordinary_gradient",
+      "gradient_free",
+      "not_applicable",
+      "unknown"
+    ],
+    "task": [
+      "recognition",
+      "detection",
+      "tracking",
+      "reconstruction_restoration",
+      "pose",
+      "depth",
+      "flow_motion",
+      "segmentation",
+      "other_documented",
+      "not_applicable",
+      "unknown"
+    ],
+    "output": [
+      "class_identity",
+      "boxes_trajectories",
+      "image_video",
+      "pose_coordinates",
+      "depth_disparity",
+      "motion_vectors",
+      "labels_masks",
+      "representation_control",
+      "analysis_metric",
+      "other_documented",
+      "not_applicable",
+      "unknown"
+    ],
+    "efficiency_evidence": [
+      "claim_only",
+      "operation_count",
+      "sop_mac_energy_proxy",
+      "analytical_memory_energy",
+      "runtime_measurement",
+      "memory_measurement",
+      "conventional_device_energy",
+      "neuromorphic_measurement",
+      "hardware_projection",
+      "activity_proxy",
+      "none",
+      "unknown"
+    ],
+    "robustness_evidence": [
+      "noise_test",
+      "lighting_motion_shift",
+      "domain_transfer",
+      "temporal_perturbation",
+      "adversarial",
+      "timestep_transfer",
+      "claim_only",
+      "none",
+      "unknown"
+    ],
+    "taxonomy_placement": [
+      "role_hypothesis",
+      "cross_cutting",
+      "foundation_comparison",
+      "outside",
+      "pending"
+    ],
+    "selection_status": [
+      "pending",
+      "proposed_usable",
+      "usable",
+      "reference_only",
+      "excluded"
+    ],
+    "inclusion_tier": [
+      "core_taxonomy_evidence",
+      "indispensable_background",
+      "representative_comparator",
+      "evaluation_authority",
+      "historical_foundation",
+      "redundant_reference",
+      "excluded_paper",
+      "pending"
+    ],
+    "needs_pdf_check": [
+      "yes",
+      "no"
+    ],
+    "pdf_check_status": [
+      "not_required",
+      "pending",
+      "partial",
+      "resolved",
+      "unavailable"
+    ],
+    "review_status": [
+      "draft",
+      "self_checked",
+      "blind_rechecked",
+      "astra_adjudicated",
+      "blocked"
+    ]
+  },
+  "multi_enum_fields": [
+    "architecture_family",
+    "contribution_focus",
+    "credit_assignment",
+    "efficiency_evidence",
+    "event_input_source",
+    "event_to_spike_interface",
+    "inclusion_tier",
+    "internal_state",
+    "learning_signal",
+    "modalities",
+    "neuron_family",
+    "output",
+    "record_origin",
+    "representation_form",
+    "representation_learning",
+    "representation_properties",
+    "robustness_evidence",
+    "secondary_functional_roles",
+    "snn_module_functions",
+    "spiking_signal",
+    "task",
+    "temporal_mechanism",
+    "temporal_organization"
+  ],
+  "json_fields": [
+    "confidence",
+    "dataset_evaluation",
+    "efficiency_claim_details",
+    "evidence_basis",
+    "evidence_location",
+    "evidence_quote_or_paraphrase",
+    "official_source",
+    "pdf_check_question",
+    "spiking_boundary_map",
+    "taxonomy_issue",
+    "time_axis_mapping"
+  ],
+  "json_keys": {
+    "official_source": [
+      "access_date",
+      "official_track",
+      "page_url",
+      "pdf_sha256",
+      "pdf_url",
+      "repository_locator",
+      "version"
+    ],
+    "spiking_boundary_map": [
+      "backbone",
+      "fusion",
+      "head",
+      "input_preprocess",
+      "readout"
+    ],
+    "time_axis_mapping": [
+      "event_group_order",
+      "lookahead",
+      "mapping",
+      "physical_event_time",
+      "snn_simulation_timestep",
+      "state_reset"
+    ],
+    "dataset_evaluation": [
+      "configuration",
+      "dataset_name",
+      "evidence_id",
+      "metric",
+      "modality",
+      "setting",
+      "split",
+      "timesteps",
+      "version",
+      "window"
+    ],
+    "efficiency_claim_details": [
+      "accuracy_setting",
+      "baseline",
+      "boundary",
+      "claim",
+      "device",
+      "evidence_id",
+      "kind",
+      "measurement_setup",
+      "memory_io",
+      "metric",
+      "preprocessing",
+      "unit",
+      "value",
+      "window_and_timestep"
+    ],
+    "taxonomy_issue": [
+      "alternatives",
+      "evidence_ids",
+      "field",
+      "issue_id",
+      "owner",
+      "question",
+      "status",
+      "type"
+    ],
+    "evidence_quote_or_paraphrase": [
+      "evidence_id",
+      "field_path",
+      "mode",
+      "text",
+      "value"
+    ],
+    "evidence_location": [
+      "evidence_id",
+      "location",
+      "source_ref"
+    ],
+    "evidence_basis": [
+      "evidence_id",
+      "nature",
+      "source_type"
+    ],
+    "pdf_check_question": [
+      "answer",
+      "evidence_ids",
+      "field",
+      "question",
+      "question_id",
+      "target_section",
+      "trigger"
+    ]
+  },
+  "nested_enums": {
+    "pdf_check_question.trigger": [
+      "input_identity",
+      "real_neuron",
+      "purity",
+      "role_location",
+      "neuron_state_time",
+      "representative",
+      "efficiency_claim",
+      "quantitative_claim",
+      "source_conflict",
+      "multiple_roles",
+      "misleading_terms",
+      "version_conflict"
+    ],
+    "taxonomy_issue.type": [
+      "scope_conflict",
+      "role_conflict",
+      "boundary_conflict",
+      "time_conflict",
+      "missing_label",
+      "metadata_conflict",
+      "evidence_conflict",
+      "selection_conflict"
+    ],
+    "taxonomy_issue.owner": [
+      "astra",
+      "sol_high"
+    ],
+    "taxonomy_issue.status": [
+      "open",
+      "evidence_ready",
+      "resolved",
+      "deferred"
+    ],
+    "dataset_evaluation.setting": [
+      "in_domain",
+      "cross_domain",
+      "cross_subject",
+      "cross_sensor",
+      "sim_to_real",
+      "online_stream",
+      "other_documented",
+      "unknown",
+      "not_applicable"
+    ],
+    "evidence_quote_or_paraphrase.mode": [
+      "quote",
+      "paraphrase"
+    ],
+    "evidence_basis.source_type": [
+      "official_abstract",
+      "pdf_main",
+      "pdf_appendix",
+      "official_metadata",
+      "repository_locator",
+      "inference",
+      "unresolved"
+    ],
+    "evidence_basis.nature": [
+      "author_claim",
+      "method_description",
+      "empirical_observation",
+      "metadata_fact",
+      "reasoned_inference",
+      "unresolved"
+    ],
+    "confidence.*": [
+      "high",
+      "medium",
+      "low",
+      "unknown"
+    ],
+    "spiking_boundary_map.*.status": [
+      "all_spiking",
+      "mixed",
+      "non_spiking",
+      "absent",
+      "unknown"
+    ]
+  },
+  "historical_event_versions": [
+    "0.1-design",
+    "0.2"
+  ],
+  "event_types": [
+    "abstract_initial",
+    "pdf_resolution",
+    "abstract_resolution",
+    "blind_recheck",
+    "astra_adjudication",
+    "codebook_migration"
+  ],
+  "pilot_baseline": {
+    "git_commit": "5078db60c6a4aa7173cfee161d149a344bc8a9e5",
+    "historical_event_count": 70,
+    "historical_events_sha256": "e88346c1365ff6c39b77a42f945643f8aecf1542e2d221cd5baf086834868d94",
+    "annotations_canonical_sha256": "240b557e490103cc2673bebaee496f9239ff68dbec294f1a6094f1b6b8de4da7",
+    "blind_file_sha256": {
+      "03-review-draft/taxonomy-pilot-blind-recheck.csv": "ae23cc5b39cc4090e0423b14afc4765c2fae8ea7ffe44672e5ca915209c2329e",
+      "03-review-draft/taxonomy-pilot-blind-recheck.md": "a0b71e88a042d1aae87bd95411e7ab383845bcb9e42770da0cfed7c33a3d583a",
+      "00-index/taxonomy-pilot-blind-recheck.csv": "e8535cc291e4c1d3a4b9ab61dc8fd2e578a5bbee9463568b7329406c7b1ecf33"
+    }
+  }
+}

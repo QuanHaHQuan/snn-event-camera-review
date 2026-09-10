@@ -1,6 +1,6 @@
 # Taxonomy pilot results
 
-日期：2026-09-10。Codebook：`0.1-design`。当前状态：**Batch A–D 首轮及 10-case 盲重标完成**，不是最终 taxonomy，也不是 usable 文献终审。
+日期：2026-09-10。首轮/盲重标使用`0.1-design`；当前canonical annotations已迁移到**0.2（未冻结）**。**Astra裁决checkpoint通过，全量扩展冻结门未通过**。下文§1–8保留Sol阶段历史结论与原分歧，当前裁决以§9及 [checkpoint](taxonomy-checkpoint-adjudication.md) 为准；不是最终taxonomy或usable终审。
 
 ## 1. Batch A 完成范围
 
@@ -166,6 +166,23 @@ Batch D 进一步确认：四个 primary inference roles 无需扩张；dataset�
 
 所有预设门槛均通过，且没有重复出现的同类 confusion。详细方法、逐 case 对比和处置见 `taxonomy-pilot-blind-recheck.md` 与 `taxonomy-pilot-blind-recheck.csv`。当前 audit 共 70 events：30 次 abstract initial、27 次 PDF resolution、3 次 abstract-only resolution、10 次 blind recheck。
 
-## 9. 下一步
+## 9. Astra checkpoint（0.2）
 
-把 taxonomy architecture、30 篇 pilot 结果、盲重标报告和四项 evidence-ready issue 交 Astra 做 checkpoint adjudication。Astra 应优先明确 interface/module 的 handoff 判据，再裁决 ABN 的 architecture label 与 training evidence conflict、DailyDVS split conflict，并决定是否发布 codebook 修订版或要求少量补充校准；在此之前不进入 572 篇全量标注。
+30篇、36配置保持不变；27篇PDF resolution和3篇摘要负例不重做。scope仍为17 core / 5 SNN foundation / 6 event-camera foundation / 2 boundary，selection仍为22 proposed_usable / 5 reference_only / 3 excluded。
+
+| 原issue | 当前裁决 | 状态 |
+| --- | --- | --- |
+| FL-I1 | event_interface；新的neuronal event trains经timestamp pooling成为E_flat(t)，明确交给连续EA-HiPPO；不要求独立训练或跨backbone复用 | resolved / astra |
+| AB-I1 | 新增architecture_family=mlp；ABN与HsVT显式SpikingMLP适用，普通FFN不自动适用 | resolved / astra |
+| AB-I2 | 实验STBP与结论STDP原文冲突；credit_assignment及training_route=unknown，不虚构phase/config | deferred / astra |
+| DD-I1 | 官方README也未提供可靠更正；dataset setting=unknown，保留有冲突说明的author-declared cross-subject，不刊具体ID | deferred / astra |
+
+联动修复：FL-I2把FLAME的sensor binary_map纠正为新受限标签neuronal_spike_train；HV-I1按mlp规则同步HsVT；CV-I1将generic conversion中仅凭校准证据得到的distillation监督标签降为unknown并限制比较用途，deferred / astra。这些都是既有证据的裁决/充分性处置，不是新一轮论文抽取。
+
+裁决后核心role：interface 4、task_network 5、embedded_module 3、algorithmic_engine 2；另3篇core cross-cutting。全pilot role为interface 4、task_network 7、embedded_module 3、algorithmic_engine 2、not_applicable 14；不能把两个foundation task网络混入核心图。历史盲测仍为primary 9/10，其余四字段10/10；没有新的0.2盲测成绩。
+
+可执行核心结构：四role作第一层；interface按控制/选择聚合/新事件列，task按event主要路径/联合多模态主推断，embedded按串行局部功能/支路条件化，engine按概率竞争/固定点编码组织二级叙述。二级是暂定写作合同，非新增enum。训练、增广、安全与泛化设独立cross-cutting；foundation/authority/comparator/hardware evidence处于解释和比较层。
+
+发布0.2校准版，不冻结v1.0。下一步只补checkpoint §6的六个缺口证据槽位（最多六篇，允许合并）并对五个旧case定向重判；不重做pilot，不启动572篇。之后回Astra检查适用域、边界稳定性、engine与遗漏机制，再决定扩展冻结。
+
+验证入口改为`python3 scripts/validate_taxonomy_pilot.py`：59列与codebook/JSON契约一致，107条事件包含原70条及32次确定性迁移、5次Astra裁决。历史blind文件不改分数；迁移可逐字段反向恢复原0.1快照。验证结果与更改清单见 [migration](taxonomy-codebook-migration-0.2.md)。

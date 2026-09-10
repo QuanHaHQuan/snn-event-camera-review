@@ -1,6 +1,6 @@
 # Taxonomy annotation codebook
 
-版本：**0.1-design / 2026-09-10，待用户确认用于 pilot**。本 codebook 是可被 pilot 推翻的规则草案；只有 Astra checkpoint 可以修订取值，Sol 不得自建标签。它不继承旧 A/B/C、role、Core membership 或旧 needs_pdf_check 作为答案，也不替代现有 audit。
+版本：**0.2 / 2026-09-10，Astra checkpoint 校准版，未冻结**。30 篇 pilot 与 10-case 盲重标已完成；本版裁决见 [checkpoint](taxonomy-checkpoint-adjudication.md)，旧值与迁移见 [migration](taxonomy-codebook-migration-0.2.md)。本 codebook 仍可被补充校准推翻；只有 Astra checkpoint 可以修订取值，Sol 不得自建标签。它不继承旧 A/B/C、role、Core membership 或旧 needs_pdf_check 作为答案，也不替代现有 audit。
 
 ## A. 执行契约与数据类型
 
@@ -12,7 +12,7 @@
 - `single text`：一个 UTF-8 文本值，依字段格式填写。`single JSON object` 与 `multi JSON array`：CSV单元格内存标准JSON；固定keys，不用Python repr，CSV writer处理引号和换行。JSON嵌套中的原文名称不是新标签。
 - 除明确不允许的管理字段外，`unknown` 表示“适用但证据不足”；`not_applicable` 表示“不适用且有明确理由”，只用于该字段声明允许处；`none/absent/non_spiking` 必须基于检查后的否定证据，不能因摘要没提就填。
 - 部分多选字段已确认一个值、其它关键值未定时只填已确认值，在 evidence_basis、confidence、pdf_check_question 中对未定 field_path 记录 unresolved；不要把 `unknown` 混进已知标签集合。
-- 所有正反例是**规则示例或从存储摘要得到的检索线索**，不是本轮完成的论文 annotation。涉及实际论文的 neuron、接口、pure、measurement 都须执行者回原始材料核对；旧 V2/graph 只导航。引用优先用忠实转述，短原文要逐字且带位置。
+- 正反例包括规则示例与已完成 pilot 的证据定位；新增论文不得从这些例子继承机制标签。0.2 对既有 pilot 复用结构化 PDF 证据，只有决定性来源缺口才重读原文；旧 V2/graph 只导航。引用优先用忠实转述，短原文要逐字且带位置。
 - 受控的 `other_documented` 仅允许“原文明确但现有字典没有”的已知对象；必须同时 open missing_label issue。不能当默认垃圾桶，不能自动进入最终taxonomy；Astra决定增标、合并或保留文本例外。
 
 ### 条件填写与最小阅读负担
@@ -47,15 +47,26 @@
 对于推理方法，按**主要机制贡献的输出合同**判断，而不是按标题词、参数多少、FLOPs占比或最后一个输出层决定：
 
 - 输出是事件保留/切片触发，或论文明确分离的event-derived表示，交给后续principal feature extractor：候选event_interface。必须能指出交接tensor/control及其事件构造作用。
-- 输出是主要任务特征及推理路径：候选task_network。主要路径指从表示进入后承担核心层级特征抽取/任务推断的模块，而非仅有最大参数量；SNN主干之后的连续task head不自动降成embedded_module。若ANN/SNN交替均承担核心抽取且没有明确主要路径，则unknown+issue。
+- 输出是主要任务特征及推理路径：候选task_network。主要路径指从表示进入后承担核心层级特征抽取/任务推断的模块，而非仅有最大参数量；SNN主干之后的连续task head不自动降成embedded_module。ANN/SNN在多个主干阶段交替且共同承担主要抽取时仍是task_network（HsVT），不要求SNN独占参数或算子；只有无法确认主路径或贡献主次才unknown+issue。
 - 局部SNN从属另一主要系统，生成latent features、过滤/记忆/注意力/融合/路由/head：候选embedded_module。hybrid是边界属性，不能当本role的同义词。
 - 明确存在算法变量/步骤与spike/state更新对应，且论文以此作为主要解释或消融对象：候选algorithmic_engine。WTA对应E-step、STDP对应M-step是检查线索；ISTA-inspired名称还需验证展开变量和spiking更新；一般SGD训练不算。
 
-**interface vs embedded front-end：** 位置早不是充分条件。明确控制event子集/边界一定是interface候选；表示构造需有pre-backbone event-to-representation交接和构造目标。仅输出任务专用latent feature的前端优先embedded_module，不因叫representation改标。如果论文既有显式表示又有latent feature，依据主要被提出/验证的模块；替换不同下游backbone的实验证据可增强interface判断但不是强制准入条件。仍无法区分则交Astra，不能自称已互斥。
+**interface vs embedded front-end（0.2 合同 I1–I4）：** 对候选模块逐项记录：
+
+1. **I1 输入位置**：接收传感事件或明确的早期事件单元；不是已经完成任务特征提取后的隐藏特征。连续的固定分桶不妨碍此条件。
+2. **I2 事件组织操作**：真实spiking dynamics改变事件成员、窗口边界、事件聚合权重/表示，或形成有明确时间/地址（或通道）语义的新事件列。必须定位控制变量或构造公式；不能仅凭“输出binary spikes”。
+3. **I3 可指认的交接合同**：指出被交付的control、event subset、event-derived tensor或neuronal event train的名称/内容、时间索引，以及后续principal模型的入口。它必须是该模型的事件输入表示或输入组织控制，而非主干内部普通层间激活。命名tensor、位于前端、端到端训练、或能够画一条箭头单独都不充分。
+4. **I4 功能独立性**：原文把构造/编码/选择作为可指认的模块功能，随后另有principal feature/inference model；不要求有独立训练loss、可拆卸代码、跨backbone实验，也不要求task-independent。“联合训练/只适配一个下游”不是embedded的判据。
+
+I1–I4全部得到证据才把该功能列为event_interface候选，再用主要贡献规则选择primary。确定只有局部任务特征、桥接、记忆或预测职责且不满足I2/I3时为embedded_module；证据不足时unknown+role_conflict，不用“没有找到”当否定证据。空间pooling/flattening若只整理地址/通道且保留逐timestamp交接，不消除已证实的interface合同；若进行了任务特征融合，必须重新定位边界。
+
+**校准正反例：** SpikeSlicer交付边界控制；EAS-SNN/SDA交付按发放选择构建的表示；FLAME的LIF EAL交付新的binary event trains，经逐timestamp pooling成为E_flat(t)，供另一个连续EA-HiPPO模型消费，满足合同，故0.2改为event_interface。CVPR2025-2047的PLIF层/ASAB在既有voxel之后交付低层任务特征给ANN层；ClearSight交付与图像支路融合的motion features；REDIR位于连续配准与重建之间，交付内部过滤特征。这三例按现有证据仍为embedded_module。二值隐藏激活不因为也有t索引就成为新的传感事件表示。
+
+**表示和spike的同步约束：** FLAME交接是neuron生成的`neuronal_spike_train`，不是传感窗占据`binary_map`。必须写明sensor event→LIF firing→pooling→E_flat(t)；其连续SSM使extent保持hybrid_subnetwork。此限定不把所有神经层spikes都收入representation_form。
 
 **backbone vs head：** 从representation至多层任务特征是backbone；从这些features到特定输出预测是head。SNN只在head就是embedded_module；head输出为连续值不否定其内部spiking。encoder-decoder都是SNN且共同完成任务可以task_network，decoder不因名字就降为head。
 
-**多role的选择：** 先列独立模块，利用贡献句、方法组织和针对性消融找论文真正提出的主机制。SDA/EAS同时可能有SNN sampler和SNN detector；STLR可能有algorithmic encoder和task decoder。能定位主贡献则择一，另记secondary；无法证实主次必须unknown，禁止固定“engine永远胜过backbone”等机械优先级。Astra在pilot后比较“按贡献选primary”与“按系统主路径选primary”的一致性，必要时推翻此规则。
+**多role的选择：** 先列独立模块，利用贡献句、方法组织和针对性消融找论文真正提出的主机制。SDA/EAS同时可能有SNN sampler和SNN detector；STLR可能有algorithmic encoder和task decoder。能定位主贡献则择一，另记secondary；无法证实主次必须unknown，禁止固定“engine永远胜过backbone”等机械优先级。0.2保留按主要机制贡献选择primary：强制按全系统主路径会把EAS/SDA的接口贡献及STLR的求解贡献埋入task_network。相同模块不能因换一个非主贡献decoder便改变role；无法证明主次仍保留unknown。
 
 ## D. 字段定义与受控词表
 
@@ -145,8 +156,8 @@
 
 - 目的：绑定字典和迁移规则。
 - 选择类型：single enum。
-- 取值及操作性定义：0.1-design=当前未冻结试运行规则（+pilot初版；−称final）；后续版本仅由Astra正式发布后加入，不预填1.0。
-- 判别例与邻界：正：0.1-design；反：Sol自行写0.2并增加标签。
+- 取值及操作性定义：0.2=当前未冻结试运行规则（+本checkpoint校准版；−称final）；后续版本仅由Astra正式发布后加入，不预填1.0。
+- 判别例与邻界：正：Astra发布并记录迁移后的0.2；反：Sol自行创造版本或标签。
 - unknown 条件：不允许。
 - 摘要权限 / PDF 触发：不需 PDF，来自交接文件。
 - 最终用途：版本审计。
@@ -235,10 +246,10 @@
 
 - 目的：记录交接给principal feature extractor的结构。
 - 选择类型：multi enum。
-- 取值及操作性定义：raw_event_sequence=仍是按到达顺序的事件tuple（+地址时间极性流；−采样后无序点集）；event_frame=位置聚合计数/极性图（+2D histogram；−RGB）；time_surface=位置记录最近时间或衰减值（+recency map；−事件计数）；binary_map=窗内事件占据/bit-packed图（+TBR；−neuronal spike输出）；voxel_grid=显式时空bin张量（+B×H×W；−图节点来自voxel但交接为graph）；point_set=事件几何点集合和组（+Event Cloud；−普通LiDAR点）；graph=交接实体有nodes/edges（+event邻接图；−仅kNN grouping）；event_tokens=由raw event/subset直接形成tokens（+group event tokens；−voxel patch embedding）；not_applicable=无event representation。
+- 取值及操作性定义：raw_event_sequence=仍是按到达顺序的事件tuple（+地址时间极性流；−采样后无序点集）；event_frame=位置聚合计数/极性图（+2D histogram；−RGB）；time_surface=位置记录最近时间或衰减值（+recency map；−事件计数）；binary_map=窗内事件占据/bit-packed图（+TBR；−neuronal spike输出）；voxel_grid=显式时空bin张量（+B×H×W；−图节点来自voxel但交接为graph）；point_set=事件几何点集合和组（+Event Cloud；−普通LiDAR点）；graph=交接实体有nodes/edges（+event邻接图；−仅kNN grouping）；event_tokens=由raw event/subset直接形成tokens（+group event tokens；−voxel patch embedding）；neuronal_spike_train=满足I1–I4的事件接口产生、保留时间/地址或通道语义且交给principal模型的新neuronal发放列（+FLAME EAL经timestamp pooling的E_flat(t)；−sensor occupancy binary_map或普通隐藏层spikes）；not_applicable=无event representation。
 - 判别例与邻界：多选用于确有并用表示或不同明确交接点；先后变换需time_axis_mapping说明，不能把所有网络层都当输入表示。learned不另作结构类别。
 - unknown 条件：dense input未说明frame/voxel时unknown。
-- 摘要权限 / PDF 触发：摘要明确结构可初标；token来源、voxel-derived graph、多输入或raw/dense边界需PDF。
+- 摘要权限 / PDF 触发：摘要明确结构可初标；token来源、voxel-derived graph、多输入或raw/dense边界需PDF；neuronal_spike_train必须检查neuron生成机制和下游handoff，不能仅凭摘要确证。
 - 最终用途：role×representation。
 
 ### F19. `representation_properties`
@@ -345,8 +356,8 @@
 
 - 目的：描述算子/结构家族，不取代role。
 - 选择类型：multi enum。
-- 取值及操作性定义：conv_residual=卷积及残差（+convSNN；−点集MLP仅名字Res）；recurrent=显式recurrent连接/循环模块（+RNN层；−LIF自身膜记忆）；transformer_attention=attention/token interaction（+spikingattention；−任意gating）；mixer=明确token/channel混合器（+MLPmixer；−泛称fusion）；point_network=点邻域抽样/聚合（+点层级；−densevoxel）；graph_network=图邻接messagepassing（+GNN；−kNNgroup后pool）；state_space=显式SSM算子（+HiPPOstate；−LIF被泛称state）；algorithmic_circuit=为算法组成的竞争/反馈网络（+WTAcircuit；−任意CNN）；other_documented=证据明确但不属以上（+给结构原名并建issue；−为绕过unknown随填）；not_applicable=无模型。
-- 判别例与邻界：other_documented是固定逃逸标签，不授权自造family；要交Astra处理。
+- 取值及操作性定义：conv_residual=卷积及残差（+convSNN；−点集MLP仅名字Res）；mlp=多层全连接仿射/神经元堆叠构成主模型，或被原文明确提出为独立功能模块（+ABN的spiking MLP、HsVT命名的SpikingMLP；−单个linear投影、普通Transformer附带FFN、MLP-Mixer的token混合结构本身）；recurrent=显式recurrent连接/循环模块（+RNN层；−LIF自身膜记忆）；transformer_attention=attention/token interaction（+spikingattention；−任意gating）；mixer=明确token/channel混合器（+MLPmixer；−泛称fusion）；point_network=点邻域抽样/聚合（+点层级；−densevoxel）；graph_network=图邻接messagepassing（+GNN；−kNNgroup后pool）；state_space=显式SSM算子（+HiPPOstate；−LIF被泛称state）；algorithmic_circuit=为算法组成的竞争/反馈网络（+WTAcircuit；−任意CNN）；other_documented=证据明确但不属以上（+给结构原名并建issue；−为绕过unknown随填）；not_applicable=无模型。
+- 判别例与邻界：mlp只描述连接/算子，是否spiking由neuron和boundary表达，不新增spiking_mlp标签。独立模块须在证据中写模块名；普通FFN不重复标记。MLP-Mixer仍用mixer；点网络的逐点MLP默认point_network，除非独立MLP模块就是被研究对象。other_documented保留给已知但无合适标签的结构，并交Astra。
 - unknown 条件：只“network”不明时unknown。
 - 摘要权限 / PDF 触发：明确abstract可；spiking子模块与whole-system family分别在证据路径中标明，复杂组合需PDF。
 - 最终用途：architecture横向表。
@@ -416,8 +427,8 @@
 - 目的：优化梯度/局部更新如何传递。
 - 选择类型：multi enum。
 - 取值及操作性定义：surrogate_bptt=替代spike梯度加跨步反传（+STBP；−仅SG未明时间反传）；surrogate_other=明确SG但非完整BPTT或尚只确认SG（+onlineSG需注明；−用backprop就猜SG）；local_plasticity=局部活动决定更新（+STDP；−全局SG）；analytic_conversion=解析/校准参数映射（+阈值平衡；−teacherloss）；ordinary_gradient=对连续计算普通求导（+ANNpart；−真实spike不连续处未经说明）；gradient_free=无梯度搜索/演化（+evolution；−analyticmapping）；not_applicable=无学习。
-- 判别例与邻界：surrogate_other若仅因BPTT细节待查，evidence里注明未定，不可被表述为已确认online。
-- unknown 条件：未说明优化用unknown。
+- 判别例与邻界：surrogate_other若仅因BPTT细节待查，evidence里注明未定，不可被表述为已确认online。ABN p.10实验STBP是实验协议描述的首要来源，但p.14同架构STDP声称未被更正；0.2 canonical credit_assignment=unknown，实验声明和相反声明分别保留。不得用引用到STBP或常用实现补齐具体surrogate。
+- unknown 条件：未说明优化或同一配置的原文更新规则相互矛盾时用unknown。冲突的STBP/STDP不能多选伪装为联合训练；只在原文明确给出phase/config对应时拆行。
 - 摘要权限 / PDF 触发：摘要明确SG可surrogate_other；BPTT/local/online和stability需PDF。
 - 最终用途：时间信用分配。
 
@@ -448,7 +459,7 @@
 - 取值及操作性定义：每个对象固定键 dataset_name,version,split,setting,modality,window,timesteps,metric,configuration,evidence_id。setting仅 in_domain=同分布测试；cross_domain=跨域；cross_subject=跨人；cross_sensor=跨sensor；sim_to_real=仿真到真实；online_stream=流式在线；other_documented=需描述；unknown；not_applicable。其他值为原文/数字带单位或unknown。dataset_name为官方原名，不允许Sol自造缩写。
 - 判别例与邻界：正：dataset+split+配置+metric定义关联；反：把不同split的最佳结果并排当公平比较。
 - unknown 条件：每项可以unknown；不可据常识补标准split；没有评测则not_applicable。
-- 摘要权限 / PDF 触发：摘要可列明确dataset；关键结论、protocol、数值必须PDF/authority。
+- 摘要权限 / PDF 触发：摘要可列明确dataset；关键结论、protocol、数值必须PDF/authority。cross_subject表示有证据支持身份分离；只声称而列表重叠时setting=unknown，split保留“作者声称cross-subject；冲突未解”，禁止填猜测更正ID。公开protocol文件的版本、哈希或access date写evidence_location。
 - 最终用途：task结果表与authority筛选。
 
 ### F40. `efficiency_evidence`
@@ -508,7 +519,7 @@
 - 取值及操作性定义：pending=用途/证据未决；proposed_usable=执行者建议可用尚待Astra裁剪；usable=用户批准流程中Astra最终认可；reference_only=保留检索但当前不计usable；excluded=范围错误/无用途已证实。
 - 判别例与邻界：正：重复交叉论文core_intersection+reference_only；反：为了凑180改变scope。
 - unknown 条件：用pending不用unknown。
-- 摘要权限 / PDF 触发：摘要可清楚负例；usable中央机制/关键数值必须PDF。本轮不写任何真实行。
+- 摘要权限 / PDF 触发：摘要可清楚负例；usable中央机制/关键数值必须PDF。当前pilot建议不自动提升为usable。
 - 最终用途：150–180裁剪。
 
 ### F46. `inclusion_tier`
@@ -606,7 +617,7 @@
 - 目的：表示是否有尚需PDF回答的具体问题。
 - 选择类型：single enum。
 - 取值及操作性定义：yes=至少一个必要问题未关闭（+neuron不明）；no=问题已关闭或摘要足以明确负例且无主张要核（+EHRscope）；不能unknown。
-- 判别例与邻界：旧audit no不传递；检查后仍未解决就是yes。
+- 判别例与邻界：旧audit no不传递；检查后仍有可由指定PDF回答的必要事实问题就是yes；已核清“原文相互冲突”且Astra明确限制用途的非role阻塞项可no，同时issue=deferred，不能把PDF已检查写成事实已解决。
 - unknown 条件：执行时必须确定yes/no；信息缺失默认yes并写问题。
 - 摘要权限 / PDF 触发：yes由触发器导出；abstract-only清楚negative可以no。
 - 最终用途：调度。
@@ -626,7 +637,7 @@
 - 目的：保留已查但未解决的状态。
 - 选择类型：single enum。
 - 取值及操作性定义：not_required=无触发问题且摘要足以当前决定；pending=尚未开始必要PDF；partial=检查了一部分仍有未答；resolved=必要问题均有直接证据或明确not_reported并经裁决；unavailable=无法取得指定PDF版本。
-- 判别例与邻界：resolved可保留非关键unknown，但criticalunknown不能宣告role已确定；unavailable不可自动exclude。
+- 判别例与邻界：resolved可保留非关键unknown，也可表示指定PDF检查已结束而来源冲突仍deferred；必须写用途限制和重新开启条件。它不表示冲突事实已解决。critical scope/role/purity unknown仍不能宣告确定；unavailable不可自动exclude。
 - unknown 条件：不允许unknown；可选择pending/unavailable。
 - 摘要权限 / PDF 触发：状态来自执行记录。
 - 最终用途：completion coverage。
@@ -657,10 +668,10 @@ JSON允许的key已在字段逐一列出。不能在CSV外维护一套未记录�
 
 | 辅助词表 | 定义与正/反例 |
 | --- | --- |
-| source_type | official_abstract=官方完整摘要（正：audit原文；反：card概述）；pdf_main=原始论文正文（正：Method页；反：旧V2）；pdf_appendix=该版本附录/补充（正：实现附录；反：其它版本）；official_metadata=出版来源身份数据（正：正式题名；反：算法推断）；repository_locator=仓库笔记导航（正：V2指出Eq位置；反：当直接PDF证据）；inference=明确前提下的研究者推断（正：比较可能的边界；反：补写LIF）；unresolved=证据缺失/矛盾（正：未见head；反：已确认无head）。 |
+| source_type | official_abstract=官方完整摘要（正：audit原文；反：card概述）；pdf_main=原始论文正文（正：Method页；反：旧V2）；pdf_appendix=该版本附录/补充（正：实现附录；反：其它版本）；official_metadata=出版身份或作者官方数据协议资料（正：题名、官方split文档；反：本项目card、算法推断）；repository_locator=仓库笔记导航（正：V2指出Eq位置；反：当直接PDF证据）；inference=明确前提下的研究者推断（正：比较可能的边界；反：补写LIF）；unresolved=证据缺失/矛盾（正：未见head；反：已确认无head）。 |
 | nature | author_claim=作者声称但未核查支持（正：摘要“低功耗”；反：本地实测）；method_description=原文定义（正：state方程；反：是否最好）；empirical_observation=具体设置下实验结果（正：表中指定配置结果；反：普遍更高效）；metadata_fact=身份事实（正：venue；反：scope）；reasoned_inference=推断（正：可能来自窗口差异；反：当直接因果）；unresolved=尚无可支持内容（正：缺公式；反：已明确未报告）。 |
 | evaluation setting | in_domain=训练测试目标域相同（正：指定同域split；反：跨sensor）；cross_domain=测试域不同（正：不同环境域；反：随机split）；cross_subject=身份分离（正：train/test人员不同；反：同人随机clip）；cross_sensor=sensor跨设备类型（正：相机迁移；反：同设备不同序列）；sim_to_real=模拟训练真实测试（正：显式迁移；反：模拟内测试）；online_stream=连续流式评估（正：因果逐事件；反：offline clip）；other_documented=明确额外设置并提出issue；unknown=原文不足；not_applicable=无实验。一个配置可需多个setting时拆相同dataset的设置记录，不拼成新标签。 |
-| issue type | scope_conflict=目标轴归属（正：DVS-only；反：训练路线）；role_conflict=功能主次（正：interface/module）；boundary_conflict=计算范围（正：head连续）；time_conflict=时间轴或reset（正：T含义）；missing_label=已证实机制无标签（反：没读懂）；metadata_conflict=版本/身份（正：同名论文）；evidence_conflict=原始材料相反（正：摘要和Method冲突）；selection_conflict=独立用途/冗余（正：版本重复）。类型只负责路由，不是新scope。 |
+| issue type | scope_conflict=目标轴归属（正：DVS-only；反：训练路线）；role_conflict=功能主次（正：interface/module）；boundary_conflict=计算范围（正：head连续）；time_conflict=时间轴或reset（正：T含义）；missing_label=已证实机制无标签（反：没读懂）；metadata_conflict=版本/身份（正：同名论文）；evidence_conflict=原始材料相反或已有标注超出所附证据（正：摘要/Method冲突、将conversion无依据写成distillation）；selection_conflict=独立用途/冗余（正：版本重复）。类型只负责路由，不是新scope。 |
 | issue owner/status | sol_high=可按规则通过查证解决事实；astra=规则/类别/纳排架构裁决。open=问题未解决；evidence_ready=证据齐待裁决；resolved=有明确答案和依据；deferred=正式延期且有理由，仍计未解决，不算成功清零。 |
 | question trigger | input_identity=传感输入；real_neuron=真实spike；purity=纯度边界；role_location=SNN位置；neuron_state_time=方程/状态/时间；representative=taxonomy代表作；efficiency_claim=异步/效率主张；quantitative_claim=拟引用数字；source_conflict=摘要与仓库或原文冲突；multiple_roles=多个primary候选；misleading_terms=spike/event语义；version_conflict=版本。每项的正例是对应字段有具体未答问题；反例是无目的“全文精读”。 |
 
@@ -721,6 +732,75 @@ Pilot QC：30个ID精确join；100%完整title/abstract/hash检查；100%非法�
 
 Astra review输入：字段缺失率、unknown/PDF状态、scope×directness、primary×secondary重叠、role×representation、task×evidence、来源/年代/active偏差、重复family、排除理由、所有critical issues。Astra发布新版本需明确旧值→新值迁移与需重读ID；Sol Mid只能执行确定性迁移，不能据新标签名自动重新判断机制。
 
-分工固定：Astra负责字典、相邻标签、pilot后冻结、全库分布、最终taxonomy/outline与usable裁剪；Sol High负责pilot、PDF与困难证据准备，事实歧义按既有规则解决；Sol Mid负责冻结后的完整title/abstract抽取、clear case结构化、metadata、CSV验证、coverage和确定性生成。任何阶段不得自行修改Survey/Advisor membership或旧生成视图。后续结果/issue文件路径由用户确认后的执行任务另定。
+分工固定：Astra负责字典、相邻标签、pilot后冻结、全库分布、最终taxonomy/outline与usable裁剪；Sol High负责pilot、PDF与困难证据准备，事实歧义按既有规则解决；Sol Mid负责冻结后的完整title/abstract抽取、clear case结构化、metadata、CSV验证、coverage和确定性生成。任何阶段不得自行修改Survey/Advisor membership或旧生成视图。当前annotations、events和blind记录路径见checkpoint；历史blind结果保持0.1-design，不按裁决后值改分数。
 
-**暂停点：本轮交付只有设计和header；用户确认codebook后交Sol High执行pilot，pilot完成再回Astra。禁止本轮自动进入572篇批量标注、全量检索或最终taxonomy。**
+**0.2门禁：** 本次完成checkpoint裁决与迁移；不进入572篇批量。下一步为checkpoint §6列出的最小补充校准和受影响边界定向重判，完成后由Astra决定扩展冻结。0.2不是v1.0，也不是最终taxonomy。
+
+### 0.2 适用范围澄清
+
+- 主图仅使用scope=core_intersection且taxonomy_placement=role_hypothesis的记录。基础论文若因比较用途已提取具体推理结构，可保留描述性role（如CLIF、RGB SpikeTrack），但不能进入核心role分布；generic SNN的event字段只记录其确有的benchmark输入，不代表专门耦合。
+- 纯training/attack/benchmark的角色为not_applicable；victim/承载模型的技术事实可以记录，须在证据field_path或配置中指明对象。不把攻击优化器归algorithmic_engine。
+- algorithmic_engine须同时满足：明确推断目标/latent变量、spike/state到变量及更新/解的对应、这种对应是推理贡献而非离线训练或类比。STLR与Spike Bayesian支持暂存primary；较弱的算法灵感只写temporal_mechanism/说明，不抢占primary。重复的机制可以secondary标注，但同一模块不重复计role。
+- []用于经检查没有该类多条记录（如明确无效率数值）；unknown用于本应有而未查。JSON object整体不适用可用字符串not_applicable，time_axis_mapping也可保留逐键适用性说明。
+- review_status=astra_adjudicated仅表示本checkpoint明列字段已由Astra裁决，范围在事件rationale中说明；不是全行每个数字重新读取。单纯版本/trigger规范化保留原Sol review_status。
+- 原文未报告或冲突字段不参加相应比较表的确定性统计；可以附“作者声明/未解决”脚注。主role稳定不保证全部59字段已达到最终写作精度。已有来源定位过粗的数值、非关键other_documented例外、训练监督细节须在实际使用前定向复核；不在本轮扩成全文复读。
+
+
+## H. 0.2 机器契约镜像
+
+CSV仍为59列header-only模板；伴随的`04-templates/taxonomy-paper-annotation-schema.json`保存字段顺序、词表、JSON键和nested枚举。下面是可验证镜像，不代替D/E节的操作定义。当前pilot validator为`python3 scripts/validate_taxonomy_pilot.py`，只读，不运行generator。新增标签只能由Astra修订此文、JSON契约、迁移和受影响记录。
+
+<!-- vocabulary-start -->
+| Field | Ordered values |
+| --- | --- |
+| `record_origin` | `candidate_audit;reference_bibliography;core_backward;forward_search;classic_pool;targeted_search` |
+| `codebook_version` | `0.2` |
+| `scope` | `event_camera_foundation;snn_foundation;core_intersection;boundary_or_exclude;unknown` |
+| `intersection_directness` | `method_coupled;event_specific_training_analysis;benchmark_only;single_axis;neither_axis;unknown` |
+| `contribution_focus` | `inference_system;event_interface_design;neuron_dynamics;training_method;analysis_robustness;dataset_benchmark;hardware_system;survey_theory;unknown` |
+| `event_input_source` | `physical_event_camera;simulated_event_camera;sensor_resampled_static;spike_camera;noncamera_signal;not_applicable;unknown` |
+| `modalities` | `event;rgb_frame;intensity_frame;depth_lidar;imu;other_signal;not_applicable;unknown` |
+| `spiking_computation` | `confirmed;claimed;absent;unknown` |
+| `temporal_organization` | `event_by_event;fixed_duration;fixed_count;adaptive_window;spatial_local_window;whole_sequence;not_applicable;unknown` |
+| `representation_form` | `raw_event_sequence;event_frame;time_surface;binary_map;voxel_grid;point_set;graph;event_tokens;neuronal_spike_train;not_applicable;unknown` |
+| `representation_properties` | `dense_storage;sparse_storage;polarity_preserved;polarity_discarded;timestamp_preserved;timestamp_quantized;timestamp_discarded;not_applicable;unknown` |
+| `representation_learning` | `fixed_rule;learned_mapping;learned_selection;not_applicable;unknown` |
+| `event_to_spike_interface` | `address_event_injection;continuous_current;rate_recoding;latency_phase_recoding;learned_spike_mapping;no_spike_interface;not_applicable;unknown` |
+| `primary_functional_role` | `event_interface;task_network;embedded_module;algorithmic_engine;not_applicable;unknown` |
+| `secondary_functional_roles` | `event_interface;task_network;embedded_module;algorithmic_engine;none;unknown` |
+| `snn_module_functions` | `encoding_selection;feature_extraction;temporal_filter_memory;attention_routing;fusion;task_head;algorithm_update;none;unknown` |
+| `spiking_extent` | `end_to_end_spiking_pipeline;fully_spiking_task_network;fully_spiking_backbone;hybrid_subnetwork;non_spiking;not_applicable;unknown` |
+| `spiking_signal` | `binary;signed_binary;burst_count;integer_multilevel;continuous_only;not_applicable;unknown` |
+| `architecture_family` | `conv_residual;mlp;recurrent;transformer_attention;mixer;point_network;graph_network;state_space;algorithmic_circuit;other_documented;not_applicable;unknown` |
+| `neuron_family` | `if;lif;adaptive_lif;multi_state_neuron;other_documented;not_applicable;unknown` |
+| `internal_state` | `membrane;synaptic_current;threshold_adaptation;auxiliary_neural_state;network_memory;plastic_weight;none;not_applicable;unknown` |
+| `temporal_mechanism` | `integration_decay;recurrence_feedback;delay;multi_timescale;temporal_attention;adaptive_update;iterative_dynamics;none;not_applicable;unknown` |
+| `training_route` | `direct_snn;ann_to_snn;conversion_then_finetune;joint_ann_snn;integer_train_spike_infer;local_adaptive;no_training;not_applicable;unknown` |
+| `learning_signal` | `supervised;self_supervised;unsupervised_local;distillation;reinforcement;not_applicable;unknown` |
+| `credit_assignment` | `surrogate_bptt;surrogate_other;local_plasticity;analytic_conversion;ordinary_gradient;gradient_free;not_applicable;unknown` |
+| `task` | `recognition;detection;tracking;reconstruction_restoration;pose;depth;flow_motion;segmentation;other_documented;not_applicable;unknown` |
+| `output` | `class_identity;boxes_trajectories;image_video;pose_coordinates;depth_disparity;motion_vectors;labels_masks;representation_control;analysis_metric;other_documented;not_applicable;unknown` |
+| `efficiency_evidence` | `claim_only;operation_count;sop_mac_energy_proxy;analytical_memory_energy;runtime_measurement;memory_measurement;conventional_device_energy;neuromorphic_measurement;hardware_projection;activity_proxy;none;unknown` |
+| `robustness_evidence` | `noise_test;lighting_motion_shift;domain_transfer;temporal_perturbation;adversarial;timestep_transfer;claim_only;none;unknown` |
+| `taxonomy_placement` | `role_hypothesis;cross_cutting;foundation_comparison;outside;pending` |
+| `selection_status` | `pending;proposed_usable;usable;reference_only;excluded` |
+| `inclusion_tier` | `core_taxonomy_evidence;indispensable_background;representative_comparator;evaluation_authority;historical_foundation;redundant_reference;excluded_paper;pending` |
+| `needs_pdf_check` | `yes;no` |
+| `pdf_check_status` | `not_required;pending;partial;resolved;unavailable` |
+| `review_status` | `draft;self_checked;blind_rechecked;astra_adjudicated;blocked` |
+<!-- vocabulary-end -->
+
+<!-- nested-vocabulary-start -->
+| Nested path | Ordered values |
+| --- | --- |
+| `pdf_check_question.trigger` | `input_identity;real_neuron;purity;role_location;neuron_state_time;representative;efficiency_claim;quantitative_claim;source_conflict;multiple_roles;misleading_terms;version_conflict` |
+| `taxonomy_issue.type` | `scope_conflict;role_conflict;boundary_conflict;time_conflict;missing_label;metadata_conflict;evidence_conflict;selection_conflict` |
+| `taxonomy_issue.owner` | `astra;sol_high` |
+| `taxonomy_issue.status` | `open;evidence_ready;resolved;deferred` |
+| `dataset_evaluation.setting` | `in_domain;cross_domain;cross_subject;cross_sensor;sim_to_real;online_stream;other_documented;unknown;not_applicable` |
+| `evidence_quote_or_paraphrase.mode` | `quote;paraphrase` |
+| `evidence_basis.source_type` | `official_abstract;pdf_main;pdf_appendix;official_metadata;repository_locator;inference;unresolved` |
+| `evidence_basis.nature` | `author_claim;method_description;empirical_observation;metadata_fact;reasoned_inference;unresolved` |
+| `confidence.*` | `high;medium;low;unknown` |
+| `spiking_boundary_map.*.status` | `all_spiking;mixed;non_spiking;absent;unknown` |
+<!-- nested-vocabulary-end -->
