@@ -1,6 +1,6 @@
 # Taxonomy pilot results
 
-日期：2026-09-10。Codebook：`0.1-design`。当前状态：**Batch A–B complete（15/30 papers）**，不是最终 taxonomy，也不是 usable 文献终审。
+日期：2026-09-10。Codebook：`0.1-design`。当前状态：**Batch A–C complete（23/30 papers）**，不是最终 taxonomy，也不是 usable 文献终审。
 
 ## 1. Batch A 完成范围
 
@@ -106,13 +106,34 @@ FLAME 未明确说明离散 threshold 的梯度处理方式，因此 `credit_ass
 
 Batch B 支持四个结构性结论：`task_network` 与 `embedded_module` 的区别必须看 SNN 是否承担主任务路径；“fully spiking”标题仍需核查输入构造和末端 head；硬件证据必须写清只覆盖局部 SNN block 还是完整系统；training/attack 类论文应保留在核心交叉语料，但 primary inference role 应为 `not_applicable`。这些结论暂不触发 codebook 修改，待 30 篇完成后统一交 Astra 判断。
 
-## 6. 下一步
+## 6. Batch C 结果（pilot 16–23）
 
-继续执行 Batch C（pilot 16–23），重点测试：
+本批专门测试 SNN foundation、event-camera-only 方法与真实交叉方法的边界。八篇均完成摘要初判和决定性 PDF 核查，没有拆分配置。
 
-- event-camera-only 与 SNN-foundation 论文能否稳定挡在主 taxonomy 之外；
-- `benchmark_only` 与 `event_specific_training_analysis` 的边界；
-- 非 SNN 的 event graph/representation 论文是否具有明确 comparator 用途；
-- dataset、survey、hardware/efficiency authority 是否应进入主图之外的证据层。
+- Canonical papers：累计 23；annotation rows：累计 29
+- Abstract-initial / PDF-resolution events：23 / 23
+- 当前 scope：16 篇 `core_intersection`、4 篇 `snn_foundation`、3 篇 `event_camera_foundation`
+- 当前 primary：`event_interface` 3、`task_network` 7、`embedded_module` 4、`algorithmic_engine` 2、`not_applicable` 7
+- Selection：19 篇 `proposed_usable`、4 篇 `reference_only`
+- 批次校验：通过；59 列及 JSON、枚举顺序、证据连接、boundary/extent 与 PDF closure 均通过
 
-Batch C 完成后再做一次本地提交；30 篇首轮全部完成后才开始 10-case 盲重标和 agreement/confusion 统计，随后交 Astra 修订并冻结 codebook。
+| Paper | Scope / primary | Verified extent | Taxonomy 用途 |
+| --- | --- | --- | --- |
+| ICML2024-0803 CLIF | SNN foundation / `task_network` | `fully_spiking_task_network` | 通用多状态神经元基础；额外 complementary state 改善梯度与 firing rate，但 memory-aware 模型揭示状态开销可能抵消算术节省。 |
+| CVPR2025-0053 ANN–SNN conversion | SNN foundation / `not_applicable` | `not_applicable` | conversion 属于 training route，不是 inference role；低 timestep 的 threshold、pooling 与 delayed-evaluation 设计可供实现参考。 |
+| NeurIPS2025-5334 STEP | SNN foundation / `not_applicable` | `not_applicable` | 作为 evaluation authority，要求把 bitwidth、membrane memory 与量化 ANN 对照纳入能效比较。 |
+| CVPR2025-1552 GNN+PA | event foundation / `not_applicable` | `non_spiking` | event-by-event GNN 与周期 CNN/RNN 都是连续计算；异步、稀疏和硬件投影不能替代 SNN 证据。 |
+| CVPR2024-1880 PEPNet | event foundation / `not_applicable` | `non_spiking` | x-y-t point set 保留 timestamp，但 A-Bi-LSTM 使用窗内未来信息；是 point-SNN 的输入/因果性对照。 |
+| ECCV2024-1737 REDIR | core / `embedded_module` | `hybrid_subnetwork` | 三层 TSA-LIF 负责持续目标/瞬态遮挡过滤，注册、mask、fusion 与 decoder 仍为连续网络。 |
+| ECCV2024-0096 ABN | core / `task_network` | `fully_spiking_task_network` | PDF 将摘要初判从 generic benchmark 修正为直接 event-to-spike 系统；动态 threshold 由 membrane gradient、threshold history 与 spike efficiency 共同控制。 |
+| ECCV2024-0945 FARSE-CNN | event foundation / `not_applicable` | `non_spiking` | fully asynchronous、sparse、causal、stateful 仍不等于 SNN；核心单元是 sigmoid/tanh LSTM，且单事件 PyTorch runtime 并不低。 |
+
+Batch C 没有产生新的 primary role。它强化了两条边界：第一，只有 event dataset 不足以把通用 SNN 升级为核心交叉，但 ABN 的 direct address-event injection 与 event-rate-adaptive threshold 足以升级；第二，`event-driven`、`asynchronous`、`sparse`、`membrane` 等词都不能单独证明 spiking computation。CLIF、STEP 和 conversion 可保留在主图外的 foundation/evaluation 层，非 SNN event 方法只在具有明确反例价值时保留为 comparator。
+
+新增两项 evidence-ready 问题交 Astra：spiking MLP 是否需要独立 architecture-family 标签；ABN 实验部分的 spatio-temporal backpropagation 与结论中的 STDP 表述冲突应如何裁决。原有 FLAME interface vs embedded 问题仍保留。
+
+## 7. 下一步
+
+继续执行 Batch D（pilot 24–30）：PPLN 与 `membrane` 术语负例、DailyDVS dataset authority、spike-camera / graph-SNN / EHR 三个摘要级负例、spike-retiming attack，以及 on-device 非 SNN depth comparator。
+
+Batch D 后完成 30 篇首轮；随后按既定清单做 10-case 盲重标和 agreement/confusion 统计，再交 Astra 修订并冻结 codebook。
