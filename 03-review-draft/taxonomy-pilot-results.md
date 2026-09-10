@@ -1,6 +1,6 @@
 # Taxonomy pilot results
 
-日期：2026-09-10。Codebook：`0.1-design`。当前状态：**Batch A–C complete（23/30 papers）**，不是最终 taxonomy，也不是 usable 文献终审。
+日期：2026-09-10。Codebook：`0.1-design`。当前状态：**Batch A–D 首轮完成（30/30 papers）**，不是最终 taxonomy，也不是 usable 文献终审。
 
 ## 1. Batch A 完成范围
 
@@ -132,8 +132,32 @@ Batch C 没有产生新的 primary role。它强化了两条边界：第一，�
 
 新增两项 evidence-ready 问题交 Astra：spiking MLP 是否需要独立 architecture-family 标签；ABN 实验部分的 spatio-temporal backpropagation 与结论中的 STDP 表述冲突应如何裁决。原有 FLAME interface vs embedded 问题仍保留。
 
-## 7. 下一步
+## 7. Batch D 结果（pilot 24–30）
 
-继续执行 Batch D（pilot 24–30）：PPLN 与 `membrane` 术语负例、DailyDVS dataset authority、spike-camera / graph-SNN / EHR 三个摘要级负例、spike-retiming attack，以及 on-device 非 SNN depth comparator。
+本批完成四篇决定性 PDF 核查和三个明确负例的官方完整摘要闭环。没有为了形式一致而下载无关 PDF，也没有新增 taxonomy label。
 
-Batch D 后完成 30 篇首轮；随后按既定清单做 10-case 盲重标和 agreement/confusion 统计，再交 Astra 修订并冻结 codebook。
+- Canonical papers：30；annotation rows：36
+- Abstract-initial events：30；PDF-resolution events：27；abstract-resolution events：3
+- Scope：17 篇 `core_intersection`、5 篇 `snn_foundation`、6 篇 `event_camera_foundation`、2 篇 `boundary_or_exclude`
+- Primary：`event_interface` 3、`task_network` 7、`embedded_module` 4、`algorithmic_engine` 2、`not_applicable` 14
+- Extent：`fully_spiking_task_network` 6、`fully_spiking_backbone` 3、`hybrid_subnetwork` 7、`non_spiking` 5、`not_applicable` 9
+- Selection：22 篇 `proposed_usable`、5 篇 `reference_only`、3 篇 `excluded`
+- 批次校验：通过；59 列、audit 精确连接、JSON/枚举、evidence ID、boundary/extent 和 PDF closure 均有效
+
+| Paper | Scope / primary | 终态 | Taxonomy 用途 |
+| --- | --- | --- | --- |
+| NeurIPS2024-2307 PPLN | event foundation / `not_applicable` | `non_spiking`、`reference_only` | 关键术语反例：真实值 piecewise temporal function 不含 threshold、firing、reset；`membrane` 和 neuromorphic motivation 不能证明 SNN。 |
+| ECCV2024-1631 DailyDVS-200 | event foundation / `not_applicable` | benchmark authority | 22,046 段、200 类、47 人、14 种属性；SNN 只是十二类 baseline 中的一部分。原文 cross-subject participant list 有重叠/计数冲突，已入 issue。 |
+| CVPR2026-1021 Nope-SGS | boundary / `not_applicable` | `excluded` | intensity-integrating spike camera，不是 contrast event camera；摘要未声称 SNN。 |
+| ICLR2024-1543 SpikeGCL | SNN foundation / `not_applicable` | `excluded` | 普通 graph contrastive SNN，没有 event-camera signal，也没有不可替代的机制桥梁。 |
+| ICLR2024-1607 MOTOR | boundary / `not_applicable` | `excluded` | `event` 指临床 time-to-event；输入是 EHR/insurance records，两个目标轴都缺失。 |
+| ICLR2026-1286 retiming attack | core / `not_applicable` | cross-cutting robustness | 攻击对象是量化后的 event-input temporal bins，不是 raw microsecond timestamps，也不是内部 neuron spike times。 |
+| CVPR2025-1775 on-device depth | event foundation / `not_applicable` | `non_spiking` comparator | Conv/ConvGRU + contrast maximization 在 Jetson 上完成约 30 Hz、约 9 W 的在线学习；为 SNN 能效论述提供实测常规设备对照。 |
+
+Batch D 进一步确认：四个 primary inference roles 无需扩张；dataset、training/attack analysis 和 comparison layer 必须与 primary-role 主图并列存在，但不能伪装成第五种 role。它也补齐了搜索与术语边界：`spike camera`、clinical `event`、graph SNN、`membrane`、asynchronous/stateful/event-driven 都不能单独把论文送入核心交叉。
+
+当前尚待 Astra 裁决或上游更正的 evidence-ready issue 共四项：`FL-I1`（FLAME interface vs embedded）、`AB-I1`（spiking MLP architecture label）、`AB-I2`（ABN backpropagation vs STDP 表述冲突）、`DD-I1`（DailyDVS cross-subject participant split 冲突）。它们均不阻塞 30 篇 pilot 首轮完成。
+
+## 8. 下一步
+
+按既定清单对 03、04、06、07、12、13、14、22、24、29 做 10-case 盲重标，计算 agreement/confusion，并重点检查 role、spiking extent、time-axis mapping、selection 和 false-positive 边界。之后把 pilot 结论与四项 issue 交 Astra 修订 taxonomy architecture 和 codebook，再冻结首个可扩展版本。
