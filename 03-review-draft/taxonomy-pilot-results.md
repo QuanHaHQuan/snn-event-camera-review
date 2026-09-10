@@ -199,3 +199,15 @@ Batch D 进一步确认：四个 primary inference roles 无需扩张；dataset�
 本轮是同一执行者的 evidence-first 定向稳定性检查，不报告为新的 blind 或 inter-rater agreement。完整逐合同记录见 [targeted recheck](taxonomy-codebook-0.2-targeted-recheck.md) 与 [CSV](taxonomy-codebook-0.2-targeted-recheck.csv)。现有事件合同没有 `targeted_recheck` 类型，因此没有把它伪装成 blind/PDF-resolution 事件，也没有修改 codebook 0.2。
 
 E1 已完成，但冻结门仍等待 G/C/F/D/P/H 六个补充证据槽位。下一步为最小补充校准 Batch E2，而不是全量 572 篇标注。
+
+## 11. 冻结前缺口校准（Batch E2）
+
+按 checkpoint §6 完成 G/C/F/D/P/H 的最小校准：新增 5 篇独立 canonical 样本、5 条 59 字段记录；没有修改 30 篇 pilot baseline。C/F/D/P/H 均获得 PDF 事实答案；G 检查 5 个最接近候选后没有找到同时具备真实 contrast-event graph 与 spiking message passing/neuron 的可靠正例，因此按停止规则保留明确适用域限制，没有拼接 event GNN 与 generic spiking GNN。
+
+- C：TPAMI 2013 的 event-specific ANN-to-SNN 映射仍归 `task_network`；conversion 是 training route。
+- F：Spike-FlowNet 的 SNN 只承担 encoder，ANN residual/decoder 与 flow head 使其为 `hybrid_subnetwork`。
+- D：2017 spiking stereo 的 coincidence/disparity/WTA dynamics 直接实现 stereo-correspondence solver，形成 pilot 外的 `algorithmic_engine` 正例。
+- P：event-only spiking pose 系统仍含 real-valued attention value branch 和连续 SMPL heads，归 `task_network + hybrid_subnetwork`。
+- H：live DVS–TrueNorth 系统仍由 `task_network` 表达；178.8 mW 只覆盖 TrueNorth network，不是 sensor/board/host/I/O 全系统。
+
+完整裁定建议与限制见 [E2 report](taxonomy-codebook-0.2-gap-calibration.md)、[59 字段 calibration CSV](taxonomy-codebook-0.2-gap-calibration.csv) 和 [G candidate audit](taxonomy-codebook-0.2-gap-candidate-audit.csv)。E2 至此停止，下一步交 Astra 决定冻结版本和允许扩展的适用域；不得直接启动 572 篇。

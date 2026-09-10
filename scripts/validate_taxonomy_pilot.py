@@ -17,6 +17,11 @@ ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--annotations", type=Path, default=ROOT / "00-index/taxonomy-pilot-annotations.csv")
 parser.add_argument("--events", type=Path, default=ROOT / "03-review-draft/taxonomy-pilot-events.csv")
+parser.add_argument(
+    "--standalone-calibration",
+    action="store_true",
+    help="validate a separate 59-column calibration table without joining or rewriting the immutable pilot history",
+)
 args = parser.parse_args()
 ANNOTATIONS = args.annotations
 TEMPLATE = ROOT / "04-templates/taxonomy-paper-annotation-schema.csv"
@@ -46,6 +51,17 @@ with ANNOTATIONS.open(newline="", encoding="utf-8") as handle:
     rows = list(reader)
 with AUDIT.open(newline="", encoding="utf-8") as handle:
     audit = {row["paper_id"]: row for row in csv.DictReader(handle)}
+if args.standalone_calibration:
+    audit = {
+        row["paper_id"]: {
+            "title": row["canonical_title"],
+            "year": row["year"],
+            "venue": row["venue"],
+            "abstract": row["abstract_text"],
+            "abstract_sha256": row["abstract_sha256"],
+        }
+        for row in rows
+    }
 
 errors = []
 fields_in_book = re.findall(r"^### F\d+\. `([^`]+)`", CODEBOOK, re.M)
@@ -151,6 +167,9 @@ for rownum, row in enumerate(rows, 2):
     if official["pdf_sha256"] == "not_applicable":
         if row["pdf_check_status"] != "not_required":
             fail(errors, rownum, f"{identity}: missing PDF hash without abstract-only closure")
+    elif official["pdf_sha256"] == "unknown" and args.standalone_calibration:
+        if row["pdf_check_status"] == "resolved" and not re.search(r"v\d+$", official["version"]):
+            fail(errors, rownum, f"{identity}: resolved remote PDF without a byte hash must name an immutable version")
     elif len(official["pdf_sha256"]) != 64:
         fail(errors, rownum, f"{identity}: official PDF hash is not 64 hex characters")
 
@@ -217,6 +236,17 @@ for rownum, row in enumerate(rows, 2):
             fail(errors, rownum, f"{identity}: pending PDF question despite closed status")
     if row["needs_pdf_check"] == "yes" and not parsed["pdf_check_question"]:
         fail(errors, rownum, f"{identity}: PDF check required without a question")
+
+if args.standalone_calibration:
+    if errors:
+        print(f"FAIL: {len(errors)} validation error(s)")
+        for error in errors:
+            print(f"- {error}")
+        raise SystemExit(1)
+    print(f"PASS: {len(rows)} standalone calibration rows, {len(set(row['paper_id'] for row in rows))} papers, {len(header)} columns")
+    print("PASS: codebook/schema mirrors, enums, evidence links, role/boundary invariants and PDF-check closure")
+    print("LIMIT: standalone calibration does not join candidate audit or alter/check immutable pilot history")
+    raise SystemExit(0)
 
 with EVENTS.open(newline="", encoding="utf-8") as handle:
     event_rows = list(csv.DictReader(handle))
