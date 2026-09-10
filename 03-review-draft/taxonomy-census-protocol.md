@@ -1,10 +1,12 @@
 # Taxonomy census protocol
 
-版本：0.1，2026-09-10。状态：可执行的标题—摘要普查层。
+版本：0.2，2026-09-10。状态：可执行的标题—摘要普查层。
 
 ## 1. 目的与边界
 
 本层回答两个问题：当前 572 篇候选分别属于哪一个大范围，以及这些论文自然呈现出哪些 SNN × event-camera 机制簇。它服务于 taxonomy discovery，不负责最终 taxonomy、最终纳排或逐篇深度证据表。
+
+这里的 `core_intersection` 指综述的核心交叉**语料库**，不是“深度耦合方法”的同义词。只要论文同时具有明确的 SNN 轴和 contrast-change event-camera / DVS 轴，就进入 `core_intersection`；DVS 只作为训练集、测试集或 benchmark 也算交叉。交叉有多深由 `intersection_directness` 单独表达。因此，`snn_only` 只用于当前可见证据中没有 event-camera / DVS 关系的 SNN 论文，`event_camera_only` 反之亦然。
 
 数据源固定为 `00-index/candidate-screening-audit.csv`。其中 572 篇均已有完整官方标题、摘要、摘要哈希和来源页。census 通过 `paper_id` 连接这些信息，不复制 metadata、标题、摘要、来源或哈希，也不修改原 audit。
 
@@ -30,8 +32,8 @@
 
 | 字段 | 类型 | 填写规则 |
 | --- | --- | --- |
-| `scope` | 单选 | `core_intersection`、`event_camera_only`、`snn_only`、`out_of_scope`、`uncertain` |
-| `intersection_directness` | 单选 | `method_coupled`、`event_specific_training_analysis`、`benchmark_only`、`single_axis`、`neither_axis`、`uncertain` |
+| `scope` | 单选 | `core_intersection` = 两轴均存在（包括仅用 DVS benchmark）；`event_camera_only` / `snn_only` = 只有一轴；`out_of_scope` = 两轴均无；证据不足才用 `uncertain` |
+| `intersection_directness` | 单选 | 在 scope 之外记录交叉深度：`method_coupled`、`event_specific_training_analysis`、`benchmark_only`、`single_axis`、`neither_axis`、`uncertain` |
 | `contribution_type` | 有序多选 | 记录摘要明确主张的贡献类型，不因论文有实验就标 dataset |
 | `pipeline_position` | 开放短文本 | 用一条短链描述输入 → 关键处理 → SNN/连续组件 → 输出；不适用时填 `not_applicable` |
 | `provisional_snn_role` | 有序多选 | 四个既有 role 只是候选；允许 `other_candidate`、`unknown` 或 `not_applicable` |
@@ -64,9 +66,20 @@
 1. 只从 batch view 阅读完整标题和摘要，不先查看旧 survey/advisor role、reason 或 membership。
 2. 确认是否为 contrast-change event camera；普通“event”、事件日志、物理 rare event、spike camera 不能自动进入 event 轴。
 3. 确认摘要是否声称真实 SNN / spiking-neuron computation；稀疏、异步、二值或 threshold 不能自动进入 SNN 轴。
-4. 判断两轴是方法耦合、事件特定训练/分析、仅 benchmark 共现、单轴还是都不是。
+4. 先按两轴是否存在判断 scope，再判断两轴是方法耦合、事件特定训练/分析、仅 benchmark 共现、单轴还是都不是。只要两轴均存在，scope 就是 `core_intersection`；不能用“耦合不够深”把 benchmark-only 论文降为 `snn_only`。
 5. 用开放的 pipeline 和 emergent code 先描述论文，再给 provisional role。不要从旧四 role 倒推描述。
 6. 摘要不能回答 taxonomy 关键边界时保留 `uncertain`/`unknown` 并提出一个具体 PDF 问题，不猜测补全。
+
+scope 与 directness 的合法组合为：
+
+- `core_intersection` → `method_coupled`、`event_specific_training_analysis`、`benchmark_only`，少数深度暂不能判断时可用 `uncertain`；
+- `event_camera_only` / `snn_only` → `single_axis`；
+- `out_of_scope` → `neither_axis`；
+- `uncertain` → `uncertain`。
+
+`provisional_snn_role` 描述 SNN 在交叉系统推理路径中的功能，因此只对 `core_intersection` 使用四个 role。单轴和范围外论文填 `not_applicable`；核心论文若只贡献训练、评测或硬件而没有新增推理功能，也可填 `not_applicable`。`algorithmic_engine` 保留给把优化变量、迭代状态或求解步骤显式映射到 spikes / neuronal states 的算法求解器，不能泛指新的神经元、训练方法或一般 SNN 架构。
+
+开放编码可以保留单例，因为普查阶段的目标是先观察机制再聚类；但 `out_of_scope` 论文的误命中机制不参与 taxonomy discovery，`emergent_code` 必须填 `none`。
 
 `scripts/validate_taxonomy_census.py --show-batch B001` 输出的只读 JSONL view 只含身份、完整摘要和官方页面，不暴露旧双轨决策。它是 Mid 的推荐入口。
 

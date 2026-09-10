@@ -221,6 +221,38 @@ def load_and_validate() -> tuple[dict[str, dict[str, str]], dict[str, list[dict[
             )
         require(bool(row["emergent_code"]), f"{paper_id}: emergent_code is blank", errors)
         require(bool(row["pdf_trigger_question"]), f"{paper_id}: pdf_trigger_question is blank", errors)
+
+        scope = row["scope"]
+        directness = row["intersection_directness"]
+        allowed_directness = {
+            "core_intersection": {
+                "method_coupled",
+                "event_specific_training_analysis",
+                "benchmark_only",
+                "uncertain",
+            },
+            "event_camera_only": {"single_axis"},
+            "snn_only": {"single_axis"},
+            "out_of_scope": {"neither_axis"},
+            "uncertain": {"uncertain"},
+        }
+        require(
+            directness in allowed_directness.get(scope, set()),
+            f"{paper_id}: {scope} is inconsistent with {directness}",
+            errors,
+        )
+        if scope in {"event_camera_only", "snn_only", "out_of_scope"}:
+            require(
+                parsed["provisional_snn_role"] == ["not_applicable"],
+                f"{paper_id}: non-intersection scope must use provisional_snn_role=not_applicable",
+                errors,
+            )
+        if scope == "out_of_scope":
+            require(
+                row["emergent_code"] == "none",
+                f"{paper_id}: out_of_scope must use emergent_code=none",
+                errors,
+            )
         if row["review_status"] == "mid_complete":
             require(not row["review_note"], f"{paper_id}: Mid must leave review_note blank", errors)
 
