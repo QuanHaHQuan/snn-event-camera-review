@@ -13,8 +13,8 @@
 本层与 codebook 0.2 分开：
 
 - `taxonomy-annotation-codebook.md` 的 59 字段继续作为后续关键论文的深度证据规范；
-- census 不执行 codebook 0.2 的 expansion batch，不创建迁移事件，不把 `review_status` 或摘要判断冒充全文终审；
-- `event_interface`、`task_network`、`embedded_module`、`algorithmic_engine` 只是待检验候选。允许 `unknown`、`other_candidate` 和开放的 `emergent_code`；
+- census 不执行 codebook 0.2 的 expansion batch，也不把摘要判断冒充全文终审；
+- `event_interface`、`task_network`、`embedded_module`、`algorithmic_engine` 只是待检验候选；
 - 全库普查与 High 核查完成后，才由 Astra 根据分布和反例提出 provisional taxonomy。
 
 ## 2. 文件与所有权
@@ -71,8 +71,6 @@ scope 与 directness 的合法组合为：
 
 `provisional_snn_role` 描述 SNN 在交叉系统推理路径中的功能，因此只对 `core_intersection` 使用四个 role。单轴和范围外论文填 `not_applicable`；核心论文若只贡献训练、评测或硬件而没有新增推理功能，也可填 `not_applicable`。`algorithmic_engine` 保留给把优化变量、迭代状态或求解步骤显式映射到 spikes / neuronal states 的算法求解器，不能泛指新的神经元、训练方法或一般 SNN 架构。
 
-开放编码可以保留单例，因为普查阶段的目标是先观察机制再聚类；但 `out_of_scope` 论文的误命中机制不参与 taxonomy discovery，`emergent_code` 必须填 `none`。
-
 `scripts/validate_taxonomy_census.py --show-batch B001` 输出的只读 JSONL view 只含身份、完整摘要和官方页面，不暴露旧双轨决策。它是 Mid 的推荐入口。
 
 ## 6. 批次与模型职责
@@ -101,7 +99,7 @@ Astra 不参与逐 batch 摘要标注，也不在 Batch 001 后重审 codebook�
 
 ## 7. 停止条件与后续升级
 
-Mid 当前 batch 的停止条件：manifest 中每个 ID 恰有一条 `mid_complete` 记录，12 个语义字段均非空，枚举与哨兵规则通过。不要为了消除 `uncertain` 而读 PDF。
+Mid 当前 batch 的停止条件：manifest 中每个 ID 恰有一条记录，10 个字段均非空，枚举与哨兵规则通过。不要为了消除 `uncertain` 而读 PDF。
 
 Batch 001 High 核查通过的条件：没有反复出现的轴误判或强迫 role；若只是措辞和少量个案修正，记录模式后允许继续全库。若 schema 本身无法表达多篇论文，暂停剩余批次，交当前 Sol High 做一次最小修订，不直接交 Astra。
 
