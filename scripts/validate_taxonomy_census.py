@@ -16,7 +16,7 @@ MANIFEST = ROOT / "00-index" / "taxonomy-census-batches.csv"
 CENSUS = ROOT / "00-index" / "taxonomy-census.csv"
 
 SOURCE_COUNT = 572
-BATCH_IDS = tuple(f"B{i:03d}" for i in range(1, 11))
+BATCH_IDS = tuple(f"B{i:03d}" for i in range(1, 8))
 MANIFEST_HEADER = ["batch_id", "batch_position", "paper_id"]
 CENSUS_HEADER = [
     "paper_id",
@@ -27,14 +27,8 @@ CENSUS_HEADER = [
     "provisional_snn_role",
     "task_application",
     "cross_cutting_topics",
-    "emergent_code",
-    "taxonomy_use",
     "abstract_basis",
     "pdf_trigger_question",
-    "confidence",
-    "annotator",
-    "review_status",
-    "review_note",
 ]
 
 SINGLE_ENUMS = {
@@ -52,13 +46,6 @@ SINGLE_ENUMS = {
         "single_axis",
         "neither_axis",
         "uncertain",
-    },
-    "confidence": {"high", "medium", "low"},
-    "review_status": {
-        "mid_complete",
-        "high_reviewed",
-        "high_corrected",
-        "high_escalated",
     },
 }
 
@@ -98,23 +85,12 @@ MULTI_ENUMS = {
         "none",
         "other",
     ],
-    "taxonomy_use": [
-        "taxonomy_anchor",
-        "representative_method",
-        "boundary_case",
-        "background_context",
-        "cross_cutting_evidence",
-        "dataset_or_evaluation",
-        "exclude_candidate",
-        "undetermined",
-    ],
 }
 
 EXCLUSIVE_SENTINELS = {
     "contribution_type": {"uncertain"},
     "provisional_snn_role": {"not_applicable", "unknown"},
     "cross_cutting_topics": {"none"},
-    "taxonomy_use": {"undetermined"},
 }
 
 
@@ -188,7 +164,8 @@ def load_and_validate() -> tuple[dict[str, dict[str, str]], dict[str, list[dict[
             by_batch[batch_id].append(row)
     for batch_id, rows in by_batch.items():
         positions = sorted(int(row["batch_position"]) for row in rows)
-        require(57 <= len(rows) <= 58, f"{batch_id}: size {len(rows)} is outside 57–58", errors)
+        expected_min, expected_max = ((57, 58) if batch_id in {"B001", "B002", "B003", "B004"} else (114, 115))
+        require(expected_min <= len(rows) <= expected_max, f"{batch_id}: size {len(rows)} is outside {expected_min}–{expected_max}", errors)
         require(positions == list(range(1, len(rows) + 1)), f"{batch_id}: positions are not contiguous", errors)
 
     if by_batch["B001"]:
@@ -213,13 +190,6 @@ def load_and_validate() -> tuple[dict[str, dict[str, str]], dict[str, list[dict[
             field: parse_multivalue(field, row[field], paper_id, errors)
             for field in MULTI_ENUMS
         }
-        if "other_candidate" in parsed["provisional_snn_role"]:
-            require(
-                row["emergent_code"] not in {"", "none", "unknown"},
-                f"{paper_id}: other_candidate requires a concrete emergent_code",
-                errors,
-            )
-        require(bool(row["emergent_code"]), f"{paper_id}: emergent_code is blank", errors)
         require(bool(row["pdf_trigger_question"]), f"{paper_id}: pdf_trigger_question is blank", errors)
 
         scope = row["scope"]
@@ -247,14 +217,6 @@ def load_and_validate() -> tuple[dict[str, dict[str, str]], dict[str, list[dict[
                 f"{paper_id}: non-intersection scope must use provisional_snn_role=not_applicable",
                 errors,
             )
-        if scope == "out_of_scope":
-            require(
-                row["emergent_code"] == "none",
-                f"{paper_id}: out_of_scope must use emergent_code=none",
-                errors,
-            )
-        if row["review_status"] == "mid_complete":
-            require(not row["review_note"], f"{paper_id}: Mid must leave review_note blank", errors)
 
     return source_by_id, by_batch, census_rows, errors
 
@@ -311,7 +273,7 @@ def main() -> int:
     print("PASS: B001 covers all source years, venues, and survey decisions")
     if census_rows:
         print("scope:", dict(sorted(Counter(row["scope"] for row in census_rows).items())))
-        print("review_status:", dict(sorted(Counter(row["review_status"] for row in census_rows).items())))
+        print("directness:", dict(sorted(Counter(row["intersection_directness"] for row in census_rows).items())))
     else:
         print("INFO: census is header-only; no papers were annotated in setup")
     return 0
