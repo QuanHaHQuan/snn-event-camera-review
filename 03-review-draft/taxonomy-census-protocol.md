@@ -26,7 +26,7 @@
 | `00-index/taxonomy-census.csv` | 轻量 census 结果 | Mid 初填，High 定向修订 |
 | `scripts/validate_taxonomy_census.py` | validator，并提供不显示旧决策的 batch view | 维护脚本 |
 
-`taxonomy-census.csv` 保留 10 列：1 个连接字段、8 个 taxonomy 科学字段和 1 个 PDF 问题字段。已删除 annotator、review_status、review_note、confidence、emergent_code、taxonomy_use，因为它们不直接参与 taxonomy 构建。
+`taxonomy-census.csv` 保留 11 列：1 个连接字段、9 个 taxonomy 科学字段和 1 个 PDF 问题字段。已删除 annotator、review_status、review_note、confidence、emergent_code、taxonomy_use，因为它们不直接参与 taxonomy 构建。
 
 ## 3. Taxonomy 字段
 
@@ -37,6 +37,7 @@
 | `contribution_type` | 有序多选 | 记录摘要明确主张的贡献类型，不因论文有实验就标 dataset |
 | `pipeline_position` | 开放短文本 | 用一条短链描述输入 → 关键处理 → SNN/连续组件 → 输出；不适用时填 `not_applicable` |
 | `provisional_snn_role` | 有序多选 | 四个既有 role 只是候选；允许 `other_candidate`、`unknown` 或 `not_applicable` |
+| `snn_service_function` | 有序多选 | 记录 SNN 为事件视觉提供的功能：时序、异步处理、事件选择/聚合、稀疏效率、低延迟、状态记忆、表示、鲁棒性、硬件或算法推断 |
 | `task_application` | 开放短文本 | 使用摘要中的实际任务；不适用或不明时用 `not_applicable` / `unknown` |
 | `cross_cutting_topics` | 有序多选 | 训练、转换、增广、鲁棒性、效率、硬件、数据集等正交主题 |
 | `abstract_basis` | 开放短文本 | 一至两句忠实转述摘要中支持 scope、贡献与候选作用的内容，不引用旧 survey/advisor 决策 |
@@ -99,7 +100,7 @@ Astra 不参与逐 batch 摘要标注，也不在 Batch 001 后重审 codebook�
 
 ## 7. 停止条件与后续升级
 
-Mid 当前 batch 的停止条件：manifest 中每个 ID 恰有一条记录，10 个字段均非空，枚举与哨兵规则通过。不要为了消除 `uncertain` 而读 PDF。
+Mid 当前 batch 的停止条件：manifest 中每个 ID 恰有一条记录，11 个字段均非空，枚举与哨兵规则通过。不要为了消除 `uncertain` 而读 PDF。
 
 Batch 001 High 核查通过的条件：没有反复出现的轴误判或强迫 role；若只是措辞和少量个案修正，记录模式后允许继续全库。若 schema 本身无法表达多篇论文，暂停剩余批次，交当前 Sol High 做一次最小修订，不直接交 Astra。
 

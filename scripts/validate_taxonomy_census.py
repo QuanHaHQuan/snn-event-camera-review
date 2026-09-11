@@ -25,6 +25,7 @@ CENSUS_HEADER = [
     "contribution_type",
     "pipeline_position",
     "provisional_snn_role",
+    "snn_service_function",
     "task_application",
     "cross_cutting_topics",
     "abstract_basis",
@@ -71,6 +72,20 @@ MULTI_ENUMS = {
         "not_applicable",
         "unknown",
     ],
+    "snn_service_function": [
+        "temporal_modeling",
+        "asynchronous_event_processing",
+        "event_selection_or_aggregation",
+        "sparsity_and_efficiency",
+        "low_latency",
+        "memory_or_state_modeling",
+        "feature_representation",
+        "robustness",
+        "hardware_compatibility",
+        "algorithmic_inference",
+        "no_specific_service",
+        "unknown",
+    ],
     "cross_cutting_topics": [
         "training",
         "conversion",
@@ -90,6 +105,7 @@ MULTI_ENUMS = {
 EXCLUSIVE_SENTINELS = {
     "contribution_type": {"uncertain"},
     "provisional_snn_role": {"not_applicable", "unknown"},
+    "snn_service_function": {"no_specific_service", "unknown"},
     "cross_cutting_topics": {"none"},
 }
 
